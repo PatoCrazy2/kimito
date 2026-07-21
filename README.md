@@ -37,8 +37,14 @@ packages/
    cp apps/api/.env.example apps/api/.env
    ```
 
-3. **Generar el Cliente de Prisma:**
-   Prisma necesita leer el esquema de base de datos y generar los tipos correspondientes para que TypeScript no arroje errores:
+3. **Iniciar la base de datos local:**
+   Levanta la base de datos PostgreSQL local en segundo plano usando Docker Compose:
+   ```bash
+   docker compose up -d
+   ```
+
+4. **Generar el Cliente de Prisma:**
+   Genera los tipos del cliente Prisma a partir del esquema:
    ```bash
    pnpm --filter api exec prisma generate
    ```
