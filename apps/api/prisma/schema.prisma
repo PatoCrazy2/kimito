@@ -1,0 +1,82 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  name             String
+  avatarUrl        String?
+  createdAt        DateTime          @default(now())
+  memberships      HouseMembership[]
+  taskAssignments  TaskAssignment[]
+  reputationScores ReputationScore[]
+  listings         Listing[]
+}
+
+model House {
+  id          String            @id @default(uuid())
+  name        String
+  createdAt   DateTime          @default(now())
+  memberships HouseMembership[]
+}
+
+model HouseMembership {
+  userId   String
+  houseId  String
+  role     String
+  joinedAt DateTime @default(now())
+  active   Boolean  @default(true)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  house House @relation(fields: [houseId], references: [id], onDelete: Cascade)
+
+  @@id([userId, houseId])
+}
+
+model Task {
+  id              String           @id @default(uuid())
+  houseId         String
+  title           String
+  weight          Int
+  recurrence      String
+  taskAssignments TaskAssignment[]
+}
+
+model TaskAssignment {
+  id          String    @id @default(uuid())
+  taskId      String
+  userId      String
+  periodStart DateTime
+  periodEnd   DateTime
+  status      String
+  completedAt DateTime?
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ReputationScore {
+  id        String   @id @default(uuid())
+  userId    String
+  houseId   String
+  score     Float
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Listing {
+  id          String   @id @default(uuid())
+  userId      String
+  type        String
+  description String
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
