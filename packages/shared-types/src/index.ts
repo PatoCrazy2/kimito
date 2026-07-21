@@ -1,0 +1,9 @@
+// Shared Types for Kimito
+
+export interface UserDto {
+  id: string;
+  email: string;
+  name: string;
+  avatarUrl?: string;
+  createdAt: Date;
+}
