@@ -90,20 +90,8 @@ Como la API (`apps/api`) depende de los tipos compartidos localizados en `packag
 2. **Etapa de Ejecución (runner):**
    - Inicia desde una imagen limpia de Alpine Node.
    - Copia únicamente los archivos de producción compilados (`dist/`) y las dependencias de producción (`node_modules`), ignorando el código fuente y las herramientas de desarrollo. Esto reduce drásticamente el peso de la imagen final (de ~1GB a menos de 200MB).
+### ¿Por qué existe un `Dockerfile` en `apps/api`?
+Este `Dockerfile` es de **uso exclusivo para producción**. Cuando despliegues el backend a AWS Elastic Beanstalk, la plataforma utilizará este archivo de manera automática para empaquetar y levantar el servidor de la API en la nube. 
 
-### Comandos de Docker
+**Los desarrolladores no necesitan construir ni correr este Dockerfile localmente.** Para desarrollo local, basta con iniciar la base de datos con `docker compose up -d` y ejecutar `pnpm dev`.
 
-> [!IMPORTANT]
-> Debes ejecutar el comando de construcción de Docker **desde la raíz del monorepo** (no dentro de `apps/api`) para que Docker tenga acceso a la carpeta de `packages/`.
-
-- **Para construir la imagen de Docker:**
-  ```bash
-  docker build -t kimito-api -f apps/api/Dockerfile .
-  ```
-  *(Nota el punto `.` al final, le indica a Docker que use la carpeta actual como contexto del monorepo).*
-
-- **Para correr el contenedor localmente:**
-  ```bash
-  docker run -p 3000:3000 --env-file apps/api/.env kimito-api
-  ```
-  *(Esto mapeará el puerto 3000 del contenedor al puerto 3000 de tu máquina y le pasará las variables de entorno de tu archivo local).*
