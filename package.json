@@ -1,0 +1,19 @@
+{
+  "name": "kimito-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for Kimito - Shared House Cleaning Management System",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "turbo": "^2.0.4"
+  }
+}
