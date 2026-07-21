@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Monorepo for Kimito - Shared House Cleaning Management System",
+  "packageManager": "pnpm@10.28.1",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
