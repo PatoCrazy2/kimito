@@ -1,6 +1,11 @@
 import { getCurrentUser } from "@/app/actions/user-actions";
-import { getMyHouseAction } from "@/app/actions/house-actions";
+import {
+  getMyHouseAction,
+  getMyHouseMembersAction,
+} from "@/app/actions/house-actions";
 import { getHouseTasksAction } from "@/app/actions/task-actions";
+import { getAssignmentsAction } from "@/app/actions/scheduling-actions";
+import { getMyReputationAction } from "@/app/actions/reputation-actions";
 import OnboardingClient from "./OnboardingClient";
 import DashboardClient from "./DashboardClient";
 import { redirect } from "next/navigation";
@@ -21,7 +26,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           error
         </span>
         <h2 className="text-xl font-bold">Error de Sesión</h2>
-        <p className="text-muted-foreground mt-1">No se pudieron cargar los datos del usuario autenticado.</p>
+        <p className="text-muted-foreground mt-1">
+          No se pudieron cargar los datos del usuario autenticado.
+        </p>
       </div>
     );
   }
@@ -33,13 +40,22 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     return <OnboardingClient userName={user.name} />;
   }
 
-  const tasks = await getHouseTasksAction(house.id);
+  // Cargar todos los datos del Sprint 3 en paralelo
+  const [tasks, members, assignments, reputation] = await Promise.all([
+    getHouseTasksAction(house.id),
+    getMyHouseMembersAction(),
+    getAssignmentsAction(),
+    getMyReputationAction(),
+  ]);
 
   return (
-    <DashboardClient 
-      userName={user.name} 
-      houseName={house.name} 
-      tasks={tasks} 
+    <DashboardClient
+      userName={user.name}
+      houseName={house.name}
+      tasks={tasks}
+      members={members}
+      assignments={assignments}
+      reputation={reputation}
     />
   );
-}
+}

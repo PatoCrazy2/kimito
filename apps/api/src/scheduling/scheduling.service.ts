@@ -214,7 +214,54 @@ export class SchedulingService {
     return updated as unknown as TaskAssignmentResponse;
   }
 
+  /**
+   * Marca una tarea como completada (opcionalmente guardando evidencia).
+   */
+  async completeAssignment(
+    email: string,
+    assignmentId: string,
+    evidenceUrl?: string,
+  ): Promise<TaskAssignmentResponse> {
+    const membership = await this.getUserActiveMembership(email);
+
+    const assignment = await this.prisma.taskAssignment.findUnique({
+      where: { id: assignmentId },
+      include: { task: true, user: true },
+    });
+
+    if (!assignment) {
+      throw new NotFoundException('Asignación de tarea no encontrada');
+    }
+
+    if (assignment.task.houseId !== membership.houseId) {
+      throw new BadRequestException('No perteneces a la casa de esta tarea');
+    }
+
+    const updated = await this.prisma.taskAssignment.update({
+      where: { id: assignmentId },
+      data: {
+        status: 'COMPLETED',
+        completedAt: new Date(),
+        evidenceUrl: evidenceUrl || null,
+      },
+      include: {
+        task: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatarUrl: true,
+          },
+        },
+      },
+    });
+
+    return updated as unknown as TaskAssignmentResponse;
+  }
+
   private getMonday(d: Date): Date {
+
     const date = new Date(d);
     const day = date.getDay();
     const diff = date.getDate() - day + (day === 0 ? -6 : 1);

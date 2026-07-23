@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Param,
   Body,
   Query,
   UseGuards,
@@ -47,4 +48,19 @@ export class SchedulingController {
   ): Promise<TaskAssignmentResponse> {
     return this.schedulingService.overrideAssignment(req.user.email, dto);
   }
+
+  @UseGuards(AuthGuard)
+  @Patch('assignments/:id/complete')
+  async completeAssignment(
+    @Request() req: any,
+    @Param('id') id: string,
+    @Body('evidenceUrl') evidenceUrl?: string,
+  ): Promise<TaskAssignmentResponse> {
+    return this.schedulingService.completeAssignment(
+      req.user.email,
+      id,
+      evidenceUrl,
+    );
+  }
 }
+
