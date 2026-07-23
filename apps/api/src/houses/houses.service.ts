@@ -204,4 +204,42 @@ export class HousesService {
       active: m.active,
     }));
   }
+
+  async updateHouse(email: string, dto: { name?: string; description?: string; address?: string }): Promise<HouseResponse> {
+    const userId = await this.getUserIdByEmail(email);
+
+    const activeMembership = await this.prisma.houseMembership.findFirst({
+      where: {
+        userId,
+        active: true,
+      },
+    });
+
+    if (!activeMembership) {
+      throw new NotFoundException('No perteneces a ninguna casa activa');
+    }
+
+    if (activeMembership.role !== 'ADMIN') {
+      throw new UnauthorizedException('Solo el administrador puede actualizar los detalles de la casa');
+    }
+
+    const updated = await this.prisma.house.update({
+      where: { id: activeMembership.houseId },
+      data: {
+        name: dto.name !== undefined ? dto.name : undefined,
+        description: dto.description !== undefined ? dto.description : undefined,
+        address: dto.address !== undefined ? dto.address : undefined,
+      },
+    });
+
+    return {
+      id: updated.id,
+      name: updated.name,
+      inviteCode: updated.inviteCode,
+      description: updated.description,
+      address: updated.address,
+      createdAt: updated.createdAt,
+    };
+  }
 }
+

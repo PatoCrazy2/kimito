@@ -1,4 +1,5 @@
 import { getMyHouseAction, getMyHouseMembersAction } from "@/app/actions/house-actions";
+import { getCurrentUser } from "@/app/actions/user-actions";
 import HouseClient from "./HouseClient";
 
 export const metadata = {
@@ -9,6 +10,7 @@ export const metadata = {
 export default async function HousePage() {
   const house = await getMyHouseAction();
   const members = house ? await getMyHouseMembersAction() : [];
+  const user = await getCurrentUser();
 
-  return <HouseClient initialHouse={house} initialMembers={members} />;
+  return <HouseClient initialHouse={house} initialMembers={members} currentUser={user} />;
 }
