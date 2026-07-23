@@ -70,9 +70,6 @@ export class HousesService {
       return newHouse;
     });
 
-    // Seed default tasks for this house
-    await this.tasksService.seedDefaultTasks(house.id);
-
     return {
       id: house.id,
       name: house.name,
