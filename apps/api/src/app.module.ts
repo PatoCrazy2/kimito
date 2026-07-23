@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { HousesModule } from './houses/houses.module';
 import { TasksModule } from './tasks/tasks.module';
 import { SchedulingModule } from './scheduling/scheduling.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SchedulingModule } from './scheduling/scheduling.module';
     HousesModule,
     TasksModule,
     SchedulingModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
