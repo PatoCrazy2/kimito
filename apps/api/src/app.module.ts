@@ -8,6 +8,7 @@ import { HousesModule } from './houses/houses.module';
 import { TasksModule } from './tasks/tasks.module';
 import { SchedulingModule } from './scheduling/scheduling.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ReputationModule } from './reputation/reputation.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     TasksModule,
     SchedulingModule,
     NotificationsModule,
+    ReputationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
