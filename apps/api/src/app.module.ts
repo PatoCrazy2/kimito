@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -8,11 +9,15 @@ import { TasksModule } from './tasks/tasks.module';
 import { SchedulingModule } from './scheduling/scheduling.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, HousesModule, TasksModule, SchedulingModule],
+  imports: [
+    ScheduleModule.forRoot(),
+    PrismaModule,
+    AuthModule,
+    HousesModule,
+    TasksModule,
+    SchedulingModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
-
-
-

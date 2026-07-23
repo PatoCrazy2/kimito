@@ -1,7 +1,16 @@
-import { Injectable, BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { calculateFairSchedule } from './fair-scheduling.algorithm';
-import type { TaskAssignmentResponse, OverrideAssignmentDto } from '@kimito/shared-types';
+import type {
+  TaskAssignmentResponse,
+  OverrideAssignmentDto,
+} from '@kimito/shared-types';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class SchedulingService {
@@ -32,7 +41,11 @@ export class SchedulingService {
   /**
    * Genera el reparto equitativo de tareas para la casa en el periodo actual.
    */
-  async generateSchedule(email: string, startDateStr?: string, endDateStr?: string): Promise<TaskAssignmentResponse[]> {
+  async generateSchedule(
+    email: string,
+    startDateStr?: string,
+    endDateStr?: string,
+  ): Promise<TaskAssignmentResponse[]> {
     const membership = await this.getUserActiveMembership(email);
     const houseId = membership.houseId;
 
@@ -47,7 +60,9 @@ export class SchedulingService {
     });
 
     if (activeMembers.length === 0) {
-      throw new BadRequestException('La casa no tiene miembros activos para asignar tareas');
+      throw new BadRequestException(
+        'La casa no tiene miembros activos para asignar tareas',
+      );
     }
 
     if (activeTasks.length === 0) {
@@ -56,11 +71,18 @@ export class SchedulingService {
 
     // Calcular fechas del periodo (por defecto semana actual: Lunes a Domingo)
     const now = new Date();
-    const periodStart = startDateStr ? new Date(startDateStr) : this.getMonday(now);
-    const periodEnd = endDateStr ? new Date(endDateStr) : this.getSunday(periodStart);
+    const periodStart = startDateStr
+      ? new Date(startDateStr)
+      : this.getMonday(now);
+    const periodEnd = endDateStr
+      ? new Date(endDateStr)
+      : this.getSunday(periodStart);
 
     // Ejecutar algoritmo de reparto
-    const calculatedAssignments = calculateFairSchedule(activeMembers, activeTasks);
+    const calculatedAssignments = calculateFairSchedule(
+      activeMembers,
+      activeTasks,
+    );
 
     // Borrar asignaciones PENDING existentes para este periodo en la casa
     await this.prisma.taskAssignment.deleteMany({
@@ -104,7 +126,9 @@ export class SchedulingService {
   /**
    * Obtiene las asignaciones actuales de la casa del usuario.
    */
-  async getMyHouseAssignments(email: string): Promise<TaskAssignmentResponse[]> {
+  async getMyHouseAssignments(
+    email: string,
+  ): Promise<TaskAssignmentResponse[]> {
     const membership = await this.getUserActiveMembership(email);
 
     const assignments = await this.prisma.taskAssignment.findMany({
@@ -133,7 +157,10 @@ export class SchedulingService {
   /**
    * Override manual (Tarea 3.4): Reasigna una tarea puntual a otro miembro de la casa.
    */
-  async overrideAssignment(email: string, dto: OverrideAssignmentDto): Promise<TaskAssignmentResponse> {
+  async overrideAssignment(
+    email: string,
+    dto: OverrideAssignmentDto,
+  ): Promise<TaskAssignmentResponse> {
     const membership = await this.getUserActiveMembership(email);
 
     const assignment = await this.prisma.taskAssignment.findUnique({
@@ -146,7 +173,9 @@ export class SchedulingService {
     }
 
     if (assignment.task.houseId !== membership.houseId) {
-      throw new BadRequestException('No puedes modificar asignaciones de otra casa');
+      throw new BadRequestException(
+        'No puedes modificar asignaciones de otra casa',
+      );
     }
 
     // Verificar que el nuevo usuario sea miembro activo de la casa
@@ -159,7 +188,9 @@ export class SchedulingService {
     });
 
     if (!targetMember) {
-      throw new BadRequestException('El usuario destino no es miembro activo de esta casa');
+      throw new BadRequestException(
+        'El usuario destino no es miembro activo de esta casa',
+      );
     }
 
     const updated = await this.prisma.taskAssignment.update({
@@ -197,5 +228,75 @@ export class SchedulingService {
     sunday.setDate(sunday.getDate() + 6);
     sunday.setHours(23, 59, 59, 999);
     return sunday;
+  }
+
+  /**
+   * Cron job que se ejecuta automáticamente todos los Lunes a las 00:00 (o cada semana).
+   * Genera el reparto de tareas para TODAS las casas activas en la BD.
+   */
+  @Cron(CronExpression.EVERY_WEEK)
+  async handleAutomaticWeeklyScheduling() {
+    console.log(
+      '[Cron Job] Ejecutando asignación semanal automática para todas las casas...',
+    );
+
+    const houses = await this.prisma.house.findMany({ select: { id: true } });
+
+    for (const house of houses) {
+      try {
+        // Obtenemos los miembros y tareas de esta casa
+        const members = await this.prisma.houseMembership.findMany({
+          where: { houseId: house.id, active: true },
+          select: { userId: true },
+        });
+
+        const tasks = await this.prisma.task.findMany({
+          where: { houseId: house.id },
+          select: { id: true, weight: true },
+        });
+
+        if (members.length > 0 && tasks.length > 0) {
+          const now = new Date();
+          const periodStart = this.getMonday(now);
+          const periodEnd = this.getSunday(periodStart);
+
+          const assignments = calculateFairSchedule(members, tasks);
+
+          // Borramos las asignaciones PENDING previas del periodo si existen
+          await this.prisma.taskAssignment.deleteMany({
+            where: {
+              task: { houseId: house.id },
+              periodStart: { gte: periodStart },
+              periodEnd: { lte: periodEnd },
+              status: 'PENDING',
+            },
+          });
+
+          // Creamos las nuevas asignaciones
+          await Promise.all(
+            assignments.map((a) =>
+              this.prisma.taskAssignment.create({
+                data: {
+                  taskId: a.taskId,
+                  userId: a.userId,
+                  periodStart,
+                  periodEnd,
+                  status: 'PENDING',
+                },
+              }),
+            ),
+          );
+
+          console.log(
+            `[Cron Job] Casa ${house.id}: ${assignments.length} tareas asignadas.`,
+          );
+        }
+      } catch (error) {
+        console.error(
+          `[Cron Job] Error procesando la casa ${house.id}:`,
+          error,
+        );
+      }
+    }
   }
 }
