@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { HouseResponse, HouseMemberResponse } from "@kimito/shared-types";
 import { createHouseAction, joinHouseAction } from "@/app/actions/house-actions";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,13 @@ interface HouseClientProps {
 export default function HouseClient({ initialHouse, initialMembers }: HouseClientProps) {
   const [house, setHouse] = useState<HouseResponse | null>(initialHouse);
   const [members, setMembers] = useState<HouseMemberResponse[]>(initialMembers);
+  const [origin, setOrigin] = useState("...");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
+  }, []);
 
   // Form states for creating a house
   const [createName, setCreateName] = useState("");
@@ -217,7 +224,7 @@ export default function HouseClient({ initialHouse, initialMembers }: HouseClien
                 <div>
                   <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">Link de Invitación Directa</h4>
                   <p className="text-xs font-mono text-muted-foreground select-all mt-1">
-                    {typeof window !== "undefined" ? `${window.location.origin}/join?code=${house.inviteCode}` : `.../join?code=${house.inviteCode}`}
+                    {origin}/join?code={house.inviteCode}
                   </p>
                 </div>
                 <Button onClick={copyInviteLink} className="rounded-xl px-4 py-2 font-bold shadow-sm shrink-0 flex items-center gap-1.5 ml-4">
