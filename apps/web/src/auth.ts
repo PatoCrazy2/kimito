@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { SignJWT, jwtVerify } from "jose";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -8,6 +9,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
+        Credentials({
+            name: "Credentials",
+            credentials: {
+                email: { label: "Email", type: "email" },
+                password: { label: "Password", type: "password" }
+            },
+            async authorize(credentials) {
+                if (!credentials?.email || !credentials?.password) {
+                    return null;
+                }
+
+                try {
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+                    const res = await fetch(`${apiUrl}/verify`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            email: credentials.email,
+                            password: credentials.password,
+                        }),
+                    });
+
+                    if (res.ok) {
+                        const user = await res.json();
+                        return {
+                            id: user.id,
+                            email: user.email,
+                            name: user.name,
+                            image: user.avatarUrl,
+                        };
+                    } else {
+                        return null;
+                    }
+                } catch (error) {
+                    console.error("Error validando credenciales:", error);
+                    return null;
+                }
+            }
+        })
     ],
 
     session: {
