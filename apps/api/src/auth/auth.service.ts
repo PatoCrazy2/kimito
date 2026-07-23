@@ -45,4 +45,62 @@ export class AuthService {
       createdAt: user.createdAt,
     };
   }
+
+  async registerWithCredentials(payload: any): Promise<UserDto> {
+    const { email, password, name } = payload;
+
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      throw new Error('EmailAlreadyExists');
+    }
+
+    const bcrypt = await import('bcryptjs');
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        email,
+        passwordHash,
+        name,
+      },
+    });
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl || undefined,
+      createdAt: user.createdAt,
+    };
+  }
+
+  async verifyCredentials(payload: any): Promise<UserDto> {
+    const { email, password } = payload;
+
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user || !user.passwordHash) {
+      throw new Error('InvalidCredentials');
+    }
+
+    const bcrypt = await import('bcryptjs');
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+
+    if (!isPasswordValid) {
+      throw new Error('InvalidCredentials');
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl || undefined,
+      createdAt: user.createdAt,
+    };
+  }
 }
