@@ -9,6 +9,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { SchedulingModule } from './scheduling/scheduling.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ReputationModule } from './reputation/reputation.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ReputationModule } from './reputation/reputation.module';
     SchedulingModule,
     NotificationsModule,
     ReputationModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
