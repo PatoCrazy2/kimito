@@ -43,24 +43,30 @@ packages/
    docker compose up -d
    ```
 
-4. **Generar el Cliente de Prisma:**
-   Genera los tipos del cliente Prisma a partir del esquema:
+4. **Generar el Cliente de Prisma (Automático):**
+   Este paso ahora está automatizado. Se ejecuta automáticamente tras hacer `pnpm install` gracias al script de `prepare`. Si en algún momento necesitas regenerarlo manualmente:
    ```bash
    pnpm --filter api exec prisma generate
+   ```
+
+5. **Aplicar Migraciones Iniciales:**
+   Si la base de datos es nueva, puedes sincronizar el esquema y crear las tablas ejecutando:
+   ```bash
+   pnpm --filter api exec prisma migrate dev
    ```
 
 ---
 
 ## Desarrollo Local
 
-Para levantar el frontend, el backend y compilar los tipos compartidos de manera simultánea en modo desarrollo:
+Para levantar el frontend, el backend y compilar los tipos de manera simultánea en modo desarrollo:
 ```bash
 pnpm dev
 ```
 
 Esto iniciará:
-- **Frontend (web):** `http://localhost:3000`
-- **Backend (api):** `http://localhost:3001` (o el puerto configurado por NestJS)
+- **Backend (api):** `http://localhost:3000` (con migraciones automáticas al arrancar)
+- **Frontend (web):** `http://localhost:3001`
 
 ---
 
