@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { name: "Inicio", href: "/dashboard", icon: "space_dashboard" },
-  { name: "Tareas", href: "/dashboard#tasks", icon: "cleaning_services" },
+  { name: "Mi Casa", href: "/dashboard/house", icon: "home" },
+  { name: "Tareas", href: "/dashboard/tasks", icon: "cleaning_services" },
   { name: "Facturas", href: "/dashboard#bills", icon: "receipt_long" },
   { name: "Calendario", href: "/dashboard#calendar", icon: "calendar_today" },
   { name: "Perfil", href: "/dashboard#profile", icon: "person" },

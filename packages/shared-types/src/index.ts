@@ -7,3 +7,7 @@ export interface UserDto {
   avatarUrl?: string;
   createdAt: Date;
 }
+
+export * from './houses.types';
+export * from './tasks.types';
+

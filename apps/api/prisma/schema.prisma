@@ -22,6 +22,9 @@ model User {
 model House {
   id          String            @id @default(uuid())
   name        String
+  inviteCode  String            @unique
+  description String?
+  address     String?
   createdAt   DateTime          @default(now())
   memberships HouseMembership[]
 }
@@ -45,6 +48,7 @@ model Task {
   title           String
   weight          Int
   recurrence      String
+  isCustom        Boolean          @default(false)
   taskAssignments TaskAssignment[]
 }
 
