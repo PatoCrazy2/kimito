@@ -24,14 +24,16 @@ const CATALOG_TASKS = [
 
 export default function TasksClient({ initialTasks, house, isAdmin }: TasksClientProps) {
   const [tasks, setTasks] = useState<TaskResponse[]>(initialTasks);
-  const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   // Form states
+  const [selectedTaskType, setSelectedTaskType] = useState<"custom" | "catalog">("catalog");
+  const [selectedCatalogItem, setSelectedCatalogItem] = useState<typeof CATALOG_TASKS[number] | null>(null);
+  const [catalogSearch, setCatalogSearch] = useState("");
   const [title, setTitle] = useState("");
   const [weight, setWeight] = useState(2);
   const [recurrence, setRecurrence] = useState("weekly");
-  const [selectedCatalogIndex, setSelectedCatalogIndex] = useState("custom");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -76,13 +78,15 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
         title,
         weight,
         recurrence,
-        isCustom: selectedCatalogIndex === "custom",
+        isCustom: selectedTaskType === "custom",
       });
       setTasks([...tasks, newTask]);
       setTitle("");
       setWeight(2);
       setRecurrence("weekly");
-      setSelectedCatalogIndex("custom");
+      setSelectedCatalogItem(null);
+      setSelectedTaskType("catalog");
+      setCatalogSearch("");
       setIsCreateOpen(false);
     } catch (err: any) {
       setError(err.message || "Error al crear la tarea");
@@ -125,8 +129,8 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
     }
   };
 
-  const filteredTasks = tasks.filter((t) =>
-    t.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCatalog = CATALOG_TASKS.filter((item) =>
+    item.title.toLowerCase().includes(catalogSearch.toLowerCase())
   );
 
   return (
@@ -140,22 +144,6 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
           <p className="text-xs font-medium text-muted-foreground mt-1">
             Rol: <span className="font-extrabold text-foreground">{isAdmin ? "Administrador (Editar)" : "Roommate (Lectura)"}</span>
           </p>
-        </div>
-      </div>
-
-      {/* Barra de Búsqueda y Botón Añadir */}
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <div className="relative w-full sm:max-w-xs">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-rounded text-muted-foreground text-lg select-none">
-            search
-          </span>
-          <input
-            type="text"
-            placeholder="Buscar tarea..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-border/40 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
-          />
         </div>
         {isAdmin && (
           <button
@@ -172,18 +160,18 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
       <Card className="border-border/40 shadow-[0_4px_24px_rgba(133,83,0,0.02)] rounded-3xl bg-white p-6">
         <h3 className="font-sans font-black text-base text-foreground flex items-center gap-2 mb-4 select-none">
           <span className="material-symbols-rounded text-amber-primary">format_list_bulleted</span>
-          Tareas Activas ({filteredTasks.length})
+          Tareas Activas del Hogar ({tasks.length})
         </h3>
 
-        {filteredTasks.length === 0 ? (
+        {tasks.length === 0 ? (
           <div className="text-center py-12 border border-dashed border-border/45 rounded-2xl select-none">
             <span className="material-symbols-rounded text-muted-foreground text-4xl mb-2">cleaning_services</span>
-            <p className="text-sm font-bold text-muted-foreground">No se encontraron tareas.</p>
+            <p className="text-sm font-bold text-muted-foreground">No hay tareas creadas todavía.</p>
             {isAdmin && <p className="text-xs text-muted-foreground/80 mt-1 font-semibold">Crea una tarea nueva usando el botón Añadir Tarea.</p>}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3.5">
-            {filteredTasks.map((task) => {
+            {tasks.map((task) => {
               const isEditing = editingId === task.id;
               return (
                 <div key={task.id} className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4 transition-all duration-200 hover:shadow-xs">
@@ -279,137 +267,203 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
             className="fixed inset-0" 
             onClick={() => !loading && setIsCreateOpen(false)} 
           />
-          <div className="relative bg-card w-full max-w-md rounded-t-3xl p-6 pb-8 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] border-t border-border/20 z-10 animate-in slide-in-from-bottom duration-300">
+          <div className="relative bg-card w-full max-w-md rounded-t-3xl p-6 pb-8 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] border-t border-border/20 z-10 animate-in slide-in-from-bottom duration-300 max-h-[90vh] overflow-y-auto">
             <div className="w-12 h-1.5 bg-muted-foreground/20 rounded-full mx-auto mb-6" />
 
             <div className="text-left mb-6">
               <h2 className="font-sans font-black text-xl text-foreground">Añadir Tarea</h2>
               <p className="text-xs font-medium text-muted-foreground mt-1">
-                Agrega una tarea nueva escribiendo los datos o eligiendo del catálogo base.
+                Elige una tarea del catálogo o crea una personalizada.
               </p>
             </div>
 
-            <form onSubmit={handleCreateTask} className="space-y-4 text-left">
+            <div className="space-y-4">
               {error && (
                 <div className="p-3 bg-destructive/10 text-destructive text-xs font-bold rounded-xl">
                   {error}
                 </div>
               )}
 
-              {/* Selector de Catálogo */}
-              <div>
-                <label className="block text-xs font-bold text-foreground mb-1.5 uppercase tracking-wider">
-                  Tipo de Tarea
+              {/* Botón Tarea Personalizada */}
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedTaskType("custom");
+                  setSelectedCatalogItem(null);
+                  setTitle("");
+                  setWeight(2);
+                }}
+                className={cn(
+                  "w-full py-3 px-4 rounded-xl border font-bold text-xs transition-all duration-200 cursor-pointer flex items-center justify-center gap-2",
+                  selectedTaskType === "custom"
+                    ? "bg-amber-primary/10 border-amber-primary/40 text-amber-primary shadow-xs"
+                    : "bg-white border-border/40 text-foreground hover:bg-[#FAF9F6]"
+                )}
+              >
+                <span className="material-symbols-rounded text-sm">edit_note</span>
+                Crear Tarea Personalizada
+              </button>
+
+              {/* Buscador de Catálogo */}
+              <div className="space-y-2 text-left">
+                <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                  O buscar en catálogo
                 </label>
-                <select
-                  value={selectedCatalogIndex}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setSelectedCatalogIndex(val);
-                    if (val === "custom") {
-                      setTitle("");
-                      setWeight(2);
-                      setRecurrence("weekly");
-                    } else {
-                      const idx = Number(val);
-                      const item = CATALOG_TASKS[idx];
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-rounded text-muted-foreground text-lg select-none">
+                    search
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Buscar tarea predefinida..."
+                    value={catalogSearch}
+                    onChange={(e) => {
+                      setCatalogSearch(e.target.value);
+                      if (selectedTaskType !== "catalog") {
+                        setSelectedTaskType("catalog");
+                      }
+                    }}
+                    className="w-full pl-9 pr-4 py-2.5 bg-[#FAF9F6] border border-border/40 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* Lista del Catálogo */}
+              <div className="space-y-1.5 max-h-40 overflow-y-auto border border-border/40 rounded-xl p-2 bg-[#FAF9F6]">
+                {filteredCatalog.map((item, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => {
+                      setSelectedTaskType("catalog");
+                      setSelectedCatalogItem(item);
                       setTitle(item.title);
                       setWeight(item.weight);
-                      setRecurrence(item.recurrence);
-                    }
-                  }}
-                  className="w-full text-sm rounded-xl border border-border/40 bg-[#FAF9F6] px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
-                >
-                  <option value="custom">Tarea personalizada</option>
-                  {CATALOG_TASKS.map((item, idx) => (
-                    <option key={idx} value={idx}>
-                      {item.title} ({item.recurrence === "daily" ? "Diaria" : "Semanal"}, {item.weight} pts)
-                    </option>
-                  ))}
-                </select>
+                    }}
+                    className={cn(
+                      "flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all text-left",
+                      selectedCatalogItem?.title === item.title
+                        ? "bg-amber-primary/10 border border-amber-primary/30 text-amber-primary font-bold"
+                        : "hover:bg-[#F4EFE6] text-foreground border border-transparent"
+                    )}
+                  >
+                    <span className="text-xs font-bold">{item.title}</span>
+                    <span className="text-[10px] font-extrabold bg-white border border-border/30 px-2 py-0.5 rounded-md text-amber-primary">
+                      {item.weight} pts
+                    </span>
+                  </div>
+                ))}
+                {filteredCatalog.length === 0 && (
+                  <div className="text-center py-4 text-xs font-medium text-muted-foreground">
+                    No hay coincidencias en el catálogo.
+                  </div>
+                )}
               </div>
 
-              <div>
-                <label htmlFor="title" className="block text-xs font-bold text-foreground mb-1.5 uppercase tracking-wider">
-                  Nombre de la Tarea <span className="text-destructive">*</span>
-                </label>
-                <input
-                  id="title"
-                  type="text"
-                  required
-                  placeholder="Ej: Limpiar comedor..."
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  disabled={loading}
-                  className="w-full bg-[#FAF9F6] border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
-                />
-              </div>
+              {/* Formulario Dinámico */}
+              <form onSubmit={handleCreateTask} className="space-y-4 text-left pt-2 border-t border-border/30">
+                {/* Visualización / Inputs de Tarea elegida */}
+                {selectedTaskType === "custom" ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="title" className="block text-xs font-bold text-foreground mb-1.5 uppercase tracking-wider">
+                        Nombre de la Tarea <span className="text-destructive">*</span>
+                      </label>
+                      <input
+                        id="title"
+                        type="text"
+                        required
+                        placeholder="Ej: Limpiar el comedor..."
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        disabled={loading}
+                        className="w-full bg-[#FAF9F6] border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
+                      />
+                    </div>
 
-              <div>
-                <label htmlFor="recurrence" className="block text-xs font-bold text-foreground mb-1.5 uppercase tracking-wider">
-                  Recurrencia
-                </label>
-                <select
-                  id="recurrence"
-                  value={recurrence}
-                  onChange={(e) => setRecurrence(e.target.value)}
-                  disabled={loading}
-                  className="w-full text-sm rounded-xl border border-border/40 bg-[#FAF9F6] px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
-                >
-                  <option value="daily">Diaria</option>
-                  <option value="weekly">Semanal</option>
-                  <option value="biweekly">Quincenal</option>
-                  <option value="monthly">Mensual</option>
-                </select>
-              </div>
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <label htmlFor="weight" className="text-xs font-bold text-foreground uppercase tracking-wider">Dificultad (1-5)</label>
+                        <span className="text-xs font-extrabold text-amber-primary bg-amber-primary/10 px-2 py-0.5 rounded-lg">{weight} pts</span>
+                      </div>
+                      <input
+                        id="weight"
+                        type="range"
+                        min={1}
+                        max={5}
+                        step={1}
+                        value={weight}
+                        onChange={(e) => setWeight(Number(e.target.value))}
+                        disabled={loading}
+                        className="w-full h-1.5 bg-amber-primary/10 rounded-lg appearance-none cursor-pointer accent-amber-primary"
+                      />
+                      <div className="flex justify-between text-[9px] font-bold text-muted-foreground px-1 mt-1">
+                        <span>Fácil (1)</span>
+                        <span>Pesado (5)</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  selectedCatalogItem && (
+                    <div className="p-3 bg-amber-primary/5 border border-amber-primary/20 rounded-xl flex items-center justify-between animate-in fade-in duration-200">
+                      <div>
+                        <p className="text-xs font-bold text-foreground">Seleccionado: {selectedCatalogItem.title}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Dificultad fija de catálogo (no editable)</p>
+                      </div>
+                      <span className="text-xs font-black text-amber-primary bg-amber-primary/10 px-2.5 py-1 rounded-lg">
+                        {selectedCatalogItem.weight} pts
+                      </span>
+                    </div>
+                  )
+                )}
 
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label htmlFor="weight" className="text-xs font-bold text-foreground uppercase tracking-wider">Dificultad (1-5)</label>
-                  <span className="text-xs font-extrabold text-amber-primary bg-amber-primary/10 px-2 py-0.5 rounded-lg">{weight} pts</span>
+                {/* Recurrencia (siempre visible y editable) */}
+                {(selectedTaskType === "custom" || selectedCatalogItem) && (
+                  <div className="animate-in fade-in duration-200">
+                    <label htmlFor="recurrence" className="block text-xs font-bold text-foreground mb-1.5 uppercase tracking-wider">
+                      Frecuencia / Recurrencia
+                    </label>
+                    <select
+                      id="recurrence"
+                      value={recurrence}
+                      onChange={(e) => setRecurrence(e.target.value)}
+                      disabled={loading}
+                      className="w-full text-sm rounded-xl border border-border/40 bg-[#FAF9F6] px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
+                    >
+                      <option value="daily">Diaria</option>
+                      <option value="weekly">Semanal</option>
+                      <option value="biweekly">Quincenal</option>
+                      <option value="monthly">Mensual</option>
+                    </select>
+                  </div>
+                )}
+
+                {/* Botones de acción */}
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsCreateOpen(false)}
+                    disabled={loading}
+                    className="flex-1 border border-border/60 hover:bg-muted text-foreground font-bold py-3 px-4 rounded-xl text-xs transition-all duration-200 cursor-pointer"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading || !title.trim()}
+                    className="flex-1 bg-amber-primary hover:bg-amber-primary/95 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all duration-200 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Añadiendo...
+                      </>
+                    ) : (
+                      "Añadir Tarea"
+                    )}
+                  </button>
                 </div>
-                <input
-                  id="weight"
-                  type="range"
-                  min={1}
-                  max={5}
-                  step={1}
-                  value={weight}
-                  onChange={(e) => setWeight(Number(e.target.value))}
-                  disabled={loading}
-                  className="w-full h-1.5 bg-amber-primary/10 rounded-lg appearance-none cursor-pointer accent-amber-primary"
-                />
-                <div className="flex justify-between text-[9px] font-bold text-muted-foreground px-1 mt-1">
-                  <span>Fácil (1)</span>
-                  <span>Pesado (5)</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setIsCreateOpen(false)}
-                  disabled={loading}
-                  className="flex-1 border border-border/60 hover:bg-muted text-foreground font-bold py-3 px-4 rounded-xl text-xs transition-all duration-200 cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading || !title.trim()}
-                  className="flex-1 bg-amber-primary hover:bg-amber-primary/95 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all duration-200 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
-                >
-                  {loading ? (
-                    <>
-                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Creando...
-                    </>
-                  ) : (
-                    "Añadir"
-                  )}
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       )}
