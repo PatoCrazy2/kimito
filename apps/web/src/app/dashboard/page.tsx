@@ -3,8 +3,14 @@ import { getMyHouseAction } from "@/app/actions/house-actions";
 import { getHouseTasksAction } from "@/app/actions/task-actions";
 import OnboardingClient from "./OnboardingClient";
 import DashboardClient from "./DashboardClient";
+import { redirect } from "next/navigation";
 
-export default async function DashboardPage() {
+interface PageProps {
+  searchParams: Promise<{ skip?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: PageProps) {
+  const { skip } = await searchParams;
   const user = await getCurrentUser();
   const house = await getMyHouseAction();
 
@@ -21,6 +27,9 @@ export default async function DashboardPage() {
   }
 
   if (!house) {
+    if (skip !== "true") {
+      redirect("/onboarding");
+    }
     return <OnboardingClient userName={user.name} />;
   }
 
