@@ -63,47 +63,54 @@ export default function OnboardingFullscreenClient({ userName }: OnboardingFulls
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-300">
-      <div className="w-20 h-20 bg-amber-primary/10 rounded-full flex items-center justify-center mb-6">
-        <span className="material-symbols-rounded text-amber-primary text-4xl">home_work</span>
-      </div>
-      
-      <h1 className="font-sans font-black text-4xl text-foreground tracking-tight mb-2">
-        Bienvenido a Kimito
-      </h1>
-      
-      <h2 className="font-sans font-extrabold text-xl text-muted-foreground tracking-tight mb-4">
-        Hola, {userName.split(" ")[0]}
-      </h2>
-      
-      <p className="font-medium text-muted-foreground/80 max-w-sm mb-8 leading-relaxed text-sm">
-        Organizar las tareas del hogar nunca fue tan fácil y equitativo. Para comenzar, crea tu propio hogar o únete a uno existente.
-      </p>
+    <div className="min-h-screen bg-[#FAF9F6] flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
+      <div className="w-full max-w-sm flex flex-col items-center">
+        {/* Brand Logo in flow */}
+        <div className="flex items-center gap-2 mb-8 select-none justify-center">
+          <span className="material-symbols-rounded text-amber-primary text-3xl font-semibold">
+            cleaning_services
+          </span>
+          <span className="font-sans font-black text-2xl tracking-tight text-[#1D1B16]">
+            Kimito
+          </span>
+        </div>
 
-      <div className="flex flex-col gap-3 w-full max-w-xs mb-8">
-        <button
-          onClick={() => setIsCreateOpen(true)}
-          className="w-full bg-amber-primary hover:bg-amber-primary/95 text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
-        >
-          <span className="material-symbols-rounded text-lg">add_home</span>
-          Crear un Hogar
-        </button>
-        <button
-          onClick={() => setIsJoinOpen(true)}
-          className="w-full bg-[#006B5F]/10 hover:bg-[#006B5F]/15 text-[#006B5F] font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
-        >
-          <span className="material-symbols-rounded text-lg">group_add</span>
-          Unirme a casa
-        </button>
-      </div>
+        {/* Left-aligned Content */}
+        <div className="text-left w-full space-y-2 mb-6">
+          <h1 className="font-sans font-black text-3xl text-[#1D1B16] tracking-tight">
+            ¡Hola, {userName.split(" ")[0]}!
+          </h1>
+          <p className="text-sm font-medium text-muted-foreground/80 leading-relaxed">
+            Crea tu propio hogar o únete a uno existente para comenzar a organizar las tareas compartidas.
+          </p>
+        </div>
 
-      {/* Link omitir */}
-      <Link 
-        href="/dashboard?skip=true"
-        className="text-xs font-bold text-muted-foreground/60 hover:text-muted-foreground transition-colors underline decoration-dotted underline-offset-4 cursor-pointer"
-      >
-        Omitir por ahora
-      </Link>
+        {/* Buttons */}
+        <div className="flex flex-col gap-3.5 w-full">
+          <button
+            onClick={() => setIsCreateOpen(true)}
+            className="w-full bg-amber-primary hover:bg-amber-primary/95 text-white font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+          >
+            <span className="material-symbols-rounded text-lg">add_home</span>
+            Crear un Hogar
+          </button>
+          <button
+            onClick={() => setIsJoinOpen(true)}
+            className="w-full bg-[#006B5F]/10 hover:bg-[#006B5F]/15 text-[#006B5F] font-bold py-3.5 px-6 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+          >
+            <span className="material-symbols-rounded text-lg">group_add</span>
+            Unirme a casa
+          </button>
+        </div>
+
+        {/* Skip Link */}
+        <Link 
+          href="/dashboard?skip=true"
+          className="mt-8 text-xs font-bold text-muted-foreground/60 hover:text-muted-foreground transition-colors underline decoration-dotted underline-offset-4 cursor-pointer"
+        >
+          Omitir por ahora
+        </Link>
+      </div>
 
       {/* Modal: Crear Casa */}
       {isCreateOpen && (
