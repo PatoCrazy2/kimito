@@ -30,11 +30,13 @@ packages/
    ```bash
    pnpm install
    ```
+   *(Este comando instalará todo y autogenerará el Cliente de Prisma de forma automática)*.
 
 2. **Configurar variables de entorno:**
-   Copia el archivo de ejemplo en el backend y rellena los valores requeridos en el nuevo archivo `.env`:
+   Copia los archivos de variables de entorno de ejemplo tanto para el backend como para el frontend:
    ```bash
    cp apps/api/.env.example apps/api/.env
+   cp apps/web/.env.example apps/web/.env
    ```
 
 3. **Iniciar la base de datos local:**
@@ -43,24 +45,20 @@ packages/
    docker compose up -d
    ```
 
-4. **Generar el Cliente de Prisma:**
-   Genera los tipos del cliente Prisma a partir del esquema:
-   ```bash
-   pnpm --filter api exec prisma generate
-   ```
-
 ---
 
 ## Desarrollo Local
 
-Para levantar el frontend, el backend y compilar los tipos compartidos de manera simultánea en modo desarrollo:
+Para levantar el frontend y el backend de manera simultánea en modo desarrollo:
 ```bash
 pnpm dev
 ```
 
+*(Al iniciar por primera vez o tras recibir cambios de esquema, el script de desarrollo aplicará automáticamente las migraciones en tu base de datos local antes de encender el servidor).*
+
 Esto iniciará:
-- **Frontend (web):** `http://localhost:3000`
-- **Backend (api):** `http://localhost:3001` (o el puerto configurado por NestJS)
+- **Backend (api):** `http://localhost:3000`
+- **Frontend (web):** `http://localhost:3001`
 
 ---
 
