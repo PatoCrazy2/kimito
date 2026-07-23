@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { getCurrentUser } from "@/app/actions/user-actions";
+import { getMyHouseAction } from "@/app/actions/house-actions";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
+  const house = await getMyHouseAction();
 
   if (!user) {
     return (
@@ -28,15 +31,15 @@ export default async function DashboardPage() {
             Aquí tienes el resumen del aseo y gastos en tu casa compartida hoy.
           </p>
         </div>
-        <div className="flex items-center gap-2.5 bg-secondary/10 border border-secondary/20 px-4 py-2.5 rounded-2xl">
+        <Link href="/dashboard/house" className="flex items-center gap-2.5 bg-secondary/10 hover:bg-secondary/20 transition-all border border-secondary/20 px-4 py-2.5 rounded-2xl cursor-pointer">
           <span className="material-symbols-rounded text-teal-secondary">
             home_work
           </span>
           <div className="text-left">
             <p className="text-xs font-bold text-teal-secondary uppercase tracking-wider leading-none">Mi Casa</p>
-            <p className="text-sm font-bold text-foreground mt-0.5">Casa Central</p>
+            <p className="text-sm font-bold text-foreground mt-0.5">{house ? house.name : "Sin Hogar"}</p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Bento Grid Layout (Desktop: 3 cols, Tablet/Mobile: 1-2 cols) */}
@@ -131,9 +134,9 @@ export default async function DashboardPage() {
           </div>
 
           <div className="text-right">
-            <span className="text-xs font-bold text-amber-primary hover:underline cursor-pointer">
+            <Link href="/dashboard/tasks" className="text-xs font-bold text-amber-primary hover:underline cursor-pointer">
               Ver todas las tareas →
-            </span>
+            </Link>
           </div>
         </div>
 
