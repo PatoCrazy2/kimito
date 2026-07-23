@@ -10,8 +10,8 @@ export default auth((req) => {
         return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 
-    // Si NO está autenticado e intenta acceder al dashboard o la raíz, redirigir a login
-    if (!isLoggedIn && (pathname.startsWith("/dashboard") || pathname === "/")) {
+    // Si NO está autenticado e intenta acceder al dashboard, onboarding o la raíz, redirigir a login
+    if (!isLoggedIn && (pathname.startsWith("/dashboard") || pathname.startsWith("/onboarding") || pathname === "/")) {
         return NextResponse.redirect(new URL("/login", req.url));
     }
 
@@ -19,5 +19,5 @@ export default auth((req) => {
 });
 
 export const config = {
-    matcher: ["/", "/login", "/dashboard/:path*"],
+    matcher: ["/", "/login", "/dashboard/:path*", "/onboarding/:path*"],
 };

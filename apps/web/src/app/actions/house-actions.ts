@@ -56,3 +56,14 @@ export async function getMyHouseMembersAction(): Promise<HouseMemberResponse[]> 
     return [];
   }
 }
+
+export async function updateHouseAction(dto: { name?: string; description?: string; address?: string }): Promise<HouseResponse> {
+  const res = await fetchFromApi<HouseResponse>("/houses/my-house", {
+    method: "PUT",
+    body: JSON.stringify(dto),
+  });
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/house");
+  return res;
+}
+
