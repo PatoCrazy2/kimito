@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { TaskResponse } from "@kimito/shared-types";
+import { getDailyFact } from "@/lib/facts";
 
 interface DashboardClientProps {
   userName: string;
@@ -21,31 +22,54 @@ export default function DashboardClient({ userName, houseName, tasks }: Dashboar
   };
 
   const progress = tasks.length > 0 ? (completedTaskIds.length / tasks.length) * 100 : 0;
+  const dailyFact = getDailyFact();
+
+  const rawDate = new Date().toLocaleDateString("es-ES", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+  const formattedDate = rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      {/* Saludo Principal */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 select-none pb-2 border-b border-border/30">
-        <div>
-          <h1 className="font-sans font-black text-2xl text-foreground tracking-tight">
-            ¡Hola, {userName.split(" ")[0]}! 👋
-          </h1>
-          <p className="text-xs font-medium text-muted-foreground mt-1">
-            Hogar: <span className="font-extrabold text-foreground">{houseName}</span>
-          </p>
-        </div>
-        <Link 
-          href="/dashboard/house" 
-          className="self-start sm:self-auto flex items-center gap-1.5 bg-[#006B5F]/10 hover:bg-[#006B5F]/15 transition-all text-[#006B5F] px-4 py-2 rounded-xl text-xs font-bold"
-        >
-          <span className="material-symbols-rounded text-sm">home</span>
-          Gestionar Casa
-        </Link>
+      {/* Cabecera superior con Fecha y Hogar */}
+      <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground select-none pb-1.5 border-b border-border/30 w-full">
+        <span>{formattedDate}</span>
+        <span>
+          Hogar: <span className="font-extrabold text-foreground">{houseName}</span>
+        </span>
       </div>
 
+      {/* Saludo y Frase del día */}
+      <div className="text-left select-none space-y-2 mt-2">
+        <h1 className="font-sans font-black text-3xl text-[#1D1B16] tracking-tight leading-none">
+          Hola, {userName.split(" ")[0]}
+        </h1>
+        <p className="text-xs italic text-muted-foreground/60 leading-relaxed max-w-sm animate-fade-in-slow opacity-0">
+          “{dailyFact.content}”
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes fadeInSlow {
+          from {
+            opacity: 0;
+            transform: translateY(4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in-slow {
+          animation: fadeInSlow 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+      `}</style>
+
       {/* Tareas Semanales */}
-      <div>
-        <h2 className="font-sans font-black text-lg text-foreground mb-4">Aseo de la semana</h2>
+      <div className="pt-4">
+        <h2 className="font-sans font-black text-lg text-foreground mb-4 text-left">Aseo de la semana</h2>
 
         {tasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-8 bg-[#FAF9F6] border border-dashed border-border/85 rounded-3xl text-center">

@@ -6,43 +6,43 @@ export interface Fact {
 export const FACTS_LIST: Fact[] = [
   {
     category: "Convivencia",
-    content: "Una distribución clara de responsabilidades previene discusiones. Definir horarios y roles concretos ayuda a mantener una convivencia armónica.",
+    content: "Un hogar limpio es un hogar en paz.",
   },
   {
     category: "Limpieza",
-    content: "El orden visual reduce el estrés. Mantener las encimeras de la cocina despejadas genera una sensación inmediata de bienestar en el hogar compartida.",
+    content: "El orden en los espacios comunes refleja el respeto mutuo.",
   },
   {
     category: "Convivencia",
-    content: "La comunicación asertiva es la clave. Hablar de los pequeños desacuerdos con empatía y a tiempo evita que se conviertan en tensiones mayores.",
+    content: "Hablar a tiempo evita malentendidos.",
   },
   {
     category: "Limpieza",
-    content: "Lavar tus propios utensilios de cocina justo después de usarlos demuestra respeto por el tiempo y el espacio de tus roommates.",
+    content: "Lavar lo que usas al momento hace toda la diferencia.",
   },
   {
     category: "Convivencia",
-    content: "Establecer normas claras sobre visitas y ruido ayuda a que todos sientan el hogar como un espacio de descanso seguro.",
+    content: "El respeto al espacio ajeno es la clave de la convivencia.",
   },
   {
     category: "Limpieza",
-    content: "Ventilar los espacios comunes al menos diez minutos al día mejora la calidad del aire y reduce la acumulación de alérgenos.",
+    content: "Una ventilación diaria renueva el aire y la energía del hogar.",
   },
   {
     category: "Convivencia",
-    content: "Respetar la privacidad y las pertenencias individuales de tus roommates es la base para construir una confianza duradera.",
+    content: "Pequeños hábitos diarios construyen grandes convivencias.",
   },
   {
     category: "Limpieza",
-    content: "Utilizar productos de limpieza multiusos simplifica el mantenimiento diario y optimiza el presupuesto común de la casa.",
+    content: "Mantener limpia la cocina beneficia a todos los roommates.",
   },
   {
     category: "Convivencia",
-    content: "Un pequeño mensaje de agradecimiento cuando alguien realiza su tarea a tiempo fomenta una cultura de aprecio y cooperación mutua.",
+    content: "Agradecer las tareas hechas a tiempo fortalece el equipo.",
   },
   {
-    category: "Limpieza",
-    content: "Organizar limpiezas profundas conjuntas de forma mensual no solo mantiene la casa impecable, sino que sirve como actividad de integración.",
+    category: "Convivencia",
+    content: "La empatía transforma una casa en un verdadero hogar.",
   },
 ];
 
