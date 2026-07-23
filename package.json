@@ -5,6 +5,7 @@
   "description": "Monorepo for Kimito - Shared House Cleaning Management System",
   "packageManager": "pnpm@10.28.1",
   "scripts": {
+    "prepare": "pnpm --filter api exec prisma generate",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
