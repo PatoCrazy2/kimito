@@ -1,7 +1,20 @@
-import { Controller, Get, Post, Patch, Body, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Body,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { SchedulingService } from './scheduling.service';
 import { AuthGuard } from '../auth/auth.guard';
-import type { TaskAssignmentResponse, OverrideAssignmentDto, GenerateScheduleDto } from '@kimito/shared-types';
+import type {
+  TaskAssignmentResponse,
+  OverrideAssignmentDto,
+  GenerateScheduleDto,
+} from '@kimito/shared-types';
 
 @Controller('scheduling')
 export class SchedulingController {
@@ -13,7 +26,11 @@ export class SchedulingController {
     @Request() req: any,
     @Body() dto: GenerateScheduleDto,
   ): Promise<TaskAssignmentResponse[]> {
-    return this.schedulingService.generateSchedule(req.user.email, dto?.startDate, dto?.endDate);
+    return this.schedulingService.generateSchedule(
+      req.user.email,
+      dto?.startDate,
+      dto?.endDate,
+    );
   }
 
   @UseGuards(AuthGuard)
