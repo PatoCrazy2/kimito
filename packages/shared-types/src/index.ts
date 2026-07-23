@@ -10,4 +10,6 @@ export interface UserDto {
 
 export * from './houses.types';
 export * from './tasks.types';
+export * from './scheduling.types';
+
 
