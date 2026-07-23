@@ -2,8 +2,18 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { logout } from "@/app/actions/auth-actions";
 import { UserDto } from "@kimito/shared-types";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { name: "Inicio", href: "/dashboard", icon: "space_dashboard" },
+  { name: "Mi Casa", href: "/dashboard/house", icon: "home" },
+  { name: "Tareas", href: "/dashboard/tasks", icon: "cleaning_services" },
+  { name: "Buscar", href: "/dashboard/listings", icon: "search" },
+];
 
 interface NavbarProps {
   user: UserDto | null;
@@ -11,6 +21,7 @@ interface NavbarProps {
 
 export default function Navbar({ user }: NavbarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FAF9F6]/85 backdrop-blur-md border-b border-border/40 px-6 py-4 flex items-center justify-between">
@@ -23,6 +34,30 @@ export default function Navbar({ user }: NavbarProps) {
           Kimito <span className="text-[10px] bg-amber-primary/10 text-amber-primary px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">MVP</span>
         </span>
       </div>
+
+      {/* Navegación Desktop */}
+      <nav className="hidden md:flex items-center gap-1 bg-white/50 border border-border/20 p-1 rounded-full shadow-[0_4px_20px_0_rgba(133,83,0,0.02)]">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href.split("#")[0] + "/"));
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer",
+                isActive
+                  ? "bg-amber-primary/10 text-amber-primary"
+                  : "text-muted-foreground hover:bg-[#FAF9F6] hover:text-foreground"
+              )}
+            >
+              <span className="material-symbols-rounded text-lg">
+                {item.icon}
+              </span>
+              {item.name}
+            </Link>
+          );
+        })}
+      </nav>
 
       {/* Perfil de Usuario */}
       <div className="flex items-center gap-4">
