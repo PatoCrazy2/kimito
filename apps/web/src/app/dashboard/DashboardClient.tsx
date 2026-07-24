@@ -107,6 +107,29 @@ export default function DashboardClient({
           <div className="grid grid-cols-1 gap-3.5">
             {myAssignments.map((assignment) => {
               const isCompleted = assignment.status === "COMPLETED";
+              
+              // Calcular días restantes de la tarea
+              let daysRemainingText = "";
+              if (!isCompleted && assignment.periodEnd) {
+                const now = new Date();
+                now.setHours(0, 0, 0, 0);
+                const limit = new Date(assignment.periodEnd);
+                limit.setHours(0, 0, 0, 0);
+                
+                const diffTime = limit.getTime() - now.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays < 0) {
+                  daysRemainingText = "Vencida";
+                } else if (diffDays === 0) {
+                  daysRemainingText = "Vence hoy";
+                } else if (diffDays === 1) {
+                  daysRemainingText = "Vence mañana";
+                } else {
+                  daysRemainingText = `Vence en ${diffDays} días`;
+                }
+              }
+
               return (
                 <div
                   key={assignment.id}
@@ -128,6 +151,16 @@ export default function DashboardClient({
                         <span className="material-symbols-rounded text-xs">repeat</span>
                         Frecuencia: {assignment.task?.recurrence === "daily" ? "Diaria" : assignment.task?.recurrence === "weekly" ? "Semanal" : "Mensual"}
                       </p>
+                      {daysRemainingText && (
+                        <p className={`text-[10px] font-bold mt-1.5 flex items-center gap-1 ${
+                          daysRemainingText === "Vencida" || daysRemainingText === "Vence hoy"
+                            ? "text-terracota"
+                            : "text-amber-primary"
+                        }`}>
+                          <span className="material-symbols-rounded text-xs">schedule</span>
+                          {daysRemainingText}
+                        </p>
+                      )}
                     </div>
                     <span
                       className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0 ${

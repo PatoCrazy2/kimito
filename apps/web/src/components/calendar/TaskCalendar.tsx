@@ -50,9 +50,26 @@ export default function TaskCalendar({
       ? assignments
       : assignments.filter((a) => a.userId === selectedMemberFilter);
 
-  return (
-    <div className="space-y-6">
+  // Obtener rango de fechas de la primera asignación
+  let dateRangeText = "";
+  if (assignments.length > 0) {
+    const first = assignments[0];
+    if (first.periodStart && first.periodEnd) {
+      const options: Intl.DateTimeFormatOptions = { day: "numeric", month: "short" };
+      const startStr = new Date(first.periodStart).toLocaleDateString("es-ES", options);
+      const endStr = new Date(first.periodEnd).toLocaleDateString("es-ES", { ...options, year: "numeric" });
+      dateRangeText = `Ciclo: del ${startStr} al ${endStr}`;
+    }
+  }
 
+  return (
+    <div className="space-y-4">
+      {dateRangeText && (
+        <div className="flex items-center gap-1.5 text-[11px] font-bold text-muted-foreground select-none pb-1">
+          <span className="material-symbols-rounded text-sm">calendar_today</span>
+          <span>{dateRangeText}</span>
+        </div>
+      )}
 
       {/* Filtro por miembro de la casa */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">

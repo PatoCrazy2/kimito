@@ -195,8 +195,9 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
             </div>
             <button
               onClick={handleGenerateReparto}
-              disabled={isGenerating}
+              disabled={isGenerating || tasks.length === 0}
               className="w-full sm:w-auto bg-amber-primary hover:bg-amber-primary/95 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer disabled:opacity-50 shrink-0"
+              title={tasks.length === 0 ? "Añade al menos una tarea primero" : ""}
             >
               <span className="material-symbols-rounded text-sm">
                 {isGenerating ? "autorenew" : "auto_awesome"}
@@ -204,6 +205,13 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
               {isGenerating ? "Procesando..." : "Generar Reparto"}
             </button>
           </div>
+
+          {tasks.length === 0 && (
+            <p className="text-[10px] font-bold text-amber-primary/70 flex items-center gap-1 mt-1">
+              <span className="material-symbols-rounded text-xs">info</span>
+              Debes añadir al menos una tarea al hogar antes de poder generar el reparto.
+            </p>
+          )}
 
           {generateError && (
             <p className="text-xs font-bold text-destructive flex items-center gap-1.5 pt-2 border-t border-border/20">
