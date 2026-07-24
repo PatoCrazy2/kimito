@@ -126,7 +126,6 @@ export default function PushNotificationBanner() {
       {/* Backdrop oscuro con desenfoque de fondo */}
       <div 
         className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 animate-in fade-in duration-300"
-        onClick={handleDismiss}
       />
       
       {/* Bottom Sheet */}

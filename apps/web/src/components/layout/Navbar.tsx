@@ -108,6 +108,14 @@ export default function Navbar({ user }: NavbarProps) {
                     <span className="material-symbols-rounded text-lg select-none">account_circle</span>
                     Mi Perfil
                   </Link>
+                  <Link
+                    href="/dashboard/settings"
+                    onClick={() => setDropdownOpen(false)}
+                    className="w-full text-left flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  >
+                    <span className="material-symbols-rounded text-lg select-none">settings</span>
+                    Configuración
+                  </Link>
                   <button
                     onClick={() => {
                       setDropdownOpen(false);
