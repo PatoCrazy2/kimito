@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { generateScheduleAction } from "@/app/actions/scheduling-actions";
 
 interface TasksClientProps {
   initialTasks: TaskResponse[];
@@ -36,6 +37,25 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generateError, setGenerateError] = useState("");
+  const [generateSuccess, setGenerateSuccess] = useState(false);
+
+  const handleGenerateReparto = async () => {
+    setIsGenerating(true);
+    setGenerateError("");
+    setGenerateSuccess(false);
+    try {
+      await generateScheduleAction();
+      setGenerateSuccess(true);
+      setTimeout(() => setGenerateSuccess(false), 4000);
+    } catch (err: any) {
+      console.error(err);
+      setGenerateError(err.message || "Error al generar el reparto");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   // Editing state
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -155,6 +175,51 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
           </button>
         )}
       </div>
+
+      {/* Card de Reparto Equitativo (Solo para Admin) */}
+      {isAdmin && (
+        <Card className="border-border/40 shadow-[0_4px_24px_rgba(133,83,0,0.02)] rounded-3xl bg-white p-5 text-left space-y-4 animate-in fade-in duration-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-primary/10 text-amber-primary flex items-center justify-center shrink-0">
+                <span className="material-symbols-rounded text-xl">shuffle</span>
+              </div>
+              <div>
+                <h3 className="font-sans font-black text-sm text-foreground">
+                  Asignación y Reparto Automático
+                </h3>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  Genera un calendario de tareas equitativo y balanceado para todos los roommates.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleGenerateReparto}
+              disabled={isGenerating}
+              className="w-full sm:w-auto bg-amber-primary hover:bg-amber-primary/95 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer disabled:opacity-50 shrink-0"
+            >
+              <span className="material-symbols-rounded text-sm">
+                {isGenerating ? "autorenew" : "auto_awesome"}
+              </span>
+              {isGenerating ? "Procesando..." : "Generar Reparto"}
+            </button>
+          </div>
+
+          {generateError && (
+            <p className="text-xs font-bold text-destructive flex items-center gap-1.5 pt-2 border-t border-border/20">
+              <span className="material-symbols-rounded text-sm">warning</span>
+              {generateError}
+            </p>
+          )}
+
+          {generateSuccess && (
+            <p className="text-xs font-bold text-amber-primary flex items-center gap-1.5 pt-2 border-t border-border/20">
+              <span className="material-symbols-rounded text-sm">check_circle</span>
+              ¡Reparto generado exitosamente! Las asignaciones han sido actualizadas.
+            </p>
+          )}
+        </Card>
+      )}
 
       {/* Listado de Tareas */}
       <Card className="border-border/40 shadow-[0_4px_24px_rgba(133,83,0,0.02)] rounded-3xl bg-white p-6">

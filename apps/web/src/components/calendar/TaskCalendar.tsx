@@ -6,7 +6,6 @@ import type {
   HouseMemberResponse,
 } from "@kimito/shared-types";
 import {
-  generateScheduleAction,
   overrideAssignmentAction,
 } from "@/app/actions/scheduling-actions";
 
@@ -23,22 +22,8 @@ export default function TaskCalendar({
 }: TaskCalendarProps) {
   const [assignments, setAssignments] =
     useState<TaskAssignmentResponse[]>(initialAssignments);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [selectedMemberFilter, setSelectedMemberFilter] =
     useState<string>("ALL");
-
-  // Disparar nuevo reparto equitativo
-  const handleGenerate = async () => {
-    setIsGenerating(true);
-    try {
-      const newAssignments = await generateScheduleAction();
-      setAssignments(newAssignments);
-    } catch (err) {
-      console.error("Error al generar reparto:", err);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   // Reasignar tarea a otro compañero
   const handleOverride = async (assignmentId: string, newUserId: string) => {
@@ -63,28 +48,7 @@ export default function TaskCalendar({
 
   return (
     <div className="space-y-6">
-      {/* Barra superior de control */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#FAF9F6] border border-border/40 p-4 rounded-3xl">
-        <div>
-          <h3 className="font-sans font-black text-base text-foreground">
-            Calendario de Asignaciones
-          </h3>
-          <p className="text-xs text-muted-foreground">
-            Reparto equitativo de labores del hogar
-          </p>
-        </div>
 
-        <button
-          onClick={handleGenerate}
-          disabled={isGenerating}
-          className="bg-amber-primary hover:bg-amber-primary/90 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center gap-2 transition-all shadow-sm cursor-pointer disabled:opacity-50"
-        >
-          <span className="material-symbols-rounded text-sm">
-            {isGenerating ? "autorenew" : "shuffle"}
-          </span>
-          {isGenerating ? "Repartiendo..." : "Generar Reparto"}
-        </button>
-      </div>
 
       {/* Filtro por miembro de la casa */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
