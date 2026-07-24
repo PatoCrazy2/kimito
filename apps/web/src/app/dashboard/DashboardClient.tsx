@@ -61,9 +61,6 @@ export default function DashboardClient({
 
   // Filtrar solo las asignaciones asignadas al usuario actual
   const myAssignments = assignments.filter((a) => a.userId === currentUserId);
-  const myCompleted = myAssignments.filter((a) => a.status === "COMPLETED").length;
-  const myTotal = myAssignments.length;
-  const progressPercentage = myTotal > 0 ? Math.round((myCompleted / myTotal) * 100) : 100;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -88,27 +85,6 @@ export default function DashboardClient({
 
       {/* Tarea 3.12: Banner de Permiso de Notificaciones Push */}
       <PushNotificationBanner />
-
-      {/* Barra de progreso de mis tareas */}
-      <div className="bg-white border border-border/45 p-5 rounded-3xl shadow-[0_4px_24px_rgba(133,83,0,0.01)] space-y-3">
-        <div className="flex justify-between items-center text-xs">
-          <div className="text-left">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">Tu Progreso de Aseo</span>
-            <p className="font-sans font-black text-sm text-foreground mt-0.5">
-              {myCompleted} de {myTotal} tareas completadas
-            </p>
-          </div>
-          <span className="font-extrabold text-xs text-amber-primary bg-amber-primary/10 px-2.5 py-1 rounded-full">
-            {progressPercentage}%
-          </span>
-        </div>
-        <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-          <div
-            className="h-full bg-amber-primary transition-all duration-500 ease-out rounded-full"
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
-      </div>
 
       {/* Sección Mis Tareas */}
       <div className="space-y-3">
