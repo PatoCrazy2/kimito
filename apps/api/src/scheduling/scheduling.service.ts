@@ -125,15 +125,69 @@ export class SchedulingService {
 
   /**
    * Obtiene las asignaciones actuales de la casa del usuario.
+   * Si no existen asignaciones para la semana actual, las genera automáticamente
+   * y marca las de semanas anteriores como EXPIRED si seguían PENDING.
    */
   async getMyHouseAssignments(
     email: string,
   ): Promise<TaskAssignmentResponse[]> {
     const membership = await this.getUserActiveMembership(email);
+    const houseId = membership.houseId;
+
+    // 1. Obtener lunes y domingo de la semana en curso
+    const now = new Date();
+    const currentMonday = this.getMonday(now);
+    const currentSunday = this.getSunday(currentMonday);
+
+    // 2. Consultar si existen asignaciones en el periodo actual
+    const currentAssignmentsCount = await this.prisma.taskAssignment.count({
+      where: {
+        task: { houseId },
+        periodStart: { gte: currentMonday },
+        periodEnd: { lte: currentSunday },
+      },
+    });
+
+    // 3. Si no existen, realizar la autogeneración (Lazy Initialization)
+    if (currentAssignmentsCount === 0) {
+      console.log(
+        `[Auto-Reparto] Generando reparto de tareas automático para la casa: ${houseId} en la semana actual.`,
+      );
+      try {
+        // Cerrar ciclo anterior: cambiar PENDING pasados a EXPIRED
+        await this.prisma.taskAssignment.updateMany({
+          where: {
+            task: { houseId },
+            periodEnd: { lt: currentMonday },
+            status: 'PENDING',
+          },
+          data: {
+            status: 'EXPIRED',
+          },
+        });
+
+        // Intentar autogenerar reparto de tareas si hay tareas y miembros activos
+        const activeMembersCount = await this.prisma.houseMembership.count({
+          where: { houseId, active: true },
+        });
+        const activeTasksCount = await this.prisma.task.count({
+          where: { houseId },
+        });
+
+        if (activeMembersCount > 0 && activeTasksCount > 0) {
+          await this.generateSchedule(email, currentMonday.toISOString(), currentSunday.toISOString());
+        }
+      } catch (err) {
+        console.error(
+          `[Auto-Reparto] Error al inicializar automáticamente las tareas para la casa ${houseId}:`,
+          err,
+        );
+      }
+    }
 
     const assignments = await this.prisma.taskAssignment.findMany({
       where: {
-        task: { houseId: membership.houseId },
+        task: { houseId },
       },
       include: {
         task: true,
