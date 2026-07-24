@@ -26,12 +26,12 @@ export class ReputationService {
     if (total === 0) {
       return {
         user,
-        score: 5.0, // Score inicial neutro/perfecto si no tiene historial
+        score: null, // Score nulo si no tiene historial
         totalTasksAssigned: 0,
         completedOnTime: 0,
         completedLate: 0,
         pending: 0,
-        completionRate: 100,
+        completionRate: 0,
       };
     }
 
@@ -40,14 +40,16 @@ export class ReputationService {
     ).length;
     const completedLate = assignments.filter((a) => a.status === 'LATE').length;
     const pending = assignments.filter((a) => a.status === 'PENDING').length;
+    const expired = assignments.filter((a) => a.status === 'EXPIRED').length;
 
     // Fórmula del Score (0.0 a 5.0 estrellas):
     // 5.0 * (completadas a tiempo / total evaluables)
-    const evaluatedTasks = completedOnTime + completedLate;
+    // Las tareas EXPIRED cuentan como no completadas
+    const evaluatedTasks = completedOnTime + completedLate + expired;
     const rate = evaluatedTasks > 0 ? completedOnTime / evaluatedTasks : 1;
     const score = Number((rate * 5.0).toFixed(1));
     const completionRate =
-      evaluatedTasks > 0 ? Math.round((completedOnTime / total) * 100) : 100;
+      total > 0 ? Math.round((completedOnTime / total) * 100) : 0;
 
     // Actualizar o guardar en la tabla ReputationScore de Prisma
     const existingScore = await this.prisma.reputationScore.findFirst({

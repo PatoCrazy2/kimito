@@ -2,7 +2,7 @@
 
 interface ReputationCardProps {
   reputationData?: {
-    score: number;
+    score: number | null;
     totalTasksAssigned: number;
     completedOnTime: number;
     completedLate: number;
@@ -13,14 +13,15 @@ interface ReputationCardProps {
 export default function ReputationCard({
   reputationData,
 }: ReputationCardProps) {
-  const score = reputationData?.score ?? 5.0;
-  const rate = reputationData?.completionRate ?? 100;
+  const isNew = reputationData === undefined || reputationData === null || reputationData.score === null;
+  const score = isNew ? null : reputationData!.score;
+  const rate = isNew ? 0 : reputationData!.completionRate;
   const total = reputationData?.totalTasksAssigned ?? 0;
   const onTime = reputationData?.completedOnTime ?? 0;
 
   // Calcular número de estrellas de 1 a 5
-  const fullStars = Math.floor(score);
-  const hasHalf = score % 1 >= 0.5;
+  const fullStars = score !== null ? Math.floor(score) : 0;
+  const hasHalf = score !== null ? score % 1 >= 0.5 : false;
 
   return (
     <div className="bg-[#FAF9F6] border border-border/40 p-5 rounded-3xl space-y-4 shadow-sm">
@@ -29,27 +30,36 @@ export default function ReputationCard({
           <span className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">
             Reputación como Roommate
           </span>
-          <h3 className="font-sans font-black text-xl text-foreground flex items-center gap-2 mt-0.5">
-            {score.toFixed(1)}
-            <div className="flex items-center text-amber-500 text-sm">
-              {[...Array(5)].map((_, i) => (
-                <span key={i} className="material-symbols-rounded text-base">
-                  {i < fullStars
-                    ? "star"
-                    : i === fullStars && hasHalf
-                      ? "star_half"
-                      : "star_outline"}
-                </span>
-              ))}
-            </div>
-          </h3>
+          {score !== null ? (
+            <h3 className="font-sans font-black text-xl text-foreground flex items-center gap-2 mt-0.5">
+              {score.toFixed(1)}
+              <div className="flex items-center text-amber-500 text-sm">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="material-symbols-rounded text-base">
+                    {i < fullStars
+                      ? "star"
+                      : i === fullStars && hasHalf
+                        ? "star_half"
+                        : "star_outline"}
+                  </span>
+                ))}
+              </div>
+            </h3>
+          ) : (
+            <h3 className="font-sans font-black text-sm text-muted-foreground flex items-center gap-1.5 mt-1 select-none">
+              <span className="bg-amber-primary/10 text-amber-primary px-2 py-0.5 rounded-full text-[10px] font-black uppercase">
+                Nuevo
+              </span>
+              <span className="text-[11px] font-semibold text-muted-foreground/60">Sin historial</span>
+            </h3>
+          )}
         </div>
 
         <div className="text-right">
           <span className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">
             Efectividad
           </span>
-          <p className="font-black text-lg text-emerald-600">{rate}%</p>
+          <p className="font-black text-lg text-amber-primary">{score !== null ? `${rate}%` : "N/A"}</p>
         </div>
       </div>
 
