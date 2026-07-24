@@ -62,6 +62,10 @@ export default function DashboardClient({
   // Filtrar solo las asignaciones asignadas al usuario actual
   const myAssignments = assignments.filter((a) => a.userId === currentUserId);
 
+  // Determinar si el usuario es ADMIN
+  const currentUserMember = members.find((m) => m.userId === currentUserId);
+  const isAdmin = currentUserMember?.role === "ADMIN";
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Cabecera superior */}
@@ -173,6 +177,7 @@ export default function DashboardClient({
             initialAssignments={assignments}
             members={members}
             currentUserId={currentUserId}
+            isAdmin={isAdmin}
             onCompleteTaskClick={handleOpenCompleteModal}
           />
         </div>

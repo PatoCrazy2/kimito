@@ -13,6 +13,7 @@ interface TaskCalendarProps {
   initialAssignments: TaskAssignmentResponse[];
   members: HouseMemberResponse[];
   currentUserId?: string;
+  isAdmin?: boolean;
   onCompleteTaskClick?: (assignment: TaskAssignmentResponse) => void;
 }
 
@@ -20,6 +21,7 @@ export default function TaskCalendar({
   initialAssignments,
   members,
   currentUserId,
+  isAdmin = false,
   onCompleteTaskClick,
 }: TaskCalendarProps) {
   const [assignments, setAssignments] =
@@ -135,20 +137,31 @@ export default function TaskCalendar({
 
                 {/* Acciones de la tarjeta */}
                 <div className="flex items-center justify-between pt-2 border-t border-border/30 text-xs">
-                  {/* Select de Reasignación manual */}
-                  <select
-                    value={assignment.userId}
-                    onChange={(e) =>
-                      handleOverride(assignment.id, e.target.value)
-                    }
-                    className="bg-transparent text-[11px] font-bold text-muted-foreground hover:text-foreground cursor-pointer focus:outline-none"
-                  >
-                    {members.map((m) => (
-                      <option key={m.userId} value={m.userId}>
-                        Reasignar a: {m.name.split(" ")[0]}
-                      </option>
-                    ))}
-                  </select>
+                  {/* Select de Reasignación manual (Solo Admin y estilizado premium) */}
+                  {isAdmin ? (
+                    <div className="relative inline-flex items-center bg-background border border-border/40 hover:border-amber-primary/40 rounded-xl px-2.5 py-1 text-[11px] font-bold transition-all shadow-2xs">
+                      <select
+                        value={assignment.userId}
+                        onChange={(e) =>
+                          handleOverride(assignment.id, e.target.value)
+                        }
+                        className="bg-transparent text-muted-foreground hover:text-foreground cursor-pointer focus:outline-none appearance-none pr-4 select-none"
+                      >
+                        {members.map((m) => (
+                          <option key={m.userId} value={m.userId}>
+                            Reasignar a: {m.name.split(" ")[0]}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="material-symbols-rounded text-xs absolute right-1.5 pointer-events-none text-muted-foreground">
+                        expand_more
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">
+                      Aseo General
+                    </span>
+                  )}
 
                   {/* Botón marcar completada */}
                   {!isCompleted && onCompleteTaskClick && assignment.userId === currentUserId && (
