@@ -2,23 +2,28 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { loginWithGoogle } from "@/app/actions/auth-actions";
 import { LoginForm } from "./LoginForm";
+import { KimitoLogo } from "@/components/KimitoLogo";
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ success?: string }>;
+}) {
   const session = await auth();
+  const sp = await searchParams;
+  const isSuccess = sp.success === "true";
 
-  // Redirección si ya está autenticado
-  if (session) {
+  // Redirección si ya está autenticado y no venimos de un login de oauth recién completado
+  if (session && !isSuccess) {
     redirect("/dashboard");
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-cream px-4">
-      <div className="w-full max-w-md bg-card border border-border/40 rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(133,83,0,0.06)] text-center transition-all duration-300 hover:shadow-[0_16px_50px_rgba(133,83,0,0.1)]">
+    <main className="flex min-h-screen items-center justify-center bg-[#F7FAF8] px-4">
+      <div className="w-full max-w-md bg-card border border-border/40 rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(30,122,90,0.05)] text-center transition-all duration-300 hover:shadow-[0_16px_50px_rgba(30,122,90,0.08)]">
         {/* Logotipo */}
-        <div className="mx-auto w-16 h-16 rounded-full bg-amber-primary/10 flex items-center justify-center mb-6">
-          <span className="material-symbols-rounded text-amber-primary text-4xl select-none">
-            cleaning_services
-          </span>
+        <div className="mx-auto w-16 h-16 flex items-center justify-center mb-6">
+          <KimitoLogo size={48} />
         </div>
 
         {/* Nombre del Proyecto */}
@@ -28,11 +33,11 @@ export default async function LoginPage() {
 
         {/* Descripción Corta */}
         <p className="text-sm font-medium text-muted-foreground leading-relaxed mb-8 max-w-sm mx-auto">
-          Gestiona el aseo de áreas comunes, reparte tareas de forma equitativa y mantén tu reputación en tu casa compartida.
+          Tu hogar, mejor organizado.
         </p>
 
         {/* LoginForm (Client Component) */}
-        <LoginForm />
+        <LoginForm oauthSuccess={isSuccess} />
       </div>
     </main>
   );

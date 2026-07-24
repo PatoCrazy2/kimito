@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createHouseAction, joinHouseAction } from "@/app/actions/house-actions";
+import { KimitoLogo } from "@/components/KimitoLogo";
 
 interface OnboardingFullscreenClientProps {
   userName: string;
@@ -67,9 +68,7 @@ export default function OnboardingFullscreenClient({ userName }: OnboardingFulls
       <div className="w-full max-w-sm flex flex-col items-center">
         {/* Brand Logo in flow */}
         <div className="flex items-center gap-2 mb-8 select-none justify-center">
-          <span className="material-symbols-rounded text-amber-primary text-3xl font-semibold">
-            cleaning_services
-          </span>
+          <KimitoLogo size={30} />
           <span className="font-sans font-black text-2xl tracking-tight text-[#1D1B16]">
             Kimito
           </span>

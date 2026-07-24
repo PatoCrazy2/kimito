@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { logout } from "@/app/actions/auth-actions";
 import { UserDto } from "@kimito/shared-types";
 import { cn } from "@/lib/utils";
+import { KimitoLogo } from "@/components/KimitoLogo";
 
 const navItems = [
   { name: "Inicio", href: "/dashboard", icon: "space_dashboard" },
@@ -27,9 +28,7 @@ export default function Navbar({ user }: NavbarProps) {
     <header className="sticky top-0 z-40 w-full bg-[#FAF9F6]/85 backdrop-blur-md border-b border-border/40 px-6 py-4 flex items-center justify-between">
       {/* Logotipo y Nombre */}
       <div className="flex items-center gap-3">
-        <span className="material-symbols-rounded text-amber-primary text-3xl font-semibold select-none">
-          cleaning_services
-        </span>
+        <KimitoLogo size={32} />
         <span className="font-sans font-extrabold text-2xl tracking-tight text-foreground flex items-center gap-1.5">
           Kimito <span className="text-[10px] bg-amber-primary/10 text-amber-primary px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">MVP</span>
         </span>

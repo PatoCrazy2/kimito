@@ -23,11 +23,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     redirect("/login");
   }
 
-
   if (!house) {
-    if (skip !== "true") {
-      redirect("/onboarding");
-    }
     return <OnboardingClient userName={user.name} />;
   }
 

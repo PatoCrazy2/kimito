@@ -6,12 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { LoginSuccessTransition } from "@/components/LoginSuccessTransition";
+import { useRouter } from "next/navigation";
 
-export function LoginForm() {
+export function LoginForm({ oauthSuccess = false }: { oauthSuccess?: boolean }) {
   const [state, formAction, isPending] = useActionState(loginWithCredentials, null);
+  const isTransitioning = state?.success || oauthSuccess;
+  const router = useRouter();
+
+  const handleTransitionComplete = () => {
+    router.replace("/dashboard");
+  };
 
   return (
-    <div className="w-full">
+    <>
+      {isTransitioning && (
+        <LoginSuccessTransition onComplete={handleTransitionComplete} />
+      )}
+      <div className="w-full">
       <form action={formAction} className="space-y-4 mb-6 text-left">
         {state?.error && (
           <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-xl text-center">
@@ -30,7 +42,7 @@ export function LoginForm() {
             placeholder="ejemplo@correo.com" 
             required 
             className="h-12 rounded-xl"
-            disabled={isPending}
+            disabled={isPending || isTransitioning}
           />
         </div>
 
@@ -53,14 +65,14 @@ export function LoginForm() {
             placeholder="••••••••" 
             required 
             className="h-12 rounded-xl"
-            disabled={isPending}
+            disabled={isPending || isTransitioning}
           />
         </div>
 
         <Button 
           type="submit" 
           className="w-full h-12 bg-amber-primary hover:bg-[#6c4300] text-white font-bold rounded-xl shadow-md transition-all mt-2"
-          disabled={isPending}
+          disabled={isPending || isTransitioning}
         >
           {isPending ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -85,6 +97,7 @@ export function LoginForm() {
         <Button
           type="submit"
           variant="outline"
+          disabled={isPending || isTransitioning}
           className="w-full h-12 flex items-center justify-center gap-3 bg-card hover:bg-muted/50 border border-border/60 text-foreground font-semibold rounded-xl shadow-sm transition-all"
         >
           <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -116,5 +129,6 @@ export function LoginForm() {
         </Link>
       </div>
     </div>
+    </>
   );
 }
