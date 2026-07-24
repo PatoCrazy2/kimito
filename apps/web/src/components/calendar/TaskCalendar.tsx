@@ -12,12 +12,14 @@ import {
 interface TaskCalendarProps {
   initialAssignments: TaskAssignmentResponse[];
   members: HouseMemberResponse[];
+  currentUserId?: string;
   onCompleteTaskClick?: (assignment: TaskAssignmentResponse) => void;
 }
 
 export default function TaskCalendar({
   initialAssignments,
   members,
+  currentUserId,
   onCompleteTaskClick,
 }: TaskCalendarProps) {
   const [assignments, setAssignments] =
@@ -149,7 +151,7 @@ export default function TaskCalendar({
                   </select>
 
                   {/* Botón marcar completada */}
-                  {!isCompleted && onCompleteTaskClick && (
+                  {!isCompleted && onCompleteTaskClick && assignment.userId === currentUserId && (
                     <button
                       onClick={() => onCompleteTaskClick(assignment)}
                       className="bg-amber-primary hover:bg-amber-primary/95 text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"

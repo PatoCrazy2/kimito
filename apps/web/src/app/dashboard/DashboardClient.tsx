@@ -172,6 +172,7 @@ export default function DashboardClient({
           <TaskCalendar
             initialAssignments={assignments}
             members={members}
+            currentUserId={currentUserId}
             onCompleteTaskClick={handleOpenCompleteModal}
           />
         </div>
