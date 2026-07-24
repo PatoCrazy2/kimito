@@ -10,7 +10,7 @@ import { getDailyFact } from "@/lib/facts";
 import TaskCalendar from "@/components/calendar/TaskCalendar";
 import CompleteTaskModal from "@/components/tasks/CompleteTaskModal";
 import PushNotificationBanner from "@/components/notifications/PushNotificationBanner";
-import ReputationCard from "@/components/reputation/ReputationCard";
+
 
 interface DashboardClientProps {
   userName: string;
@@ -18,7 +18,7 @@ interface DashboardClientProps {
   tasks: TaskResponse[];
   members: HouseMemberResponse[];
   assignments: TaskAssignmentResponse[];
-  reputation?: any;
+
 }
 
 export default function DashboardClient({
@@ -27,7 +27,6 @@ export default function DashboardClient({
   tasks,
   members,
   assignments: initialAssignments,
-  reputation,
 }: DashboardClientProps) {
   const [selectedAssignment, setSelectedAssignment] =
     useState<TaskAssignmentResponse | null>(null);
@@ -83,8 +82,7 @@ export default function DashboardClient({
       {/* Tarea 3.12: Banner de Permiso de Notificaciones Push */}
       <PushNotificationBanner />
 
-      {/* Tarea 3.13: Tarjeta de Reputación */}
-      <ReputationCard reputationData={reputation} />
+
 
       {/* Tarea 3.10: Calendario de Asignaciones Equitativo */}
       <TaskCalendar

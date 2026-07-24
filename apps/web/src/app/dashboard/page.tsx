@@ -5,7 +5,7 @@ import {
 } from "@/app/actions/house-actions";
 import { getHouseTasksAction } from "@/app/actions/task-actions";
 import { getAssignmentsAction } from "@/app/actions/scheduling-actions";
-import { getMyReputationAction } from "@/app/actions/reputation-actions";
+
 import OnboardingClient from "./OnboardingClient";
 import DashboardClient from "./DashboardClient";
 import { redirect } from "next/navigation";
@@ -31,12 +31,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     return <OnboardingClient userName={user.name} />;
   }
 
-  // Cargar todos los datos del Sprint 3 en paralelo
-  const [tasks, members, assignments, reputation] = await Promise.all([
+  const [tasks, members, assignments] = await Promise.all([
     getHouseTasksAction(house.id),
     getMyHouseMembersAction(),
     getAssignmentsAction(),
-    getMyReputationAction(),
   ]);
 
   return (
@@ -46,7 +44,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       tasks={tasks}
       members={members}
       assignments={assignments}
-      reputation={reputation}
     />
   );
 }
