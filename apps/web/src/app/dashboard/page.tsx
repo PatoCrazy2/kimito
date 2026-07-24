@@ -40,6 +40,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   return (
     <DashboardClient
       userName={user.name}
+      currentUserId={user.id}
       houseName={house.name}
       tasks={tasks}
       members={members}
