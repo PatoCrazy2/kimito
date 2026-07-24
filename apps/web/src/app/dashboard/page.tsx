@@ -20,18 +20,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const house = await getMyHouseAction();
 
   if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
-        <span className="material-symbols-rounded text-destructive text-5xl mb-4">
-          error
-        </span>
-        <h2 className="text-xl font-bold">Error de Sesión</h2>
-        <p className="text-muted-foreground mt-1">
-          No se pudieron cargar los datos del usuario autenticado.
-        </p>
-      </div>
-    );
+    redirect("/login");
   }
+
 
   if (!house) {
     if (skip !== "true") {
