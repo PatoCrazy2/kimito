@@ -125,11 +125,11 @@ export default function PushNotificationBanner() {
     <>
       {/* Backdrop oscuro con desenfoque de fondo */}
       <div 
-        className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 animate-in fade-in duration-300"
+        className="fixed inset-0 bg-black/45 backdrop-blur-sm z-[60] animate-in fade-in duration-300"
       />
       
       {/* Bottom Sheet */}
-      <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-card/95 backdrop-blur-md border border-border/80 shadow-[0_8px_32px_rgba(133,83,0,0.08)] rounded-3xl p-5 z-50 animate-in slide-in-from-bottom duration-300">
+      <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-card/95 backdrop-blur-md border border-border/80 shadow-[0_8px_32px_rgba(133,83,0,0.08)] rounded-3xl p-5 z-[70] animate-in slide-in-from-bottom duration-300">
       <div className="flex flex-col gap-4 text-center select-none">
         {/* Isotipo Circular */}
         <div className="w-12 h-12 rounded-full bg-amber-primary/10 text-amber-primary flex items-center justify-center mx-auto shadow-xs">

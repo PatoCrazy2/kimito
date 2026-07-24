@@ -1,6 +1,6 @@
 import { getCurrentUser } from "@/app/actions/user-actions";
 import { redirect } from "next/navigation";
-import SettingsClient from "./SettingsClient";
+import SettingsClient from "@/app/dashboard/settings/SettingsClient";
 
 export default async function SettingsPage() {
   const user = await getCurrentUser();
