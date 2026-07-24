@@ -23,11 +23,13 @@ export class AuthController {
     try {
       return await this.authService.registerWithCredentials(body);
     } catch (error: any) {
+      console.error('Error en registro:', error);
       if (error.message === 'EmailAlreadyExists') {
         throw new HttpException('El correo ya está en uso', HttpStatus.BAD_REQUEST);
       }
-      throw new HttpException('Error en el registro', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message || 'Error en el registro', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
   }
 
   @Post('verify')
