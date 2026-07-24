@@ -224,7 +224,7 @@ export default function TasksClient({ initialTasks, house, isAdmin }: TasksClien
                           <span className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded-md ${
                             task.isCustom 
                               ? "bg-purple-100 text-purple-700" 
-                              : "bg-teal-100 text-teal-700"
+                              : "bg-amber-primary/10 text-amber-primary"
                           }`}>
                             {task.isCustom ? "Personalizada" : "Catálogo"}
                           </span>

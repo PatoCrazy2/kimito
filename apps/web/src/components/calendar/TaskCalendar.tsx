@@ -136,7 +136,7 @@ export default function TaskCalendar({
                 key={assignment.id}
                 className={`p-4 rounded-3xl border transition-all space-y-3 ${
                   isCompleted
-                    ? "bg-emerald-500/5 border-emerald-500/20"
+                    ? "bg-muted/20 border-border/50"
                     : "bg-[#FAF9F6] border-border/50 hover:border-amber-primary/40"
                 }`}
               >
@@ -144,8 +144,8 @@ export default function TaskCalendar({
                   <div>
                     <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
                       {assignment.task?.title || "Tarea"}
-                      <span className="text-[10px] bg-amber-primary/10 text-amber-primary font-black px-2 py-0.5 rounded-full">
-                        Peso: {assignment.task?.weight || 1} ⭐
+                      <span className="text-[10px] bg-amber-primary/10 text-amber-primary font-black px-2 py-0.5 rounded-full inline-flex items-center gap-0.5">
+                        Peso: {assignment.task?.weight || 1} <span className="material-symbols-rounded text-[10px] text-amber-primary align-middle select-none">star</span>
                       </span>
                     </h4>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -159,8 +159,8 @@ export default function TaskCalendar({
                   <span
                     className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider ${
                       isCompleted
-                        ? "bg-emerald-500/15 text-emerald-600"
-                        : "bg-amber-500/15 text-amber-600"
+                        ? "bg-muted text-muted-foreground border border-border/40"
+                        : "bg-amber-primary/10 text-amber-primary"
                     }`}
                   >
                     {isCompleted ? "Completada" : "Pendiente"}
@@ -188,7 +188,7 @@ export default function TaskCalendar({
                   {!isCompleted && onCompleteTaskClick && (
                     <button
                       onClick={() => onCompleteTaskClick(assignment)}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 transition-all cursor-pointer"
+                      className="bg-amber-primary hover:bg-amber-primary/95 text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
                     >
                       <span className="material-symbols-rounded text-sm">
                         check_circle

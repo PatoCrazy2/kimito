@@ -191,7 +191,7 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
                 {joinError}
               </p>
             )}
-            <button type="submit" disabled={joinLoading} className="w-full bg-teal-secondary hover:bg-teal-secondary/95 text-white font-bold rounded-xl py-3 shadow-sm cursor-pointer mt-2 text-xs">
+            <button type="submit" disabled={joinLoading} className="w-full bg-amber-primary hover:bg-amber-primary/95 text-white font-bold rounded-xl py-3 shadow-sm cursor-pointer mt-2 text-xs">
               {joinLoading ? "Uniéndose..." : "Unirme a Casa"}
             </button>
           </form>
@@ -245,7 +245,7 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
               <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                 member.role === "ADMIN" 
                   ? "bg-amber-primary/10 text-amber-primary" 
-                  : "bg-teal-secondary/10 text-teal-secondary"
+                  : "bg-muted text-muted-foreground border border-border/40"
               }`}>
                 {member.role === "ADMIN" ? "Administrador" : "Roommate"}
               </span>

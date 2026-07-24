@@ -68,7 +68,7 @@ export default function CompleteTaskModal({
       <div className="bg-background border border-border/60 rounded-3xl p-6 w-full max-w-md space-y-5 shadow-2xl">
         <div className="flex items-center justify-between">
           <h3 className="font-sans font-black text-lg text-foreground flex items-center gap-2">
-            <span className="material-symbols-rounded text-emerald-600">
+            <span className="material-symbols-rounded text-amber-primary">
               check_circle
             </span>
             Completar Tarea
@@ -88,8 +88,8 @@ export default function CompleteTaskModal({
           <p className="font-black text-base text-foreground">
             {assignment.task?.title}
           </p>
-          <span className="inline-block text-[10px] bg-amber-primary/10 text-amber-primary font-black px-2 py-0.5 rounded-full">
-            Peso: {assignment.task?.weight || 1} ⭐
+          <span className="inline-block text-[10px] bg-amber-primary/10 text-amber-primary font-black px-2 py-0.5 rounded-full inline-flex items-center gap-0.5">
+            Peso: {assignment.task?.weight || 1} <span className="material-symbols-rounded text-[10px] text-amber-primary align-middle select-none">star</span>
           </span>
         </div>
 
@@ -153,7 +153,7 @@ export default function CompleteTaskModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+              className="bg-amber-primary hover:bg-amber-primary/95 text-white font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50 shadow-sm active:scale-95"
             >
               {isSubmitting ? "Guardando..." : "Marcar Completada"}
             </button>
