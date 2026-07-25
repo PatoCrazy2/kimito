@@ -19,20 +19,20 @@ export default async function LoginPage({
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#F7FAF8] px-4">
-      <div className="w-full max-w-md bg-card border border-border/40 rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(30,122,90,0.05)] text-center transition-all duration-300 hover:shadow-[0_16px_50px_rgba(30,122,90,0.08)]">
+    <main className="flex min-h-screen items-center justify-center px-4">
+      <div className="w-full max-w-md bg-card border border-border/25 rounded-2xl p-8 md:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02),0_12px_40px_rgba(133,83,0,0.04)] text-center animate-fade-up">
         {/* Logotipo */}
-        <div className="mx-auto w-16 h-16 flex items-center justify-center mb-6">
-          <KimitoLogo size={48} />
+        <div className="mx-auto w-14 h-14 flex items-center justify-center mb-5">
+          <KimitoLogo size={46} />
         </div>
 
         {/* Nombre del Proyecto */}
-        <h1 className="text-3xl font-extrabold tracking-tight text-foreground mb-3">
+        <h1 className="text-[26px] font-extrabold tracking-tight text-foreground mb-2">
           Kimito
         </h1>
 
         {/* Descripción Corta */}
-        <p className="text-sm font-medium text-muted-foreground leading-relaxed mb-8 max-w-sm mx-auto">
+        <p className="text-[13px] font-medium text-muted-foreground leading-relaxed mb-8 max-w-xs mx-auto">
           Tu hogar, mejor organizado.
         </p>
 
