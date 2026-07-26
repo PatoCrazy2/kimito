@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
+import { BentoGrid } from "@/components/landing/BentoGrid";
+import { HowItWorks } from "@/components/landing/HowItWorks";
 
 export default async function HomePage() {
   const session = await auth();
@@ -18,19 +20,11 @@ export default async function HomePage() {
       {/* Hero Section */}
       <Hero />
 
-      {/* Placeholder sections for smooth navigation preview */}
-      <div id="features" className="py-12 text-center text-sm text-[#1D1B16]/40 border-t border-[#E8E1D3]/40">
-        [Sección Características - Parte 2]
-      </div>
-      <div id="how-it-works" className="py-12 text-center text-sm text-[#1D1B16]/40 border-t border-[#E8E1D3]/40">
-        [Sección Cómo Funciona - Parte 2]
-      </div>
-      <div id="marketplace" className="py-12 text-center text-sm text-[#1D1B16]/40 border-t border-[#E8E1D3]/40">
-        [Sección Marketplace - Parte 3]
-      </div>
-      <div id="reputation" className="py-12 text-center text-sm text-[#1D1B16]/40 border-t border-[#E8E1D3]/40">
-        [Sección Reputación - Parte 3]
-      </div>
+      {/* Bento Grid Feature Highlights */}
+      <BentoGrid />
+
+      {/* How It Works Step-by-Step */}
+      <HowItWorks />
     </main>
   );
 }

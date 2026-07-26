@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, ArrowRight } from "lucide-react";
 
 export function Navbar() {
@@ -28,11 +29,14 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#855300] to-[#F59E0B] flex items-center justify-center text-white shadow-md shadow-[#855300]/15 transition-transform duration-300 group-hover:scale-105">
-              <span className="material-symbols-rounded text-2xl text-white select-none">
-                cleaning_services
-              </span>
-            </div>
+            <Image
+              src="/logo.svg"
+              alt="Kimito Logo"
+              width={38}
+              height={38}
+              className="w-9.5 h-9.5 object-contain transition-transform duration-300 group-hover:scale-105"
+              priority
+            />
             <div className="flex items-baseline">
               <span className="text-2xl font-black tracking-tight text-[#1D1B16]">
                 kimito
