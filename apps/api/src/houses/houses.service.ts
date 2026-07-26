@@ -259,4 +259,151 @@ export class HousesService {
       createdAt: updated.createdAt,
     };
   }
+
+  async leaveHouse(email: string): Promise<{ success: boolean }> {
+    const userId = await this.getUserIdByEmail(email);
+
+    const activeMembership = await this.prisma.houseMembership.findFirst({
+      where: { userId, active: true },
+    });
+
+    if (!activeMembership) {
+      throw new NotFoundException('No perteneces a ninguna casa activa');
+    }
+
+    const houseId = activeMembership.houseId;
+
+    if (activeMembership.role === 'ADMIN') {
+      const otherMembers = await this.prisma.houseMembership.findMany({
+        where: { houseId, active: true, userId: { not: userId } },
+      });
+
+      if (otherMembers.length > 0) {
+        const otherAdmins = otherMembers.filter((m) => m.role === 'ADMIN');
+        if (otherAdmins.length === 0) {
+          throw new BadRequestException(
+            'Eres el único administrador de la casa. Debes promover a otro miembro a Administrador antes de salir, o eliminar la casa.',
+          );
+        }
+      } else {
+        // Es el único miembro de la casa, por lo tanto eliminamos la casa
+        await this.deleteHouse(email);
+        return { success: true };
+      }
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      // Eliminar membresía
+      await tx.houseMembership.delete({
+        where: { userId_houseId: { userId, houseId } },
+      });
+
+      // Crear historial
+      await tx.membershipHistory.create({
+        data: {
+          userId,
+          role: activeMembership.role,
+          joinedAt: activeMembership.joinedAt,
+          actionType: 'LEFT',
+        },
+      });
+    });
+
+    return { success: true };
+  }
+
+  async kickMember(email: string, targetUserId: string): Promise<{ success: boolean }> {
+    const userId = await this.getUserIdByEmail(email);
+
+    const requesterMembership = await this.prisma.houseMembership.findFirst({
+      where: { userId, active: true },
+    });
+
+    if (!requesterMembership) {
+      throw new NotFoundException('No perteneces a ninguna casa activa');
+    }
+
+    if (requesterMembership.role !== 'ADMIN') {
+      throw new UnauthorizedException('Solo el administrador puede expulsar miembros');
+    }
+
+    if (userId === targetUserId) {
+      throw new BadRequestException('No puedes expulsarte a ti mismo. Utiliza la opción de salir de la casa.');
+    }
+
+    const targetMembership = await this.prisma.houseMembership.findUnique({
+      where: { userId_houseId: { userId: targetUserId, houseId: requesterMembership.houseId } },
+    });
+
+    if (!targetMembership || !targetMembership.active) {
+      throw new NotFoundException('El miembro no pertenece a esta casa o no está activo');
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.houseMembership.delete({
+        where: { userId_houseId: { userId: targetUserId, houseId: requesterMembership.houseId } },
+      });
+
+      await tx.membershipHistory.create({
+        data: {
+          userId: targetUserId,
+          role: targetMembership.role,
+          joinedAt: targetMembership.joinedAt,
+          actionType: 'KICKED',
+        },
+      });
+    });
+
+    return { success: true };
+  }
+
+  async deleteHouse(email: string): Promise<{ success: boolean }> {
+    const userId = await this.getUserIdByEmail(email);
+
+    const requesterMembership = await this.prisma.houseMembership.findFirst({
+      where: { userId, active: true },
+    });
+
+    if (!requesterMembership) {
+      throw new NotFoundException('No perteneces a ninguna casa activa');
+    }
+
+    if (requesterMembership.role !== 'ADMIN') {
+      throw new UnauthorizedException('Solo el administrador puede eliminar la casa');
+    }
+
+    const houseId = requesterMembership.houseId;
+
+    // Obtener todos los miembros
+    const members = await this.prisma.houseMembership.findMany({
+      where: { houseId, active: true },
+    });
+
+    await this.prisma.$transaction(async (tx) => {
+      // Crear historial para todos los miembros antes de borrar
+      await tx.membershipHistory.createMany({
+        data: members.map((m) => ({
+          userId: m.userId,
+          role: m.role,
+          joinedAt: m.joinedAt,
+          actionType: 'HOUSE_DELETED',
+        })),
+      });
+
+      // Eliminar casa (cascada borra HouseMembership y demás relaciones)
+      await tx.house.delete({
+        where: { id: houseId },
+      });
+    });
+
+    return { success: true };
+  }
+
+  async getMembershipHistory(email: string): Promise<any[]> {
+    const userId = await this.getUserIdByEmail(email);
+    return this.prisma.membershipHistory.findMany({
+      where: { userId },
+      orderBy: { leftAt: 'desc' },
+    });
+  }
 }

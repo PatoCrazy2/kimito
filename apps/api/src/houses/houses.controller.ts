@@ -3,8 +3,10 @@ import {
   Get,
   Post,
   Put,
+  Delete,
   Body,
   Query,
+  Param,
   UseGuards,
   Request,
 } from '@nestjs/common';
@@ -63,5 +65,32 @@ export class HousesController {
     @Body() dto: { name?: string; description?: string; address?: string },
   ): Promise<HouseResponse> {
     return this.housesService.updateHouse(req.user.email, dto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('leave')
+  async leaveHouse(@Request() req: any): Promise<{ success: boolean }> {
+    return this.housesService.leaveHouse(req.user.email);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('members/:userId/kick')
+  async kickMember(
+    @Request() req: any,
+    @Param('userId') userId: string,
+  ): Promise<{ success: boolean }> {
+    return this.housesService.kickMember(req.user.email, userId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete()
+  async deleteHouse(@Request() req: any): Promise<{ success: boolean }> {
+    return this.housesService.deleteHouse(req.user.email);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('history')
+  async getMembershipHistory(@Request() req: any): Promise<any[]> {
+    return this.housesService.getMembershipHistory(req.user.email);
   }
 }
