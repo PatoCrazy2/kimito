@@ -2,37 +2,42 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { loginWithGoogle } from "@/app/actions/auth-actions";
 import { LoginForm } from "./LoginForm";
+import { KimitoLogo } from "@/components/KimitoLogo";
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ success?: string }>;
+}) {
   const session = await auth();
+  const sp = await searchParams;
+  const isSuccess = sp.success === "true";
 
-  // Redirección si ya está autenticado
-  if (session) {
+  // Redirección si ya está autenticado y no venimos de un login de oauth recién completado
+  if (session && !isSuccess) {
     redirect("/dashboard");
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-cream px-4">
-      <div className="w-full max-w-md bg-card border border-border/40 rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(133,83,0,0.06)] text-center transition-all duration-300 hover:shadow-[0_16px_50px_rgba(133,83,0,0.1)]">
+    <main className="flex min-h-screen items-center justify-center px-4">
+      <div className="w-full max-w-md bg-card border border-border/25 rounded-2xl p-8 md:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02),0_12px_40px_rgba(133,83,0,0.04)] text-center animate-fade-up">
         {/* Logotipo */}
-        <div className="mx-auto w-16 h-16 rounded-full bg-amber-primary/10 flex items-center justify-center mb-6">
-          <span className="material-symbols-rounded text-amber-primary text-4xl select-none">
-            cleaning_services
-          </span>
+        <div className="mx-auto w-14 h-14 flex items-center justify-center mb-5">
+          <KimitoLogo size={46} />
         </div>
 
         {/* Nombre del Proyecto */}
-        <h1 className="text-3xl font-extrabold tracking-tight text-foreground mb-3">
+        <h1 className="text-[26px] font-extrabold tracking-tight text-foreground mb-2">
           Kimito
         </h1>
 
         {/* Descripción Corta */}
-        <p className="text-sm font-medium text-muted-foreground leading-relaxed mb-8 max-w-sm mx-auto">
-          Gestiona el aseo de áreas comunes, reparte tareas de forma equitativa y mantén tu reputación en tu casa compartida.
+        <p className="text-[13px] font-medium text-muted-foreground leading-relaxed mb-8 max-w-xs mx-auto">
+          Tu hogar, mejor organizado.
         </p>
 
         {/* LoginForm (Client Component) */}
-        <LoginForm />
+        <LoginForm oauthSuccess={isSuccess} />
       </div>
     </main>
   );
