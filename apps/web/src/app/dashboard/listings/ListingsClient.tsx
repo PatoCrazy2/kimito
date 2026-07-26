@@ -905,7 +905,7 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                             </p>
                           </div>
 
-                          <div className="flex gap-2">
+                          <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleStartEdit(listing)}
                               className="text-[11px] font-semibold text-muted-foreground hover:text-foreground flex items-center gap-0.5 px-2.5 py-1.5 rounded-xl hover:bg-muted transition-colors border border-border/20"
@@ -921,21 +921,9 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                               <span className="material-symbols-rounded text-xs">delete</span>
                               Eliminar
                             </button>
-                            <Button
-                              onClick={() => toggleExpandListing(listing.id)}
-                              variant="outline"
-                              size="sm"
-                              className={cn(
-                                "rounded-xl text-[11px] font-semibold h-8 border-amber-primary/20",
-                                isExpanded && "bg-amber-primary/10 text-amber-primary"
-                              )}
-                            >
-                              <span className="material-symbols-rounded text-sm mr-1">group</span>
-                              Candidatos
-                              <span className="material-symbols-rounded text-xs ml-1 transition-transform duration-200">
-                                {isExpanded ? "expand_less" : "expand_more"}
-                              </span>
-                            </Button>
+                            <span className="material-symbols-rounded text-muted-foreground/60 transition-transform duration-200 select-none ml-1">
+                              {isExpanded ? "expand_less" : "expand_more"}
+                            </span>
                           </div>
                         </div>
 
