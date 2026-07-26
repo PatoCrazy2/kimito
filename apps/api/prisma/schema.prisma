@@ -20,6 +20,7 @@ model User {
   listings         Listing[]
   pushSubscriptions PushSubscription[]
   applications     ListingApplication[]
+  membershipHistories MembershipHistory[]
 }
 
 model House {
@@ -132,3 +133,15 @@ model ListingApplication {
   listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model MembershipHistory {
+  id         String   @id @default(uuid())
+  userId     String
+  role       String
+  joinedAt   DateTime
+  leftAt     DateTime @default(now())
+  actionType String
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
