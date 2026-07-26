@@ -18,6 +18,7 @@ import {
   getListingApplicationsAction,
   inviteCandidateAction,
 } from "@/app/actions/listing-actions";
+import { uploadEvidenceAction } from "@/app/actions/storage-actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -73,6 +74,8 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
   const [formGender, setFormGender] = useState<PreferredGender | "">("");
   const [formPets, setFormPets] = useState(false);
   const [formSmoking, setFormSmoking] = useState(false);
+  const [formImages, setFormImages] = useState<string[]>([]);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Edit / Delete states
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -129,6 +132,28 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
     });
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingImage(true);
+    setCreateError("");
+    try {
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      const result = await uploadEvidenceAction(formData);
+      setFormImages((prev) => [...prev, result.url]);
+    } catch (err: any) {
+      setCreateError(err instanceof Error ? err.message : "Error al subir la imagen");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setFormImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleCreate = async () => {
     setCreateError("");
     if (!formTitle.trim()) { setCreateError("El título es obligatorio"); return; }
@@ -151,12 +176,14 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
         preferredGender: formGender ? formGender : undefined,
         petsAllowed: formPets,
         smokingAllowed: formSmoking,
+        images: formImages,
       };
       await createListingAction(dto);
       setCreateSuccess(true);
       setFormTitle(""); setFormDescription(""); setFormRent(""); setFormDeposit("");
       setFormLocation(""); setFormAvailableFrom(""); setFormRooms("1");
       setFormGender(""); setFormPets(false); setFormSmoking(false);
+      setFormImages([]);
       setTimeout(() => { setCreateSuccess(false); setShowCreate(false); }, 1500);
       fetchListings(1);
     } catch (err: unknown) {
@@ -452,6 +479,15 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                     key={listing.id}
                     className="bg-white rounded-2xl border border-border/30 p-5 flex flex-col justify-between hover:border-amber-primary/30 hover:shadow-[0_4px_16px_rgba(133,83,0,0.05)] transition-all duration-200 text-left"
                   >
+                    {listing.images && listing.images.length > 0 && (
+                      <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-3 bg-muted">
+                        <img
+                          src={listing.images[0]}
+                          alt={listing.title}
+                          className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
                     <div className="space-y-3">
                       {/* Badge / Price */}
                       <div className="flex items-start justify-between">
@@ -637,6 +673,44 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                     <option value="MALE">Hombre</option>
                     <option value="ANY">Cualquiera</option>
                   </select>
+                </div>
+
+                <div className="space-y-1.5 sm:col-span-2">
+                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
+                    <span className="material-symbols-rounded text-xs text-amber-primary">photo_library</span>
+                    Fotos de la habitación / casa (máx 4)
+                  </label>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {formImages.map((img, idx) => (
+                      <div key={idx} className="relative aspect-video rounded-xl overflow-hidden bg-muted group">
+                        <img src={img} alt="Preview" className="object-cover w-full h-full" />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(idx)}
+                          className="absolute top-1 right-1 bg-red-50 text-white rounded-full p-1 shadow-sm opacity-90 hover:opacity-100 transition-opacity"
+                        >
+                          <span className="material-symbols-rounded text-[14px] block">delete</span>
+                        </button>
+                      </div>
+                    ))}
+                    
+                    {formImages.length < 4 && (
+                      <label className="border border-dashed border-border/60 hover:border-amber-primary/40 rounded-xl flex flex-col items-center justify-center cursor-pointer aspect-video bg-muted/20 hover:bg-muted/30 transition-all">
+                        <span className="material-symbols-rounded text-lg text-muted-foreground">add_a_photo</span>
+                        <span className="text-[10px] text-muted-foreground mt-0.5">
+                          {uploadingImage ? "Subiendo..." : "Subir Foto"}
+                        </span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={uploadingImage}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                  </div>
                 </div>
               </div>
 
