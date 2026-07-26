@@ -58,7 +58,7 @@ export class StorageService {
     fs.writeFileSync(filePath, file.buffer);
 
     // URL servida por el backend local
-    const url = `http://localhost:3001/storage/files/${filename}`;
+    const url = `http://localhost:3000/storage/files/${filename}`;
     return { url, key: filename };
   }
 
