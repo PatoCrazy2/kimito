@@ -74,6 +74,8 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
 
   // Copy state
   const [copied, setCopied] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   const handleCreateHouse = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,6 +137,33 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
     navigator.clipboard.writeText(inviteLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleShare = async () => {
+    const inviteLink = `${origin}/join?code=${house?.inviteCode}`;
+    const text = `¡Únete a mi casa en Kimito! Usa este enlace para unirte:`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Kimito - Invitación a Casa",
+          text: `${text} ${inviteLink}`,
+          url: inviteLink,
+        });
+        return;
+      } catch (err) {
+        console.log("Native share failed or dismissed", err);
+      }
+    }
+    
+    setShowShareMenu(!showShareMenu);
+  };
+
+  const copyInviteCode = () => {
+    if (!house) return;
+    navigator.clipboard.writeText(house.inviteCode);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
   };
 
   const handleLeaveHouse = async () => {
@@ -411,29 +440,84 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
               <div className="space-y-4 text-left">
                 <div>
                   <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Link de Invitación Directa</h4>
-                  <div className="flex items-center justify-between bg-[#FAF9F6] border border-border/30 rounded-xl p-3 mt-1.5 gap-2">
-                    <p className="text-xs font-mono text-muted-foreground truncate select-all">
+                  <div className="flex items-center justify-between bg-[#FAF9F6] border border-border/30 rounded-xl p-3 mt-1.5 gap-2 relative">
+                    <p className="text-xs font-mono text-muted-foreground truncate select-all flex-1">
                       {origin}/join?code={house.inviteCode}
                     </p>
-                    <button 
-                      onClick={copyInviteLink} 
-                      className="rounded-lg bg-white border border-border/40 px-3 py-1.5 text-[10px] font-bold shadow-xs shrink-0 flex items-center gap-1 hover:bg-[#FAF9F6] cursor-pointer"
-                    >
-                      <span className="material-symbols-rounded text-xs">
-                        {copied ? "check" : "content_copy"}
-                      </span>
-                      {copied ? "Copiado" : "Copiar"}
-                    </button>
+                    
+                    <div className="relative">
+                      <button 
+                        onClick={handleShare} 
+                        className="rounded-lg bg-amber-primary hover:bg-[#6c4300] text-white px-3 py-1.5 text-[10px] font-bold shadow-xs shrink-0 flex items-center gap-1 cursor-pointer transition-colors"
+                      >
+                        <span className="material-symbols-rounded text-xs">share</span>
+                        Compartir
+                      </button>
+                      
+                      {showShareMenu && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white border border-border/30 rounded-xl shadow-lg p-2 z-10 animate-in fade-in slide-in-from-top-1 duration-150 space-y-1">
+                          <button
+                            onClick={() => {
+                              const inviteLink = `${origin}/join?code=${house?.inviteCode}`;
+                              window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent("¡Únete a mi casa en Kimito! " + inviteLink)}`, "_blank");
+                              setShowShareMenu(false);
+                            }}
+                            className="w-full text-left px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-[#FAF9F6] rounded-lg flex items-center gap-2"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#25D366]" />
+                            WhatsApp
+                          </button>
+                          <button
+                            onClick={() => {
+                              const inviteLink = `${origin}/join?code=${house?.inviteCode}`;
+                              window.open(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("¡Únete a mi casa en Kimito!")}`, "_blank");
+                              setShowShareMenu(false);
+                            }}
+                            className="w-full text-left px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-[#FAF9F6] rounded-lg flex items-center gap-2"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#0088cc]" />
+                            Telegram
+                          </button>
+                          <button
+                            onClick={() => {
+                              const inviteLink = `${origin}/join?code=${house?.inviteCode}`;
+                              window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(inviteLink)}`, "_blank");
+                              setShowShareMenu(false);
+                            }}
+                            className="w-full text-left px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-[#FAF9F6] rounded-lg flex items-center gap-2"
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#1877F2]" />
+                            Facebook
+                          </button>
+                          <button
+                            onClick={() => {
+                              copyInviteLink();
+                              setShowShareMenu(false);
+                            }}
+                            className="w-full text-left px-2.5 py-1.5 text-[11px] font-medium text-foreground hover:bg-[#FAF9F6] rounded-lg flex items-center gap-2 border-t border-border/10 pt-2"
+                          >
+                            <span className="material-symbols-rounded text-xs text-muted-foreground">content_copy</span>
+                            {copied ? "¡Copiado!" : "Copiar Enlace"}
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
                 
                 <hr className="border-border/20" />
 
                 <div>
-                  <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Código de Invitación Manual</h4>
-                  <div className="bg-[#FAF9F6] border border-border/30 rounded-xl p-4 mt-1.5 text-center font-mono font-black text-xl text-[#1D1B16] tracking-widest uppercase select-all">
+                  <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Código de Invitación Manual (Toca para copiar)</h4>
+                  <button
+                    onClick={copyInviteCode}
+                    className="w-full bg-[#FAF9F6] hover:bg-[#FAF9F6]/80 border border-border/30 rounded-xl p-4 mt-1.5 text-center font-mono font-black text-xl text-[#1D1B16] tracking-widest uppercase select-all relative group cursor-pointer transition-colors"
+                  >
                     {house.inviteCode}
-                  </div>
+                    <span className="absolute bottom-1.5 right-2 text-[9px] font-bold text-amber-primary bg-amber-primary/5 px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      {copiedCode ? "¡Copiado!" : "Toca para copiar"}
+                    </span>
+                  </button>
                 </div>
               </div>
             </Card>
