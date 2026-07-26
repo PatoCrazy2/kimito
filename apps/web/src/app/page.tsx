@@ -4,6 +4,9 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { BentoGrid } from "@/components/landing/BentoGrid";
 import { HowItWorks } from "@/components/landing/HowItWorks";
+import { MarketplaceTeaser } from "@/components/landing/MarketplaceTeaser";
+import { CtaBanner } from "@/components/landing/CtaBanner";
+import { Footer } from "@/components/landing/Footer";
 
 export default async function HomePage() {
   const session = await auth();
@@ -25,6 +28,15 @@ export default async function HomePage() {
 
       {/* How It Works Step-by-Step */}
       <HowItWorks />
+
+      {/* Roommate Marketplace Teaser */}
+      <MarketplaceTeaser />
+
+      {/* High-Impact CTA Banner */}
+      <CtaBanner />
+
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }
