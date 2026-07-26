@@ -15,6 +15,8 @@ import type {
   ListingFilters,
   PaginatedListings,
   ListingOwner,
+  CreateListingApplicationDto,
+  ListingApplicationResponse,
 } from '@kimito/shared-types';
 
 @Injectable()
@@ -58,7 +60,43 @@ export class ListingsService {
     };
   }
 
-  private mapToResponse(listing: Listing, owner: ListingOwner): ListingResponse {
+  private async getHouseStats(houseId: string | null): Promise<{ memberCount: number | null; reputationAverage: number | null }> {
+    if (!houseId) {
+      return { memberCount: null, reputationAverage: null };
+    }
+
+    const memberships = await this.prisma.houseMembership.findMany({
+      where: { houseId, active: true },
+      select: { userId: true },
+    });
+
+    const memberCount = memberships.length;
+    if (memberCount === 0) {
+      return { memberCount: 0, reputationAverage: null };
+    }
+
+    const memberIds = memberships.map((m) => m.userId);
+    const scores = await this.prisma.reputationScore.findMany({
+      where: { userId: { in: memberIds } },
+      select: { score: true },
+    });
+
+    if (scores.length === 0) {
+      return { memberCount, reputationAverage: null };
+    }
+
+    const totalScore = scores.reduce((sum, s) => sum + s.score, 0);
+    const reputationAverage = Number((totalScore / scores.length).toFixed(1));
+
+    return { memberCount, reputationAverage };
+  }
+
+  private mapToResponse(
+    listing: Listing,
+    owner: ListingOwner,
+    houseMemberCount: number | null = null,
+    houseReputationAverage: number | null = null,
+  ): ListingResponse {
     return {
       id: listing.id,
       title: listing.title,
@@ -75,6 +113,8 @@ export class ListingsService {
       status: listing.status as ListingResponse['status'],
       owner,
       houseId: listing.houseId ?? null,
+      houseMemberCount,
+      houseReputationAverage,
       createdAt: listing.createdAt,
       updatedAt: listing.updatedAt,
     };
@@ -127,7 +167,8 @@ export class ListingsService {
     });
 
     const owner = await this.buildOwnerWithReputation(user.id);
-    return this.mapToResponse(listing, owner);
+    const stats = await this.getHouseStats(listing.houseId);
+    return this.mapToResponse(listing, owner, stats.memberCount, stats.reputationAverage);
   }
 
   async getListings(filters: ListingFilters): Promise<PaginatedListings> {
@@ -227,6 +268,58 @@ export class ListingsService {
       }),
     );
 
+    // Obtener información de casa en lote
+    const houseIds = [...new Set(listings.map((l) => l.houseId).filter(Boolean) as string[])];
+    const houseStatsMap = new Map<string, { memberCount: number; reputationAverage: number | null }>();
+
+    if (houseIds.length > 0) {
+      const memberships = await this.prisma.houseMembership.findMany({
+        where: { houseId: { in: houseIds }, active: true },
+        select: { houseId: true, userId: true },
+      });
+
+      const userIds = [...new Set(memberships.map((m) => m.userId))];
+      const scores = await this.prisma.reputationScore.findMany({
+        where: { userId: { in: userIds } },
+        select: { userId: true, score: true },
+      });
+
+      const houseMembersMap = new Map<string, string[]>();
+      for (const m of memberships) {
+        if (!houseMembersMap.has(m.houseId)) {
+          houseMembersMap.set(m.houseId, []);
+        }
+        houseMembersMap.get(m.houseId)!.push(m.userId);
+      }
+
+      const userScoreMap = new Map<string, number>();
+      for (const s of scores) {
+        userScoreMap.set(s.userId, s.score);
+      }
+
+      for (const houseId of houseIds) {
+        const memberIds = houseMembersMap.get(houseId) || [];
+        const memberCount = memberIds.length;
+        if (memberCount === 0) {
+          houseStatsMap.set(houseId, { memberCount: 0, reputationAverage: null });
+          continue;
+        }
+
+        let sum = 0;
+        let count = 0;
+        for (const mId of memberIds) {
+          const score = userScoreMap.get(mId);
+          if (score !== undefined) {
+            sum += score;
+            count++;
+          }
+        }
+
+        const reputationAverage = count > 0 ? Number((sum / count).toFixed(1)) : null;
+        houseStatsMap.set(houseId, { memberCount, reputationAverage });
+      }
+    }
+
     const data: ListingResponse[] = listings.map((listing) => {
       const owner: ListingOwner = {
         id: listing.user.id,
@@ -234,7 +327,13 @@ export class ListingsService {
         avatarUrl: listing.user.avatarUrl,
         reputationScore: reputationMap.get(listing.userId) ?? null,
       };
-      return this.mapToResponse(listing, owner);
+      const stats = listing.houseId ? houseStatsMap.get(listing.houseId) : null;
+      return this.mapToResponse(
+        listing,
+        owner,
+        stats?.memberCount ?? null,
+        stats?.reputationAverage ?? null,
+      );
     });
 
     return {
@@ -261,7 +360,8 @@ export class ListingsService {
     }
 
     const owner = await this.buildOwnerWithReputation(listing.userId);
-    return this.mapToResponse(listing, owner);
+    const stats = await this.getHouseStats(listing.houseId);
+    return this.mapToResponse(listing, owner, stats.memberCount, stats.reputationAverage);
   }
 
   async updateListing(email: string, id: string, dto: UpdateListingDto): Promise<ListingResponse> {
@@ -302,7 +402,8 @@ export class ListingsService {
     });
 
     const owner = await this.buildOwnerWithReputation(user.id);
-    return this.mapToResponse(updated, owner);
+    const stats = await this.getHouseStats(updated.houseId);
+    return this.mapToResponse(updated, owner, stats.memberCount, stats.reputationAverage);
   }
 
   async deleteListing(email: string, id: string): Promise<void> {
@@ -318,5 +419,117 @@ export class ListingsService {
     }
 
     await this.prisma.listing.delete({ where: { id } });
+  }
+
+  async applyToListing(
+    email: string,
+    listingId: string,
+    dto: CreateListingApplicationDto,
+  ): Promise<ListingApplicationResponse> {
+    const user = await this.getUserByEmail(email);
+
+    const listing = await this.prisma.listing.findUnique({ where: { id: listingId } });
+    if (!listing) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    if (listing.userId === user.id) {
+      throw new BadRequestException('No puedes postularte a tu propia publicación');
+    }
+
+    // Verificar si ya se postuló
+    const existing = await this.prisma.listingApplication.findFirst({
+      where: { listingId, userId: user.id },
+    });
+    if (existing) {
+      throw new BadRequestException('Ya te has postulado a esta publicación');
+    }
+
+    const application = await this.prisma.listingApplication.create({
+      data: {
+        listingId,
+        userId: user.id,
+        phoneNumber: dto.phoneNumber.trim(),
+        message: dto.message?.trim() ?? null,
+      },
+      include: {
+        user: {
+          select: { id: true, name: true, avatarUrl: true },
+        },
+      },
+    });
+
+    let reputationScore: number | null = null;
+    try {
+      const rep = await this.reputationService.getUserReputation(user.id);
+      reputationScore = rep.score;
+    } catch {}
+
+    return {
+      id: application.id,
+      listingId: application.listingId,
+      userId: application.userId,
+      phoneNumber: application.phoneNumber,
+      message: application.message,
+      createdAt: application.createdAt,
+      user: {
+        id: application.user.id,
+        name: application.user.name,
+        avatarUrl: application.user.avatarUrl,
+        reputationScore,
+      },
+    };
+  }
+
+  async getListingApplications(email: string, listingId: string): Promise<ListingApplicationResponse[]> {
+    const user = await this.getUserByEmail(email);
+
+    const listing = await this.prisma.listing.findUnique({ where: { id: listingId } });
+    if (!listing) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    if (listing.userId !== user.id) {
+      throw new ForbiddenException('Solo el dueño puede ver las postulaciones');
+    }
+
+    const applications = await this.prisma.listingApplication.findMany({
+      where: { listingId },
+      include: {
+        user: {
+          select: { id: true, name: true, avatarUrl: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Cargar reputaciones en paralelo
+    const userIds = [...new Set(applications.map((app) => app.userId))];
+    const reputationMap = new Map<string, number | null>();
+    await Promise.all(
+      userIds.map(async (uId) => {
+        try {
+          const rep = await this.reputationService.getUserReputation(uId);
+          reputationMap.set(uId, rep.score);
+        } catch {
+          reputationMap.set(uId, null);
+        }
+      }),
+    );
+
+    return applications.map((app) => ({
+      id: app.id,
+      listingId: app.listingId,
+      userId: app.userId,
+      phoneNumber: app.phoneNumber,
+      message: app.message,
+      createdAt: app.createdAt,
+      user: {
+        id: app.user.id,
+        name: app.user.name,
+        avatarUrl: app.user.avatarUrl,
+        reputationScore: reputationMap.get(app.userId) ?? null,
+      },
+    }));
   }
 }

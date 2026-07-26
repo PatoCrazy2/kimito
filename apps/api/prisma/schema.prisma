@@ -19,6 +19,7 @@ model User {
   reputationScores ReputationScore[]
   listings         Listing[]
   pushSubscriptions PushSubscription[]
+  applications     ListingApplication[]
 }
 
 model House {
@@ -100,6 +101,7 @@ model Listing {
 
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   house House? @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  applications ListingApplication[]
 }
 
 enum ListingStatus {
@@ -117,4 +119,16 @@ model PushSubscription {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ListingApplication {
+  id          String   @id @default(uuid())
+  listingId   String
+  userId      String
+  phoneNumber String
+  message     String?
+  createdAt   DateTime @default(now())
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

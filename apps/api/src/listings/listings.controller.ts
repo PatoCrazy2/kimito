@@ -20,6 +20,8 @@ import type {
   PaginatedListings,
   ListingStatus,
   PreferredGender,
+  CreateListingApplicationDto,
+  ListingApplicationResponse,
 } from '@kimito/shared-types';
 
 @Controller('listings')
@@ -88,5 +90,24 @@ export class ListingsController {
   ): Promise<{ success: boolean }> {
     await this.listingsService.deleteListing(req.user.email, id);
     return { success: true };
+  }
+
+  @UseGuards(AuthGuard)
+  @Post(':id/apply')
+  async applyToListing(
+    @Request() req: any,
+    @Param('id') id: string,
+    @Body() dto: CreateListingApplicationDto,
+  ): Promise<ListingApplicationResponse> {
+    return this.listingsService.applyToListing(req.user.email, id, dto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id/applications')
+  async getListingApplications(
+    @Request() req: any,
+    @Param('id') id: string,
+  ): Promise<ListingApplicationResponse[]> {
+    return this.listingsService.getListingApplications(req.user.email, id);
   }
 }

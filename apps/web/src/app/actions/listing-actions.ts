@@ -8,6 +8,8 @@ import type {
   PaginatedListings,
   ListingStatus,
   PreferredGender,
+  CreateListingApplicationDto,
+  ListingApplicationResponse,
 } from "@kimito/shared-types";
 import { revalidatePath } from "next/cache";
 
@@ -84,4 +86,29 @@ export async function deleteListingAction(id: string): Promise<{ success: boolea
   });
   revalidatePath("/dashboard/listings");
   return res;
+}
+
+export async function applyToListingAction(
+  listingId: string,
+  dto: CreateListingApplicationDto,
+): Promise<ListingApplicationResponse> {
+  const res = await fetchFromApi<ListingApplicationResponse>(`/listings/${listingId}/apply`, {
+    method: "POST",
+    body: JSON.stringify(dto),
+  });
+  revalidatePath("/dashboard/listings");
+  return res;
+}
+
+export async function getListingApplicationsAction(
+  listingId: string,
+): Promise<ListingApplicationResponse[]> {
+  try {
+    return await fetchFromApi<ListingApplicationResponse[]>(`/listings/${listingId}/applications`, {
+      cache: "no-store",
+    });
+  } catch (error) {
+    console.error("Error al obtener postulaciones:", error);
+    return [];
+  }
 }

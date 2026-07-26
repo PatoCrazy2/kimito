@@ -54,6 +54,8 @@ export interface ListingResponse {
   status: ListingStatus;
   owner: ListingOwner;
   houseId: string | null;
+  houseMemberCount: number | null;
+  houseReputationAverage: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -78,4 +80,24 @@ export interface PaginatedListings {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface CreateListingApplicationDto {
+  phoneNumber: string;
+  message?: string;
+}
+
+export interface ListingApplicationResponse {
+  id: string;
+  listingId: string;
+  userId: string;
+  phoneNumber: string;
+  message: string | null;
+  createdAt: Date;
+  user: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+    reputationScore: number | null;
+  };
 }
