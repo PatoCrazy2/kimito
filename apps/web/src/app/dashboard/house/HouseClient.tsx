@@ -12,6 +12,7 @@ import {
   getMembershipHistoryAction,
 } from "@/app/actions/house-actions";
 import { Input } from "@/components/ui/input";
+import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -247,10 +248,10 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
             </div>
             <div className="space-y-1">
               <label className="block text-xs font-bold text-foreground mb-1.5 uppercase tracking-wider">Dirección (Opcional)</label>
-              <Input
-                placeholder="Ej: Av. Providencia 1234, Depto 402"
+              <AddressAutocomplete
                 value={createAddress}
-                onChange={(e) => setCreateAddress(e.target.value)}
+                onChange={setCreateAddress}
+                placeholder="Ej: Av. Providencia 1234, Santiago..."
                 className="rounded-xl border-border/60"
               />
             </div>
@@ -570,13 +571,10 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
 
                     <div>
                       <label htmlFor="editAddress" className="block text-xs font-bold text-foreground mb-1.5 uppercase tracking-wider">Dirección</label>
-                      <input
-                        id="editAddress"
-                        type="text"
-                        placeholder="Dirección del hogar..."
+                      <AddressAutocomplete
                         value={editAddress}
-                        onChange={(e) => setEditAddress(e.target.value)}
-                        disabled={editLoading}
+                        onChange={setEditAddress}
+                        placeholder="Dirección del hogar..."
                         className="w-full bg-[#FAF9F6] border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
                       />
                     </div>
@@ -607,12 +605,24 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
                         {house.description || "Sin descripción ni reglas registradas."}
                       </p>
                     </div>
-                    <div className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4">
+                     <div className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4">
                       <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Dirección</h4>
                       <p className="text-xs font-medium text-foreground leading-relaxed">
                         {house.address || "Sin dirección registrada."}
                       </p>
                     </div>
+                    {house.address && (
+                      <div className="mt-4 rounded-2xl overflow-hidden border border-border/20 aspect-video w-full bg-muted">
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          loading="lazy"
+                          allowFullScreen
+                          src={`https://maps.google.com/maps?q=${encodeURIComponent(house.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -662,12 +672,24 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
                     {house.description || "Sin descripción ni reglas registradas."}
                   </p>
                 </div>
-                <div className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4">
+                 <div className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4">
                   <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Dirección</h4>
                   <p className="text-xs font-medium text-foreground leading-relaxed">
                     {house.address || "Sin dirección registrada."}
                   </p>
                 </div>
+                {house.address && (
+                  <div className="mt-4 rounded-2xl overflow-hidden border border-border/20 aspect-video w-full bg-muted">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      allowFullScreen
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(house.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </Card>
