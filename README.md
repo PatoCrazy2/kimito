@@ -24,16 +24,41 @@
 
 ---
 
-## El Producto
+## El Producto & Funcionalidades en Orden
 
 Compartir vivienda presenta retos organizacionales complejos. Un alto porcentaje de los conflictos entre roommates surge por la desigualdad en la limpieza y la falta de rendición de cuentas. Kimito resuelve esto mediante un registro de rendimiento del hogar transparente y estructurado.
 
-### Propuestas de Valor Clave
-*   **Equidad Algorítmica (Scheduling):** Las tareas se asignan semanalmente de forma automática según su peso estimado (dificultad y tiempo). El algoritmo greedy de empaquetado de contenedores (greedy bin-packing) garantiza que ningún roommate cargue con una responsabilidad desproporcionada.
-*   **El Pasaporte de Coexistencia (reputación de 0.0 a 5.0):** Cada tarea completada a tiempo mejora la puntuación pública. Al mudarse a un nuevo hogar, el usuario puede exportar su Pasaporte de Coexistencia verificado para demostrar que es un inquilino ejemplar.
-*   **Registro de Evidencias (S3):** Los miembros del hogar suben evidencia fotográfica al completar tareas, con respaldo en Amazon S3, manteniendo la transparencia sin necesidad de supervisión manual.
-*   **Marketplace de Roommates:** Un portal de búsqueda especializado para publicar habitaciones disponibles o postularse a hogares compartidos basándose en la reputación verificada de los usuarios.
-*   **Notificaciones Instantáneas:** Alertas directas en el navegador mediante Web Push nativo para informar sobre nuevas tareas asignadas o completadas, sin depender de servicios de terceros.
+A continuación, se presenta el flujo completo de funcionalidades en orden secuencial del producto:
+
+### 1. Gestión de Hogares y Coexistencia (Casas)
+*   **Crear un Hogar Compartido:** Cualquier usuario puede fundar una nueva casa y registrar su descripción, reglas y dirección física.
+*   **Código de Invitación Directo y Enlace Social:** El creador (administrador) puede compartir el código manual y el link directo a través de redes sociales (WhatsApp, Telegram, Facebook) con soporte para la API de compartir nativa en móviles.
+*   **Unirse a un Hogar:** Los nuevos roommates se unen de forma instantánea ingresando el código de invitación o mediante el link compartido.
+
+### 2. Organización y Equidad en Tareas del Hogar (Scheduling)
+*   **Catálogo de Tareas con Peso:** Las tareas comunes tienen un "peso" específico basado en su dificultad y duración.
+*   **Algoritmo de Asignación Equitativa:** Las tareas se distribuyen automáticamente cada semana de forma equitativa utilizando un algoritmo codicioso de empaquetado (greedy bin-packing), garantizando que la carga de trabajo de todos los integrantes sea justa.
+*   **Registro de Evidencia con Fotos:** Al finalizar una tarea, el roommate sube una foto como evidencia, almacenándose localmente (en desarrollo) o en Amazon S3 (en producción) con fallback automático.
+
+### 3. El Pasaporte de Coexistencia (Reputación)
+*   **Score Dinámico de Reputación:** Un sistema califica a los inquilinos de 0.0 a 5.0 estrellas según su tasa de cumplimiento de tareas en tiempo real.
+*   **Currículum de Roommate Permanente:** Si un roommate sale de la casa, es expulsado o la casa es eliminada, sus datos de permanencia y su rol se guardan permanentemente en su historial de experiencias (`MembershipHistory`), sirviendo como su "carta de presentación" verificada al buscar un nuevo hogar.
+
+### 4. Administración de Casa y Zona de Peligro
+*   **Expulsión de Miembros (Admin):** Los administradores pueden expulsar de forma segura a cualquier roommate que no cumpla con las normas.
+*   **Disolución de la Casa (Admin):** El administrador puede eliminar la casa por completo, registrándose automáticamente la experiencia de salida de todos los miembros.
+*   **Salida Voluntaria (Miembro):** Los roommates pueden salir de la casa cuando lo deseen, resguardando su reputación obtenida.
+
+### 5. Integración de Mapas y Ubicaciones Precisas
+*   **Buscador de Direcciones Inteligente (Nominatim):** Al ingresar una dirección (al crear la casa o publicar un anuncio), se consultan en tiempo real sugerencias de direcciones precisas mediante la API de OpenStreetMap con un debounce óptimo.
+*   **Mapas Interactivos Embebidos (Google Maps Embed):** Muestra de forma estética y responsiva la ubicación del hogar y de las habitaciones en el Marketplace con paneles colapsables.
+
+### 6. Marketplace de Roommates y Postulaciones
+*   **Publicar Habitación Disponible:** Permite crear anuncios con detalles de renta, depósito, imágenes (hasta 4 fotos con previsualización en tiempo real y carga segura autorizada) y características de convivencia.
+*   **Exploración y Filtros Premium:** Los buscadores pueden filtrar habitaciones usando controles segmentados interactivos de género, precio, mascotas o fumadores.
+*   **Postulaciones Directas:** Al postularse, se ingresa el teléfono del candidato y un mensaje, guardando el registro y habilitando un botón para contactar directamente a su WhatsApp (`wa.me`).
+*   **Invitación Web Push:** El dueño del anuncio puede compartir el código de invitación directamente al candidato usando notificaciones Push nativas en el navegador (VAPID).
+
 
 ---
 
