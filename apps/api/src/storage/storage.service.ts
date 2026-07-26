@@ -9,8 +9,12 @@ export class StorageService {
   private uploadDir = path.join(process.cwd(), 'uploads');
 
   constructor() {
-    // Si hay credenciales de S3, inicializamos el cliente de AWS
-    if (process.env.AWS_S3_BUCKET && process.env.AWS_REGION) {
+    // Si hay credenciales de S3 y no es el placeholder por defecto, inicializamos AWS
+    if (
+      process.env.AWS_S3_BUCKET &&
+      process.env.AWS_S3_BUCKET !== 'your-s3-bucket-name' &&
+      process.env.AWS_REGION
+    ) {
       this.s3Client = new S3Client({
         region: process.env.AWS_REGION,
       });
@@ -35,8 +39,12 @@ export class StorageService {
     const fileExtension = path.extname(file.originalname) || '.jpg';
     const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}${fileExtension}`;
 
-    // Si S3 está configurado, subimos a AWS
-    if (this.s3Client && process.env.AWS_S3_BUCKET) {
+    // Si S3 está configurado y no es placeholder, subimos a AWS
+    if (
+      this.s3Client &&
+      process.env.AWS_S3_BUCKET &&
+      process.env.AWS_S3_BUCKET !== 'your-s3-bucket-name'
+    ) {
       const bucket = process.env.AWS_S3_BUCKET;
       const key = `evidences/${filename}`;
 
@@ -58,7 +66,7 @@ export class StorageService {
     fs.writeFileSync(filePath, file.buffer);
 
     // URL servida por el backend local
-    const url = `http://localhost:3001/storage/files/${filename}`;
+    const url = `http://localhost:3000/storage/files/${filename}`;
     return { url, key: filename };
   }
 

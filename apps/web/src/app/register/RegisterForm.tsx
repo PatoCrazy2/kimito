@@ -14,13 +14,13 @@ export function RegisterForm() {
     <div className="w-full">
       <form action={formAction} className="space-y-4 mb-6 text-left">
         {state?.error && (
-          <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-xl text-center">
+          <div className="p-3 text-[13px] text-red-600 bg-red-50 border border-red-100 rounded-xl text-center font-medium animate-fade-up">
             {state.error}
           </div>
         )}
 
         <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-foreground" htmlFor="name">
+          <label className="text-[13px] font-semibold text-foreground" htmlFor="name">
             Nombre completo
           </label>
           <Input 
@@ -29,13 +29,13 @@ export function RegisterForm() {
             type="text" 
             placeholder="Juan Pérez" 
             required 
-            className="h-12 rounded-xl"
+            className="h-11 rounded-xl bg-[#FAF9F6]/60 border-border/40 focus-visible:bg-white focus-visible:border-amber-primary/30 focus-visible:shadow-[0_0_0_3px_rgba(133,83,0,0.08)] transition-all duration-200"
             disabled={isPending}
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-foreground" htmlFor="email">
+          <label className="text-[13px] font-semibold text-foreground" htmlFor="email">
             Correo electrónico
           </label>
           <Input 
@@ -44,13 +44,13 @@ export function RegisterForm() {
             type="email" 
             placeholder="ejemplo@correo.com" 
             required 
-            className="h-12 rounded-xl"
+            className="h-11 rounded-xl bg-[#FAF9F6]/60 border-border/40 focus-visible:bg-white focus-visible:border-amber-primary/30 focus-visible:shadow-[0_0_0_3px_rgba(133,83,0,0.08)] transition-all duration-200"
             disabled={isPending}
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-foreground" htmlFor="password">
+          <label className="text-[13px] font-semibold text-foreground" htmlFor="password">
             Contraseña
           </label>
           <Input 
@@ -59,13 +59,13 @@ export function RegisterForm() {
             type="password" 
             placeholder="••••••••" 
             required 
-            className="h-12 rounded-xl"
+            className="h-11 rounded-xl bg-[#FAF9F6]/60 border-border/40 focus-visible:bg-white focus-visible:border-amber-primary/30 focus-visible:shadow-[0_0_0_3px_rgba(133,83,0,0.08)] transition-all duration-200"
             disabled={isPending}
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-foreground" htmlFor="confirmPassword">
+          <label className="text-[13px] font-semibold text-foreground" htmlFor="confirmPassword">
             Confirmar contraseña
           </label>
           <Input 
@@ -74,18 +74,18 @@ export function RegisterForm() {
             type="password" 
             placeholder="••••••••" 
             required 
-            className="h-12 rounded-xl"
+            className="h-11 rounded-xl bg-[#FAF9F6]/60 border-border/40 focus-visible:bg-white focus-visible:border-amber-primary/30 focus-visible:shadow-[0_0_0_3px_rgba(133,83,0,0.08)] transition-all duration-200"
             disabled={isPending}
           />
         </div>
 
         <Button 
           type="submit" 
-          className="w-full h-12 bg-amber-primary hover:bg-[#6c4300] text-white font-bold rounded-xl shadow-md transition-all mt-4"
+          className="w-full h-11 bg-amber-primary hover:bg-[#6c4300] text-white font-semibold rounded-xl shadow-[0_2px_8px_rgba(133,83,0,0.2)] hover:shadow-[0_4px_16px_rgba(133,83,0,0.25)] active:translate-y-[1px] active:shadow-[0_1px_4px_rgba(133,83,0,0.2)] transition-all duration-200 mt-4"
           disabled={isPending}
         >
           {isPending ? (
-            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             "Crear cuenta"
           )}
@@ -94,10 +94,10 @@ export function RegisterForm() {
 
       <div className="relative mb-6 mt-6">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-border" />
+          <span className="w-full border-t border-border/40" />
         </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground font-medium">
+        <div className="relative flex justify-center text-[11px] uppercase">
+          <span className="bg-card px-3 text-muted-foreground font-medium tracking-wide">
             O registrarse con
           </span>
         </div>
@@ -107,9 +107,9 @@ export function RegisterForm() {
         <Button
           type="submit"
           variant="outline"
-          className="w-full h-12 flex items-center justify-center gap-3 bg-card hover:bg-muted/50 border border-border/60 text-foreground font-semibold rounded-xl shadow-sm transition-all"
+          className="w-full h-11 flex items-center justify-center gap-2.5 bg-white hover:bg-muted/40 border border-border/40 text-foreground font-semibold rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] active:translate-y-[1px] transition-all duration-200"
         >
-          <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+          <svg className="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -131,9 +131,9 @@ export function RegisterForm() {
         </Button>
       </form>
 
-      <div className="mt-8 text-center text-sm font-medium text-muted-foreground">
+      <div className="mt-8 text-center text-[13px] font-medium text-muted-foreground">
         ¿Ya tienes una cuenta?{" "}
-        <Link href="/login" className="text-amber-primary hover:underline">
+        <Link href="/login" className="text-amber-primary font-semibold hover:underline transition-colors">
           Iniciar sesión
         </Link>
       </div>

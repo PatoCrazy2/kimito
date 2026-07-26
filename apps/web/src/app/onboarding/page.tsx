@@ -3,7 +3,10 @@ import { getMyHouseAction } from "@/app/actions/house-actions";
 import { redirect } from "next/navigation";
 import OnboardingFullscreenClient from "./OnboardingFullscreenClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function OnboardingPage() {
+
   const user = await getCurrentUser();
   
   if (!user) {

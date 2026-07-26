@@ -1,7 +1,23 @@
-import { Controller, Get, Post, Put, Body, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Query,
+  Param,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { HousesService } from './houses.service';
 import { AuthGuard } from '../auth/auth.guard';
-import type { CreateHouseDto, JoinHouseDto, HouseResponse, HouseMemberResponse } from '@kimito/shared-types';
+import type {
+  CreateHouseDto,
+  JoinHouseDto,
+  HouseResponse,
+  HouseMemberResponse,
+} from '@kimito/shared-types';
 
 @Controller('houses')
 export class HousesController {
@@ -50,5 +66,31 @@ export class HousesController {
   ): Promise<HouseResponse> {
     return this.housesService.updateHouse(req.user.email, dto);
   }
-}
 
+  @UseGuards(AuthGuard)
+  @Post('leave')
+  async leaveHouse(@Request() req: any): Promise<{ success: boolean }> {
+    return this.housesService.leaveHouse(req.user.email);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('members/:userId/kick')
+  async kickMember(
+    @Request() req: any,
+    @Param('userId') userId: string,
+  ): Promise<{ success: boolean }> {
+    return this.housesService.kickMember(req.user.email, userId);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete()
+  async deleteHouse(@Request() req: any): Promise<{ success: boolean }> {
+    return this.housesService.deleteHouse(req.user.email);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('history')
+  async getMembershipHistory(@Request() req: any): Promise<any[]> {
+    return this.housesService.getMembershipHistory(req.user.email);
+  }
+}

@@ -7,7 +7,7 @@ import { AuthError } from "next-auth";
  * Inicia el flujo de autenticación con Google OAuth.
  */
 export async function loginWithGoogle() {
-  await signIn("google", { redirectTo: "/dashboard" });
+  await signIn("google", { redirectTo: "/login?success=true" });
 }
 
 /**
@@ -18,7 +18,7 @@ export async function loginWithCredentials(prevState: any, formData: FormData) {
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirectTo: "/dashboard",
+      redirect: false,
     });
     return { success: true };
   } catch (error) {

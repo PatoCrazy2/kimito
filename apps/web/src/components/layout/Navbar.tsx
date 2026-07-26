@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logout } from "@/app/actions/auth-actions";
 import { UserDto } from "@kimito/shared-types";
 import { cn } from "@/lib/utils";
+import { KimitoLogo } from "@/components/KimitoLogo";
 
 const navItems = [
   { name: "Inicio", href: "/dashboard", icon: "space_dashboard" },
@@ -22,21 +23,33 @@ interface NavbarProps {
 export default function Navbar({ user }: NavbarProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on Escape
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDropdownOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [dropdownOpen]);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#FAF9F6]/85 backdrop-blur-md border-b border-border/40 px-6 py-4 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full bg-background/80 backdrop-blur-xl border-b border-border/30 px-6 py-3.5 flex items-center justify-between">
       {/* Logotipo y Nombre */}
-      <div className="flex items-center gap-3">
-        <span className="material-symbols-rounded text-amber-primary text-3xl font-semibold select-none">
-          cleaning_services
+      <Link href="/dashboard" className="flex items-center gap-2.5 group">
+        <KimitoLogo size={30} className="transition-transform duration-200 group-hover:scale-105" />
+        <span className="font-sans font-bold text-xl tracking-tight text-foreground">
+          Kimito
         </span>
-        <span className="font-sans font-extrabold text-2xl tracking-tight text-foreground flex items-center gap-1.5">
-          Kimito <span className="text-[10px] bg-amber-primary/10 text-amber-primary px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">MVP</span>
+        <span className="text-[9px] bg-amber-primary/8 text-amber-primary/80 px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
+          MVP
         </span>
-      </div>
+      </Link>
 
       {/* Navegación Desktop */}
-      <nav className="hidden md:flex items-center gap-1 bg-white/50 border border-border/20 p-1 rounded-full shadow-[0_4px_20px_0_rgba(133,83,0,0.02)]">
+      <nav className="hidden md:flex items-center gap-0.5 bg-white/60 border border-border/15 p-1 rounded-full shadow-[0_2px_12px_0_rgba(133,83,0,0.03)]">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href.split("#")[0] + "/"));
           return (
@@ -44,13 +57,13 @@ export default function Navbar({ user }: NavbarProps) {
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer",
+                "relative flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] font-semibold uppercase tracking-wide cursor-pointer",
                 isActive
-                  ? "bg-amber-primary/10 text-amber-primary"
-                  : "text-muted-foreground hover:bg-[#FAF9F6] hover:text-foreground"
+                  ? "bg-amber-primary/10 text-amber-primary shadow-[inset_0_1px_2px_rgba(133,83,0,0.06)]"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground active:scale-[0.97]"
               )}
             >
-              <span className="material-symbols-rounded text-lg">
+              <span className="material-symbols-rounded text-[18px]">
                 {item.icon}
               </span>
               {item.name}
@@ -62,29 +75,34 @@ export default function Navbar({ user }: NavbarProps) {
       {/* Perfil de Usuario */}
       <div className="flex items-center gap-4">
         {user ? (
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-3 hover:bg-muted p-1.5 pr-3 rounded-full transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-primary/20"
+              aria-expanded={dropdownOpen}
+              aria-haspopup="true"
+              className="flex items-center gap-2.5 hover:bg-muted/60 p-1.5 pr-3 rounded-full cursor-pointer"
             >
               {user.avatarUrl ? (
                 <Image
                   src={user.avatarUrl}
                   alt={user.name}
-                  width={36}
-                  height={36}
-                  className="rounded-full border-2 border-amber-primary/20 shadow-sm"
+                  width={34}
+                  height={34}
+                  className="rounded-full border-2 border-amber-primary/15 shadow-sm"
                 />
               ) : (
-                <div className="w-9 h-9 rounded-full bg-amber-primary text-white flex items-center justify-center font-bold text-sm shadow-sm select-none">
+                <div className="w-[34px] h-[34px] rounded-full bg-amber-primary text-white flex items-center justify-center font-semibold text-sm shadow-sm select-none">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="hidden md:flex flex-col items-start text-left">
-                <span className="text-sm font-semibold leading-none text-foreground">{user.name}</span>
-                <span className="text-xs text-muted-foreground mt-0.5 max-w-[150px] truncate">{user.email}</span>
+                <span className="text-[13px] font-semibold leading-none text-foreground">{user.name}</span>
+                <span className="text-[11px] text-muted-foreground mt-0.5 max-w-[140px] truncate">{user.email}</span>
               </div>
-              <span className="material-symbols-rounded text-muted-foreground text-sm select-none">
+              <span className={cn(
+                "material-symbols-rounded text-muted-foreground text-[16px] select-none transition-transform duration-200",
+                dropdownOpen && "rotate-180"
+              )}>
                 keyboard_arrow_down
               </span>
             </button>
@@ -95,25 +113,29 @@ export default function Navbar({ user }: NavbarProps) {
                   className="fixed inset-0 z-10"
                   onClick={() => setDropdownOpen(false)}
                 />
-                <div className="absolute right-0 mt-2.5 w-60 bg-card border border-border/80 rounded-2xl shadow-xl p-2 z-20 animate-in fade-in slide-in-from-top-3 duration-200">
-                  <div className="px-4 py-3 border-b border-border/50 md:hidden">
-                    <p className="text-sm font-bold text-foreground">{user.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                <div className="absolute right-0 mt-2 w-56 bg-card border border-border/60 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.08),0_2px_8px_rgba(133,83,0,0.04)] p-1.5 z-20 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="px-3.5 py-2.5 border-b border-border/40 mb-1 md:hidden">
+                    <p className="text-[13px] font-semibold text-foreground">{user.name}</p>
+                    <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                   </div>
                   <Link
                     href="/dashboard/profile"
                     onClick={() => setDropdownOpen(false)}
-                    className="w-full text-left flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-foreground hover:bg-muted transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-foreground hover:bg-muted/70 cursor-pointer text-left"
                   >
-                    <span className="material-symbols-rounded text-lg select-none">account_circle</span>
+                    <span className="material-symbols-rounded text-[18px] text-muted-foreground select-none shrink-0 flex items-center justify-center w-5">
+                      account_circle
+                    </span>
                     Mi Perfil
                   </Link>
                   <Link
                     href="/dashboard/settings"
                     onClick={() => setDropdownOpen(false)}
-                    className="w-full text-left flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-foreground hover:bg-muted transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-foreground hover:bg-muted/70 cursor-pointer text-left"
                   >
-                    <span className="material-symbols-rounded text-lg select-none">settings</span>
+                    <span className="material-symbols-rounded text-[18px] text-muted-foreground select-none shrink-0 flex items-center justify-center w-5">
+                      settings
+                    </span>
                     Configuración
                   </Link>
                   <button
@@ -121,9 +143,11 @@ export default function Navbar({ user }: NavbarProps) {
                       setDropdownOpen(false);
                       logout();
                     }}
-                    className="w-full text-left flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-terracota hover:bg-destructive/5 transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-terracota hover:bg-terracota/5 cursor-pointer text-left"
                   >
-                    <span className="material-symbols-rounded text-lg select-none">logout</span>
+                    <span className="material-symbols-rounded text-[18px] select-none shrink-0 flex items-center justify-center w-5">
+                      logout
+                    </span>
                     Cerrar sesión
                   </button>
                 </div>
@@ -131,7 +155,7 @@ export default function Navbar({ user }: NavbarProps) {
             )}
           </div>
         ) : (
-          <div className="w-9 h-9 rounded-full bg-muted animate-pulse" />
+          <div className="w-[34px] h-[34px] rounded-full bg-muted animate-pulse" />
         )}
       </div>
     </header>

@@ -10,7 +10,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   const user = await getCurrentUser();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
+    <div className="min-h-screen flex flex-col">
       {/* Navbar Superior */}
       <Navbar user={user} />
 
@@ -19,8 +19,8 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
         <Sidebar />
 
         {/* Contenido de la Página */}
-        <main className="w-full max-w-2xl px-4 py-6 md:py-8 pb-24 md:pb-8">
-          <div className="bg-card md:shadow-[0_8px_30px_0_rgba(133,83,0,0.03)] md:rounded-3xl md:border md:border-border/10 p-4 md:p-8 min-h-[calc(100vh-140px)]">
+        <main className="w-full max-w-2xl px-4 py-6 md:py-10 pb-24 md:pb-10">
+          <div className="bg-card/90 backdrop-blur-[1px] md:shadow-[0_2px_8px_rgba(133,83,0,0.02),0_8px_32px_rgba(133,83,0,0.04)] md:rounded-2xl md:border md:border-border/15 p-5 md:p-8 min-h-[calc(100vh-130px)] page-enter">
             {children}
           </div>
         </main>

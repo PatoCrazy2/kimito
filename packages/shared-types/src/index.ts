@@ -12,3 +12,4 @@ export * from "./houses.types";
 export * from "./tasks.types";
 export * from "./scheduling.types";
 export * from "./notifications.types";
+export * from "./listings.types";

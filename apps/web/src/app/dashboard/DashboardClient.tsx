@@ -67,44 +67,48 @@ export default function DashboardClient({
   const isAdmin = currentUserMember?.role === "ADMIN";
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-7">
       {/* Cabecera superior */}
-      <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground select-none pb-1.5 border-b border-border/30 w-full">
+      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-muted-foreground select-none pb-2 border-b border-border/25 w-full animate-fade-up">
         <span>{formattedDate}</span>
         <span>
-          Hogar:{" "}
-          <span className="font-extrabold text-foreground">{houseName}</span>
+          <span className="text-foreground font-bold">{houseName}</span>
         </span>
       </div>
 
       {/* Saludo y Frase del día */}
-      <div className="text-left select-none space-y-2 mt-2">
-        <h1 className="font-sans font-black text-3xl text-[#1D1B16] tracking-tight leading-none">
+      <div className="text-left select-none space-y-2.5 animate-fade-up" style={{ animationDelay: "50ms" }}>
+        <h1 className="font-sans font-extrabold text-[28px] text-foreground tracking-tight leading-none">
           Hola, {userName.split(" ")[0]}
         </h1>
-        <p className="text-xs italic text-muted-foreground/60 leading-relaxed max-w-sm">
-          “{dailyFact.content}”
+        <p className="text-[13px] italic text-muted-foreground/70 leading-relaxed max-w-sm">
+          &ldquo;{dailyFact.content}&rdquo;
         </p>
       </div>
 
-      {/* Tarea 3.12: Banner de Permiso de Notificaciones Push */}
-      <PushNotificationBanner />
+      {/* Banner de Permiso de Notificaciones Push */}
+      <div className="animate-fade-up" style={{ animationDelay: "100ms" }}>
+        <PushNotificationBanner />
+      </div>
 
       {/* Sección Mis Tareas */}
-      <div className="space-y-3">
-        <h3 className="font-sans font-black text-base text-foreground text-left flex items-center gap-2 select-none">
-          <span className="material-symbols-rounded text-amber-primary">assignment_ind</span>
-          Mis Tareas Pendientes ({myAssignments.filter(a => a.status !== "COMPLETED").length})
+      <div className="space-y-3 animate-fade-up" style={{ animationDelay: "200ms" }}>
+        <h3 className="font-sans font-bold text-[15px] text-foreground text-left flex items-center gap-2 select-none">
+          <span className="material-symbols-rounded text-amber-primary text-xl">assignment_ind</span>
+          Mis Tareas Pendientes
+          <span className="text-muted-foreground font-medium text-xs ml-0.5">
+            ({myAssignments.filter(a => a.status !== "COMPLETED").length})
+          </span>
         </h3>
 
         {myAssignments.length === 0 ? (
-          <div className="text-center p-8 bg-[#FAF9F6] border border-dashed border-border/60 rounded-3xl space-y-3">
-            <span className="material-symbols-rounded text-muted-foreground text-4xl">celebration</span>
-            <p className="text-sm font-bold text-foreground">¡Estás al día!</p>
-            <p className="text-xs text-muted-foreground">No tienes tareas asignadas pendientes en este periodo.</p>
+          <div className="text-center py-10 px-6 bg-muted/30 border border-dashed border-border/50 rounded-2xl space-y-2.5">
+            <span className="material-symbols-rounded text-muted-foreground/60 text-4xl">celebration</span>
+            <p className="text-sm font-semibold text-foreground">¡Estás al día!</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">No tienes tareas asignadas pendientes en este periodo.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-3.5">
+          <div className="grid grid-cols-1 gap-3 stagger-children">
             {myAssignments.map((assignment) => {
               const isCompleted = assignment.status === "COMPLETED";
               
@@ -133,23 +137,23 @@ export default function DashboardClient({
               return (
                 <div
                   key={assignment.id}
-                  className={`p-4 rounded-3xl border transition-all space-y-3 text-left ${
+                  className={`p-4 rounded-2xl border transition-all duration-200 space-y-3 text-left ${
                     isCompleted
-                      ? "bg-muted/20 border-border/50 opacity-70"
-                      : "bg-white border-border/50 hover:border-amber-primary/40 shadow-[0_2px_12px_rgba(133,83,0,0.01)]"
+                      ? "bg-muted/20 border-border/40 opacity-60"
+                      : "bg-white border-border/30 hover:border-amber-primary/30 hover:shadow-[0_2px_12px_rgba(133,83,0,0.05)] hover:-translate-y-[1px]"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h4 className="font-bold text-sm text-foreground flex items-center gap-1.5 flex-wrap">
+                    <div className="min-w-0">
+                      <h4 className="font-semibold text-sm text-foreground flex items-center gap-1.5 flex-wrap">
                         {assignment.task?.title || "Tarea"}
-                        <span className="text-[10px] bg-amber-primary/10 text-amber-primary font-black px-2 py-0.5 rounded-full inline-flex items-center gap-0.5">
-                          Peso: {assignment.task?.weight || 1} <span className="material-symbols-rounded text-[10px] text-amber-primary select-none">star</span>
+                        <span className="text-[10px] bg-amber-primary/8 text-amber-primary font-bold px-2 py-0.5 rounded-md inline-flex items-center gap-0.5">
+                          {assignment.task?.weight || 1} <span className="material-symbols-rounded text-[10px] text-amber-primary select-none">star</span>
                         </span>
                       </h4>
                       <p className="text-xs text-muted-foreground mt-1.5 flex items-center gap-1 font-medium">
                         <span className="material-symbols-rounded text-xs">repeat</span>
-                        Frecuencia: {assignment.task?.recurrence === "daily" ? "Diaria" : assignment.task?.recurrence === "weekly" ? "Semanal" : "Mensual"}
+                        {assignment.task?.recurrence === "daily" ? "Diaria" : assignment.task?.recurrence === "weekly" ? "Semanal" : "Mensual"}
                       </p>
                       {daysRemainingText && (
                         <p className={`text-[10px] font-bold mt-1.5 flex items-center gap-1 ${
@@ -163,21 +167,21 @@ export default function DashboardClient({
                       )}
                     </div>
                     <span
-                      className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0 ${
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide shrink-0 ${
                         isCompleted
-                          ? "bg-muted text-muted-foreground border border-border/40"
-                          : "bg-amber-primary/10 text-amber-primary"
+                          ? "bg-muted text-muted-foreground"
+                          : "bg-amber-primary/8 text-amber-primary"
                       }`}
                     >
-                      {isCompleted ? "Completada" : "Pendiente"}
+                      {isCompleted ? "Hecha" : "Pendiente"}
                     </span>
                   </div>
 
                   {!isCompleted && (
-                    <div className="flex justify-end pt-2 border-t border-border/20">
+                    <div className="flex justify-end pt-2.5 border-t border-border/15">
                       <button
                         onClick={() => handleOpenCompleteModal(assignment)}
-                        className="bg-amber-primary hover:bg-amber-primary/95 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                        className="bg-amber-primary hover:bg-[#6c4300] text-white font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-[0_2px_8px_rgba(133,83,0,0.15)] hover:shadow-[0_4px_12px_rgba(133,83,0,0.2)] active:translate-y-[1px] active:shadow-[0_1px_4px_rgba(133,83,0,0.15)]"
                       >
                         <span className="material-symbols-rounded text-sm">check_circle</span>
                         Completar
@@ -192,20 +196,20 @@ export default function DashboardClient({
       </div>
 
       {/* Botón para expandir/colapsar el calendario general */}
-      <div className="flex justify-center pt-2">
+      <div className="flex justify-center pt-2 animate-fade-up" style={{ animationDelay: "250ms" }}>
         <button
           onClick={() => setShowFullCalendar(!showFullCalendar)}
-          className="border border-border/60 hover:bg-[#FAF9F6] text-foreground font-bold py-2.5 px-6 rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer select-none active:scale-95 shadow-xs"
+          className="border border-border/40 hover:border-border/60 hover:bg-white bg-white/50 text-foreground font-semibold py-2.5 px-6 rounded-xl text-xs flex items-center gap-2 cursor-pointer select-none shadow-[0_1px_4px_rgba(0,0,0,0.03)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.05)] active:translate-y-[1px]"
         >
-          <span className="material-symbols-rounded text-base">
+          <span className="material-symbols-rounded text-base text-muted-foreground">
             {showFullCalendar ? "keyboard_arrow_up" : "calendar_month"}
           </span>
-          {showFullCalendar ? "Ocultar Calendario de la Casa" : "Ver Calendario de la Casa"}
+          {showFullCalendar ? "Ocultar Calendario" : "Ver Calendario de la Casa"}
         </button>
       </div>
 
       {showFullCalendar && (
-        <div className="pt-6 border-t border-border/30 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="pt-6 border-t border-border/20 animate-in fade-in slide-in-from-top-3 duration-300">
           <TaskCalendar
             initialAssignments={assignments}
             members={members}
@@ -216,7 +220,7 @@ export default function DashboardClient({
         </div>
       )}
 
-      {/* Tarea 3.11: Modal de finalización con foto de evidencia */}
+      {/* Modal de finalización con foto de evidencia */}
       <CompleteTaskModal
         assignment={selectedAssignment}
         isOpen={isModalOpen}
