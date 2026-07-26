@@ -130,8 +130,6 @@ export class SchedulingService {
     email: string,
   ): Promise<TaskAssignmentResponse[]> {
     const membership = await this.getUserActiveMembership(email);
-<<<<<<< Updated upstream
-=======
     const houseId = membership.houseId;
 
     // 1. Obtener lunes y domingo de la semana en curso
@@ -188,7 +186,6 @@ export class SchedulingService {
         );
       }
     }
->>>>>>> Stashed changes
 
     const assignments = await this.prisma.taskAssignment.findMany({
       where: {
