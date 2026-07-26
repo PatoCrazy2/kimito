@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createHouseAction, joinHouseAction } from "@/app/actions/house-actions";
 
 interface OnboardingClientProps {
@@ -91,6 +92,14 @@ export default function OnboardingClient({ userName }: OnboardingClientProps) {
           Unirme a casa
         </button>
       </div>
+
+      <Link
+        href="/dashboard/listings"
+        className="mt-4 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+      >
+        <span className="material-symbols-rounded text-sm">search</span>
+        ¿Buscas habitación? Explora publicaciones disponibles
+      </Link>
 
       {/* Modal: Crear Casa */}
       {isCreateOpen && (

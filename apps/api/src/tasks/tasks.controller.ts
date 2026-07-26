@@ -1,7 +1,21 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { AuthGuard } from '../auth/auth.guard';
-import type { CreateTaskDto, UpdateTaskDto, TaskResponse } from '@kimito/shared-types';
+import type {
+  CreateTaskDto,
+  UpdateTaskDto,
+  TaskResponse,
+} from '@kimito/shared-types';
 
 @Controller()
 @UseGuards(AuthGuard)
