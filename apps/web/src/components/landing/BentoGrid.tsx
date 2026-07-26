@@ -13,7 +13,10 @@ import {
 
 export function BentoGrid() {
   return (
-    <section id="features" className="py-24 bg-[#FAF9F6] relative overflow-hidden">
+    <section
+      id="features"
+      className="py-24 bg-[#FAF9F6] relative overflow-hidden"
+    >
       {/* Background Subtle Blurs */}
       <div className="absolute top-1/3 left-10 w-96 h-96 bg-[#F59E0B]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-[#006B5F]/10 rounded-full blur-3xl pointer-events-none" />
@@ -25,13 +28,13 @@ export function BentoGrid() {
             Organización clara, justa y transparente para tu hogar
           </h2>
           <p className="text-base sm:text-lg text-[#1D1B16]/70 leading-relaxed">
-            Olvídate de las discusiones sobre quién limpia más. Kimito automatiza el reparto, valida con fotos y recompensa la constancia.
+            Olvídate de las discusiones sobre quién limpia más. Kimito
+            automatiza el reparto, valida con fotos y recompensa la constancia.
           </p>
         </div>
 
         {/* 12-Column Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          
           {/* Card 1: Tall Left (Fair Chore Algorithm) - 7 cols on medium/large */}
           <div className="md:col-span-7 bg-white rounded-[32px] p-8 border border-[#E8E1D3] shadow-md shadow-[#855300]/5 flex flex-col justify-between group hover:shadow-xl hover:border-[#855300]/30 transition-all duration-300">
             <div className="space-y-3 mb-6">
@@ -42,7 +45,9 @@ export function BentoGrid() {
                 Algoritmo de Reparto Equitativo
               </h3>
               <p className="text-[#1D1B16]/75 text-sm leading-relaxed">
-                Cada tarea tiene una ponderación basada en esfuerzo real (puntos). El algoritmo Greedy Bin-Packing distribuye la carga semanal exacta entre todos los roomies.
+                Cada tarea tiene una ponderación basada en esfuerzo real
+                (puntos). El algoritmo Greedy Bin-Packing distribuye la carga
+                semanal exacta entre todos los roomies.
               </p>
             </div>
 
@@ -62,7 +67,7 @@ export function BentoGrid() {
                 {/* User 1 */}
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs font-semibold text-[#1D1B16]">
-                    <span>Beto (Tú)</span>
+                    <span>Luis A. (Tú)</span>
                     <span className="text-[#855300]">12 pts (3 tareas)</span>
                   </div>
                   <div className="w-full bg-[#E8E1D3]/60 h-3 rounded-full overflow-hidden">
@@ -105,7 +110,8 @@ export function BentoGrid() {
                 Evidencia Fotográfica
               </h3>
               <p className="text-[#1D1B16]/75 text-sm leading-relaxed">
-                Toma o sube una foto al terminar. La evidencia queda registrada con fecha y hora para evitar malos entendidos.
+                Toma o sube una foto al terminar. La evidencia queda registrada
+                con fecha y hora para evitar malos entendidos.
               </p>
             </div>
 
@@ -122,7 +128,9 @@ export function BentoGrid() {
               </div>
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-3 text-white text-xs">
                 <p className="font-bold">Limpieza Profunda de Cocina</p>
-                <p className="text-white/80 text-[11px]">Subido por Sofía R. • Hoy, 10:15 AM</p>
+                <p className="text-white/80 text-[11px]">
+                  Subido por Sofía R. • Hoy, 10:15 AM
+                </p>
               </div>
             </div>
           </div>
@@ -137,21 +145,26 @@ export function BentoGrid() {
                 Pasaporte de Reputación
               </h3>
               <p className="text-[#CDC5B4] text-sm leading-relaxed">
-                Tu historial de aseo se convierte en un score público. Úsalo como tu carta de presentación al buscar tu siguiente casa.
+                Tu historial de aseo se convierte en un score público. Úsalo
+                como tu carta de presentación al buscar tu siguiente casa.
               </p>
             </div>
 
             {/* Visual: Score Passport Badge */}
             <div className="bg-[#2A2823] rounded-2xl p-5 border border-[#4D4639] space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-[#CDC5B4] font-semibold">Reputación Acumulada</span>
+                <span className="text-xs text-[#CDC5B4] font-semibold">
+                  Reputación Acumulada
+                </span>
                 <span className="inline-flex items-center gap-1 text-xs font-bold text-[#F59E0B] bg-[#F59E0B]/10 px-2.5 py-0.5 rounded-full">
                   <ShieldCheck className="w-3.5 h-3.5" /> Roommate Nivel Top
                 </span>
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-4xl font-black text-white">4.9</span>
-                <span className="text-[#CDC5B4] font-bold text-sm">/ 5.0 Estrellas</span>
+                <span className="text-[#CDC5B4] font-bold text-sm">
+                  / 5.0 Estrellas
+                </span>
                 <div className="flex text-[#F59E0B] ml-auto">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-current" />
@@ -171,7 +184,8 @@ export function BentoGrid() {
                 Notificaciones Web Push Nativas
               </h3>
               <p className="text-[#1D1B16]/75 text-sm leading-relaxed">
-                Recibe alertas en tiempo real con estándar VAPID cuando te asignen una tarea o un roommate suba su evidencia.
+                Recibe alertas en tiempo real con estándar VAPID cuando te
+                asignen una tarea o un roommate suba su evidencia.
               </p>
             </div>
 
@@ -183,8 +197,12 @@ export function BentoGrid() {
                     <CheckCircle2 className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="font-bold text-[#1D1B16]">Beto completó &quot;Sacar la basura&quot;</p>
-                    <p className="text-[11px] text-[#1D1B16]/60">Foto adjunta • Hace 5 min</p>
+                    <p className="font-bold text-[#1D1B16]">
+                      Luis completó &quot;Sacar la basura&quot;
+                    </p>
+                    <p className="text-[11px] text-[#1D1B16]/60">
+                      Foto adjunta • Hace 5 min
+                    </p>
                   </div>
                 </div>
                 <span className="text-[10px] font-extrabold text-[#006B5F] bg-[#006B5F]/10 px-2 py-0.5 rounded-md">
@@ -198,8 +216,12 @@ export function BentoGrid() {
                     <Scale className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="font-bold text-[#1D1B16]">Nuevas tareas asignadas para el Lunes</p>
-                    <p className="text-[11px] text-[#1D1B16]/60">Cron Job Automático • Hace 1 hora</p>
+                    <p className="font-bold text-[#1D1B16]">
+                      Nuevas tareas asignadas para el Lunes
+                    </p>
+                    <p className="text-[11px] text-[#1D1B16]/60">
+                      Cron Job Automático • Hace 1 hora
+                    </p>
                   </div>
                 </div>
                 <span className="text-[10px] font-extrabold text-[#855300] bg-[#F59E0B]/10 px-2 py-0.5 rounded-md">
@@ -208,7 +230,6 @@ export function BentoGrid() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

@@ -35,8 +35,12 @@ export function Hero() {
 
             {/* Subtitle */}
             <p className="text-lg sm:text-xl text-[#1D1B16]/75 font-normal leading-relaxed max-w-2xl">
-              Kimito calcula el peso real de cada labor de limpieza, las reparte de forma equitativa, valida las evidencias y construye tu{" "}
-              <span className="font-semibold text-[#855300]">Pasaporte de Reputación</span> como roommate.
+              Kimito calcula el peso real de cada labor de limpieza, las reparte
+              de forma equitativa, valida las evidencias y construye tu{" "}
+              <span className="font-semibold text-[#855300]">
+                Pasaporte de Reputación
+              </span>{" "}
+              como roommate.
             </p>
 
             {/* Dual CTAs */}
@@ -46,7 +50,10 @@ export function Hero() {
                 className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#855300] to-[#A36600] hover:from-[#6C4300] hover:to-[#855300] text-white text-base font-bold px-7 py-4 rounded-full shadow-lg shadow-[#855300]/25 hover:shadow-xl hover:shadow-[#855300]/35 transition-all duration-300 hover:-translate-y-0.5"
               >
                 {/* Google Icon SVG */}
-                <svg className="w-5 h-5 bg-white rounded-full p-0.5" viewBox="0 0 24 24">
+                <svg
+                  className="w-5 h-5 bg-white rounded-full p-0.5"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     fill="#4285F4"
                     d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
@@ -80,7 +87,6 @@ export function Hero() {
           {/* Right Column: Interactive Marketing Demo Cards Showcase */}
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md lg:max-w-none space-y-4">
-              
               {/* Floating Demo Card 1: Live Task Checklist */}
               <div className="bg-white rounded-3xl p-5 border border-[#E8E1D3] shadow-xl shadow-[#855300]/8 transform transition-transform duration-500 hover:scale-[1.02]">
                 <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#F4EFE6]">
@@ -89,8 +95,12 @@ export function Hero() {
                       <Clock className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#1D1B16]">Tareas de la semana</h3>
-                      <p className="text-xs text-[#1D1B16]/60">Semana 30 • Distribución justa</p>
+                      <h3 className="text-sm font-bold text-[#1D1B16]">
+                        Tareas de la semana
+                      </h3>
+                      <p className="text-xs text-[#1D1B16]/60">
+                        Semana 30 • Distribución justa
+                      </p>
                     </div>
                   </div>
                   <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-[#006B5F]/10 text-[#006B5F]">
@@ -106,8 +116,12 @@ export function Hero() {
                         <div className="w-2.5 h-2.5 rounded-full bg-[#855300]" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-[#1D1B16]">Limpieza de cocina profunda</p>
-                        <p className="text-[11px] text-[#1D1B16]/60">Asignado a Beto • 5 pts</p>
+                        <p className="text-xs font-bold text-[#1D1B16]">
+                          Limpieza de cocina profunda
+                        </p>
+                        <p className="text-[11px] text-[#1D1B16]/60">
+                          Asignado a Luis • 5 pts
+                        </p>
                       </div>
                     </div>
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-[#F59E0B]/15 text-[#855300]">
@@ -123,7 +137,9 @@ export function Hero() {
                         <p className="text-xs font-bold text-[#1D1B16] line-through text-[#1D1B16]/50">
                           Sacar basura y reciclaje
                         </p>
-                        <p className="text-[11px] text-[#006B5F] font-medium">Sofía • 2 pts completados</p>
+                        <p className="text-[11px] text-[#006B5F] font-medium">
+                          Sofía • 2 pts completados
+                        </p>
                       </div>
                     </div>
                     <span className="text-[11px] font-extrabold text-[#006B5F] px-2 py-0.5 rounded-md bg-[#006B5F]/15">
@@ -136,8 +152,12 @@ export function Hero() {
                     <div className="flex items-center gap-2.5">
                       <div className="w-5 h-5 rounded-full border-2 border-[#E8E1D3]" />
                       <div>
-                        <p className="text-xs font-bold text-[#1D1B16]">Aseo de baño principal</p>
-                        <p className="text-[11px] text-[#1D1B16]/60">Carlos M. • 4 pts</p>
+                        <p className="text-xs font-bold text-[#1D1B16]">
+                          Aseo de baño principal
+                        </p>
+                        <p className="text-[11px] text-[#1D1B16]/60">
+                          Carlos M. • 4 pts
+                        </p>
                       </div>
                     </div>
                     <span className="text-[11px] font-semibold text-[#1D1B16]/60 px-2 py-0.5 bg-[#F4EFE6] rounded-md">
@@ -160,17 +180,23 @@ export function Hero() {
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-sm text-white">Carlos Mendoza</span>
+                        <span className="font-bold text-sm text-white">
+                          Carlos Mendoza
+                        </span>
                         <ShieldCheck className="w-4 h-4 text-[#F59E0B]" />
                       </div>
-                      <p className="text-xs text-[#CDC5B4]">Pasaporte Roommate Certificado</p>
+                      <p className="text-xs text-[#CDC5B4]">
+                        Pasaporte Roommate Certificado
+                      </p>
                     </div>
                   </div>
 
                   <div className="text-right">
                     <div className="flex items-center gap-1 text-[#F59E0B]">
                       <Star className="w-4 h-4 fill-current" />
-                      <span className="text-base font-black text-white">4.9</span>
+                      <span className="text-base font-black text-white">
+                        4.9
+                      </span>
                       <span className="text-xs text-[#CDC5B4]">/5</span>
                     </div>
                   </div>
@@ -178,12 +204,18 @@ export function Hero() {
 
                 <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[#4D4639]/70 text-xs">
                   <div className="bg-[#2A2823] p-2.5 rounded-xl border border-[#4D4639]/40">
-                    <p className="text-[#CDC5B4] text-[11px]">Historial de Aseo</p>
-                    <p className="font-bold text-white text-sm mt-0.5">28 a tiempo</p>
+                    <p className="text-[#CDC5B4] text-[11px]">
+                      Historial de Aseo
+                    </p>
+                    <p className="font-bold text-white text-sm mt-0.5">
+                      28 a tiempo
+                    </p>
                   </div>
                   <div className="bg-[#2A2823] p-2.5 rounded-xl border border-[#4D4639]/40">
                     <p className="text-[#CDC5B4] text-[11px]">Cumplimiento</p>
-                    <p className="font-bold text-[#F59E0B] text-sm mt-0.5">100% verificado</p>
+                    <p className="font-bold text-[#F59E0B] text-sm mt-0.5">
+                      100% verificado
+                    </p>
                   </div>
                 </div>
               </div>
@@ -197,10 +229,11 @@ export function Hero() {
                   <p className="font-bold text-[#1D1B16]">
                     ¡Sofía subió evidencia para &quot;Cocina&quot;! 📸
                   </p>
-                  <p className="text-[#1D1B16]/60 text-[11px]">Web Push Alert • Hace 2 min</p>
+                  <p className="text-[#1D1B16]/60 text-[11px]">
+                    Web Push Alert • Hace 2 min
+                  </p>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
