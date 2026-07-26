@@ -19,8 +19,18 @@ export default async function LoginPage({
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-md bg-card border border-border/25 rounded-2xl p-8 md:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02),0_12px_40px_rgba(133,83,0,0.04)] text-center animate-fade-up">
+    <main className="flex min-h-screen items-center justify-center px-4 relative">
+      {/* Branded background pattern exclusive to Login */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.05] z-0"
+        style={{
+          backgroundImage: "url('/logo.svg')",
+          backgroundSize: "60px 60px",
+          backgroundRepeat: "repeat",
+        }}
+        aria-hidden="true"
+      />
+      <div className="w-full max-w-md bg-card border border-border/25 rounded-2xl p-8 md:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02),0_12px_40px_rgba(133,83,0,0.04)] text-center animate-fade-up relative z-10">
         {/* Logotipo */}
         <div className="mx-auto w-14 h-14 flex items-center justify-center mb-5">
           <KimitoLogo size={46} />

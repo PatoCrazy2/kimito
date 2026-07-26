@@ -121,17 +121,21 @@ export default function Navbar({ user }: NavbarProps) {
                   <Link
                     href="/dashboard/profile"
                     onClick={() => setDropdownOpen(false)}
-                    className="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-foreground hover:bg-muted/70 cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-foreground hover:bg-muted/70 cursor-pointer text-left"
                   >
-                    <span className="material-symbols-rounded text-[18px] text-muted-foreground select-none">account_circle</span>
+                    <span className="material-symbols-rounded text-[18px] text-muted-foreground select-none shrink-0 flex items-center justify-center w-5">
+                      account_circle
+                    </span>
                     Mi Perfil
                   </Link>
                   <Link
                     href="/dashboard/settings"
                     onClick={() => setDropdownOpen(false)}
-                    className="w-full text-left flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-foreground hover:bg-muted transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-foreground hover:bg-muted/70 cursor-pointer text-left"
                   >
-                    <span className="material-symbols-rounded text-lg select-none">settings</span>
+                    <span className="material-symbols-rounded text-[18px] text-muted-foreground select-none shrink-0 flex items-center justify-center w-5">
+                      settings
+                    </span>
                     Configuración
                   </Link>
                   <button
@@ -139,9 +143,11 @@ export default function Navbar({ user }: NavbarProps) {
                       setDropdownOpen(false);
                       logout();
                     }}
-                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-terracota hover:bg-terracota/5 cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-[13px] font-medium text-terracota hover:bg-terracota/5 cursor-pointer text-left"
                   >
-                    <span className="material-symbols-rounded text-[18px] select-none">logout</span>
+                    <span className="material-symbols-rounded text-[18px] select-none shrink-0 flex items-center justify-center w-5">
+                      logout
+                    </span>
                     Cerrar sesión
                   </button>
                 </div>
