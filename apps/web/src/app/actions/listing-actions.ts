@@ -112,3 +112,22 @@ export async function getListingApplicationsAction(
     return [];
   }
 }
+
+export async function inviteCandidateAction(
+  listingId: string,
+  applicationId: string,
+): Promise<{ success: boolean }> {
+  try {
+    const res = await fetchFromApi<{ success: boolean }>(
+      `/listings/${listingId}/applications/${applicationId}/invite`,
+      {
+        method: "POST",
+      },
+    );
+    revalidatePath("/dashboard/listings");
+    return res;
+  } catch (error) {
+    console.error("Error al invitar candidato:", error);
+    return { success: false };
+  }
+}

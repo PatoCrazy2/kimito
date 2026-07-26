@@ -110,4 +110,14 @@ export class ListingsController {
   ): Promise<ListingApplicationResponse[]> {
     return this.listingsService.getListingApplications(req.user.email, id);
   }
+
+  @UseGuards(AuthGuard)
+  @Post(':id/applications/:appId/invite')
+  async inviteCandidate(
+    @Request() req: any,
+    @Param('id') id: string,
+    @Param('appId') appId: string,
+  ): Promise<{ success: boolean }> {
+    return this.listingsService.inviteCandidate(req.user.email, id, appId);
+  }
 }

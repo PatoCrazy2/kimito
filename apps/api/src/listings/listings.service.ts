@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ReputationService } from '../reputation/reputation.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { Prisma, Listing } from '@prisma/client';
 import type {
   CreateListingDto,
@@ -24,6 +25,7 @@ export class ListingsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly reputationService: ReputationService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   private async getUserByEmail(email: string) {
@@ -531,5 +533,41 @@ export class ListingsService {
         reputationScore: reputationMap.get(app.userId) ?? null,
       },
     }));
+  }
+
+  async inviteCandidate(email: string, listingId: string, applicationId: string): Promise<{ success: boolean }> {
+    const user = await this.getUserByEmail(email);
+
+    const listing = await this.prisma.listing.findUnique({
+      where: { id: listingId },
+      include: { house: true },
+    });
+    if (!listing) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    if (listing.userId !== user.id) {
+      throw new ForbiddenException('Solo el dueño de la publicación puede invitar');
+    }
+
+    const application = await this.prisma.listingApplication.findUnique({
+      where: { id: applicationId },
+    });
+    if (!application) {
+      throw new NotFoundException('Postulación no encontrada');
+    }
+
+    if (!listing.houseId || !listing.house) {
+      throw new BadRequestException('Esta publicación no tiene una casa asociada');
+    }
+
+    // Enviar notificación al postulante
+    await this.notificationsService.sendNotificationToUser(application.userId, {
+      title: '¡Invitación a Casa!',
+      body: `Has sido invitado a unirte a la casa "${listing.house.name}". Código de invitación: ${listing.house.inviteCode}`,
+      url: `/join?code=${listing.house.inviteCode}`,
+    });
+
+    return { success: true };
   }
 }
