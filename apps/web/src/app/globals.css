@@ -147,18 +147,108 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
+    @apply bg-background text-foreground;
     font-family: "Plus Jakarta Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   html {
     font-family: "Plus Jakarta Sans", sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  /* Smooth transitions on interactive elements by default */
+  button, a, input, select, textarea {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Better focus-visible ring across the app */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(133, 83, 0, 0.15);
+    border-radius: inherit;
   }
 }
 
-/* Custom premium hover and animation effects */
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+/* Premium card — subtle lift on hover, organic shadow */
 .premium-card {
-  @apply bg-card text-card-foreground shadow-[0_4px_20px_0_rgba(133,83,0,0.04)] border border-border/60 transition-all duration-300 hover:shadow-[0_8px_30px_0_rgba(133,83,0,0.08)] hover:-translate-y-1;
+  @apply bg-card text-card-foreground border border-border/50 transition-all duration-300 ease-out;
+  box-shadow:
+    0 1px 3px rgba(133, 83, 0, 0.02),
+    0 4px 16px rgba(133, 83, 0, 0.03);
 }
+.premium-card:hover {
+  box-shadow:
+    0 4px 12px rgba(133, 83, 0, 0.04),
+    0 12px 40px rgba(133, 83, 0, 0.07);
+  transform: translateY(-2px);
+}
+
+/* Stagger-in animation for lists */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Stagger children — apply .stagger-children to a parent */
+.stagger-children > * {
+  animation: fade-up 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+.stagger-children > *:nth-child(n+9) { animation-delay: 400ms; }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 25%, var(--accent) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.75rem;
+}
+
+/* Progress bar pulse when active */
+@keyframes progress-glow {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 8px rgba(133, 83, 0, 0.3); }
+}
+
+.progress-bar-active {
+  animation: progress-glow 2s ease-in-out infinite;
+}
+
+/* Smoother page transitions */
+.page-enter {
+  animation: fade-up 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ==========================================================================
+   ICON FONT
+   ========================================================================== */
 
 .material-symbols-rounded {
   font-family: 'Material Symbols Rounded';
@@ -173,4 +263,16 @@
   word-wrap: normal;
   direction: ltr;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

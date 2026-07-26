@@ -10,6 +10,7 @@ import { SchedulingModule } from './scheduling/scheduling.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ReputationModule } from './reputation/reputation.module';
 import { StorageModule } from './storage/storage.module';
+import { ListingsModule } from './listings/listings.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { StorageModule } from './storage/storage.module';
     NotificationsModule,
     ReputationModule,
     StorageModule,
+    ListingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

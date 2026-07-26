@@ -1,0 +1,18 @@
+# Region de AWS donde se crearan los recursos
+aws_region = "us-east-1"
+
+# Nombre del proyecto
+project_name = "kimito"
+
+# Entorno (production, staging, dev)
+environment = "production"
+
+# Configuración de Base de Datos PostgreSQL (RDS)
+db_username = "kimito_user"
+db_password = "CambiaEstaContrasenaSegura123!"
+db_name     = "kimito_db"
+
+# Claves de Autenticación y OAuth
+auth_secret          = "un_secreto_super_seguro_para_jwt_y_authjs"
+google_client_id     = "tu-google-client-id.apps.googleusercontent.com"
+google_client_secret = "GOCSPX-tu-google-client-secret"

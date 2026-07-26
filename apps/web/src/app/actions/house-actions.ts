@@ -67,3 +67,41 @@ export async function updateHouseAction(dto: { name?: string; description?: stri
   return res;
 }
 
+export async function leaveHouseAction(): Promise<{ success: boolean }> {
+  const res = await fetchFromApi<{ success: boolean }>("/houses/leave", {
+    method: "POST",
+  });
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/house");
+  return res;
+}
+
+export async function kickMemberAction(userId: string): Promise<{ success: boolean }> {
+  const res = await fetchFromApi<{ success: boolean }>(`/houses/members/${userId}/kick`, {
+    method: "POST",
+  });
+  revalidatePath("/dashboard/house");
+  return res;
+}
+
+export async function deleteHouseAction(): Promise<{ success: boolean }> {
+  const res = await fetchFromApi<{ success: boolean }>("/houses", {
+    method: "DELETE",
+  });
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/house");
+  return res;
+}
+
+export async function getMembershipHistoryAction(): Promise<any[]> {
+  try {
+    return await fetchFromApi<any[]>("/houses/history", {
+      cache: "no-store",
+    });
+  } catch (error) {
+    console.error("Error al obtener historial de casas:", error);
+    return [];
+  }
+}
+
+
