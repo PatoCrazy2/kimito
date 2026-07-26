@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request } from 'express';
 import * as crypto from 'crypto';
 
@@ -20,7 +25,9 @@ export class AuthGuard implements CanActivate {
       // Attach user payload to request
       request.user = payload;
     } catch (e: any) {
-      throw new UnauthorizedException('Token inválido o expirado: ' + e.message);
+      throw new UnauthorizedException(
+        'Token inválido o expirado: ' + e.message,
+      );
     }
 
     return true;
@@ -47,7 +54,10 @@ export class AuthGuard implements CanActivate {
     const sigBuf = Buffer.from(signatureB64, 'utf8');
     const expBuf = Buffer.from(expectedSignature, 'utf8');
 
-    if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+    if (
+      sigBuf.length !== expBuf.length ||
+      !crypto.timingSafeEqual(sigBuf, expBuf)
+    ) {
       throw new Error('Firma de token inválida');
     }
 

@@ -1,6 +1,15 @@
-import { Injectable, BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateHouseDto, HouseResponse, HouseMemberResponse } from '@kimito/shared-types';
+import {
+  CreateHouseDto,
+  HouseResponse,
+  HouseMemberResponse,
+} from '@kimito/shared-types';
 import { TasksService } from '../tasks/tasks.service';
 import * as crypto from 'crypto';
 
@@ -25,7 +34,10 @@ export class HousesService {
     return user.id;
   }
 
-  async createHouse(email: string, dto: CreateHouseDto): Promise<HouseResponse> {
+  async createHouse(
+    email: string,
+    dto: CreateHouseDto,
+  ): Promise<HouseResponse> {
     const userId = await this.getUserIdByEmail(email);
 
     // Verify if user already has an active house membership
@@ -205,7 +217,10 @@ export class HousesService {
     }));
   }
 
-  async updateHouse(email: string, dto: { name?: string; description?: string; address?: string }): Promise<HouseResponse> {
+  async updateHouse(
+    email: string,
+    dto: { name?: string; description?: string; address?: string },
+  ): Promise<HouseResponse> {
     const userId = await this.getUserIdByEmail(email);
 
     const activeMembership = await this.prisma.houseMembership.findFirst({
@@ -220,14 +235,17 @@ export class HousesService {
     }
 
     if (activeMembership.role !== 'ADMIN') {
-      throw new UnauthorizedException('Solo el administrador puede actualizar los detalles de la casa');
+      throw new UnauthorizedException(
+        'Solo el administrador puede actualizar los detalles de la casa',
+      );
     }
 
     const updated = await this.prisma.house.update({
       where: { id: activeMembership.houseId },
       data: {
         name: dto.name !== undefined ? dto.name : undefined,
-        description: dto.description !== undefined ? dto.description : undefined,
+        description:
+          dto.description !== undefined ? dto.description : undefined,
         address: dto.address !== undefined ? dto.address : undefined,
       },
     });
@@ -242,4 +260,3 @@ export class HousesService {
     };
   }
 }
-

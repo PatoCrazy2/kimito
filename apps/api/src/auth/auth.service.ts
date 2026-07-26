@@ -6,7 +6,11 @@ import { UserDto } from '@kimito/shared-types';
 export class AuthService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async validateOrCreateUser(payload: { email: string; name: string; picture?: string }): Promise<UserDto> {
+  async validateOrCreateUser(payload: {
+    email: string;
+    name: string;
+    picture?: string;
+  }): Promise<UserDto> {
     const { email, name, picture } = payload;
 
     // Buscar el usuario por email

@@ -67,7 +67,6 @@ export class ReputationService {
       });
     }
 
-
     return {
       user,
       score,

@@ -175,7 +175,11 @@ export class SchedulingService {
         });
 
         if (activeMembersCount > 0 && activeTasksCount > 0) {
-          await this.generateSchedule(email, currentMonday.toISOString(), currentSunday.toISOString());
+          await this.generateSchedule(
+            email,
+            currentMonday.toISOString(),
+            currentSunday.toISOString(),
+          );
         }
       } catch (err) {
         console.error(
@@ -315,7 +319,6 @@ export class SchedulingService {
   }
 
   private getMonday(d: Date): Date {
-
     const date = new Date(d);
     const day = date.getDay();
     const diff = date.getDate() - day + (day === 0 ? -6 : 1);

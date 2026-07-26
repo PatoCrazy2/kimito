@@ -3,7 +3,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![AWS](https://img.shields.io/badge/Amazon_Web_Services-232F3E?style=flat-square&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
 
@@ -15,12 +14,12 @@
                                   [ K I M I T O ]
                      Infraestructura de Confianza para Co-Living
                                   
-+---------------------------------------------------------------------------------+
-|                                                                                 |
-|  [PLACEHOLDER: Imagen Destacada - Mockups profesionales mostrando el Dashboard  |
-|   de Kimito junto al Pasaporte de Reputación en un dispositivo móvil]           |
-|                                                                                 |
-+---------------------------------------------------------------------------------+
+ +---------------------------------------------------------------------------------+
+ |                                                                                 |
+ |  [PLACEHOLDER: Imagen Destacada - Mockups profesionales mostrando el Dashboard  |
+ |   de Kimito junto al Pasaporte de Reputación en un dispositivo móvil]           |
+ |                                                                                 |
+ +---------------------------------------------------------------------------------+
 ```
 
 ---
@@ -108,7 +107,7 @@ cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env
 ```
 
-Asegúrese de configurar adecuadamente las variables correspondientes en los archivos `apps/api/.env` y `apps/web/.env` (claves de JWT, credenciales de base de datos y llaves VAPID).
+Asegúrese de configurar adecuadamente las variables correspondientes en los archivos `apps/api/.env` and `apps/web/.env` (claves de JWT, credenciales de base de datos y llaves VAPID).
 
 #### 3. Iniciar la base de datos local
 Levante el contenedor de PostgreSQL en segundo plano:
@@ -128,34 +127,180 @@ Inicie el entorno de desarrollo concurrente con Turborepo:
 pnpm dev
 ```
 
-*   **API Service:** `http://localhost:3000`
-*   **Frontend Service:** `http://localhost:3001`
+Esto inicia:
+- **Backend (NestJS):** `http://localhost:3000`
+- **Frontend (Next.js):** `http://localhost:3001`
 
 ---
 
-## Compilación y Despliegue en Producción
+## Variables de Entorno
 
-### Compilación General
-Valide tipados, esquemas y empaquetado del monorepo con el siguiente comando:
+### Backend (`apps/api/.env`)
+
+| Variable | Descripción |
+|----------|-------------|
+| `DATABASE_URL` | Connection string PostgreSQL |
+| `AUTH_SECRET` | Secret compartido con frontend para JWT (mínimo 32 chars) |
+| `GOOGLE_CLIENT_ID` | OAuth Google (opcional) |
+| `GOOGLE_CLIENT_SECRET` | OAuth Google (opcional) |
+| `VAPID_PUBLIC_KEY` | Clave pública VAPID para push |
+| `VAPID_PRIVATE_KEY` | Clave privada VAPID para push |
+| `AWS_REGION` | Región S3 |
+| `AWS_S3_BUCKET` | Nombre del bucket S3 |
+
+### Frontend (`apps/web/.env`)
+
+| Variable | Descripción |
+|----------|-------------|
+| `NEXT_PUBLIC_API_URL` | URL del backend (default: `http://localhost:3000`) |
+| `AUTH_SECRET` | Debe ser idéntico al del backend |
+| `GOOGLE_CLIENT_ID` | OAuth Google (opcional) |
+| `GOOGLE_CLIENT_SECRET` | OAuth Google (opcional) |
+
+---
+
+## Docker
+
+### Desarrollo (PostgreSQL local)
+
 ```bash
-pnpm build
+docker compose up -d        # Levantar PostgreSQL
+docker compose down         # Detener
+docker compose down -v      # Detener y borrar datos
 ```
 
-### Integración con Docker (NestJS Backend)
-El servicio backend (`apps/api`) utiliza una construcción Docker multi-stage para garantizar ligereza:
-1.  **Etapa de Construcción (builder):** Instala el entorno completo del monorepo para compilar el backend haciendo uso del paquete `packages/shared-types`, genera el cliente de Prisma y compila el código a JavaScript puro en el directorio `dist/`.
-2.  **Etapa de Ejecución (runner):** Copia únicamente el directorio `dist/` compilado y las dependencias de producción, reduciendo el tamaño final de la imagen y garantizando mayor seguridad en el despliegue.
+### Producción (API en Docker)
+
+```bash
+docker build -t kimito-api -f apps/api/Dockerfile .
+docker run -p 3000:3000 --env-file apps/api/.env kimito-api
+```
+
+El Dockerfile usa multi-stage build: compila en una etapa y copia solo los artefactos de producción a la imagen final.
 
 ---
 
-## Infraestructura en la Nube (AWS e IaC)
+## Prisma
 
-Kimito se despliega de forma simplificada en Amazon Web Services (AWS) para evitar sobre-ingeniería:
-*   **Aplicación Backend:** API de NestJS alojada en AWS Elastic Beanstalk (mediante Docker).
-*   **Base de Datos:** PostgreSQL en Amazon RDS, configurado dentro de un grupo de seguridad que restringe el acceso únicamente al grupo de seguridad de Elastic Beanstalk.
-*   **Almacenamiento:** Amazon S3 para avatares de usuario, imágenes de marketplace y evidencias fotográficas de limpieza.
-*   **IaC:** Archivos de configuración de Terraform ubicados en `packages/infra/terraform/` para aprovisionar los recursos de forma automatizada con estado local.
+```bash
+# Generar cliente Prisma
+pnpm --filter api exec prisma generate
+
+# Sincronizar schema → DB (desarrollo)
+pnpm --filter api exec prisma db push
+
+# Crear migración nueva
+pnpm --filter api exec prisma migrate dev --name nombre_migracion
+
+# Aplicar migraciones (producción)
+pnpm --filter api exec prisma migrate deploy
+
+# Abrir Prisma Studio (GUI)
+pnpm --filter api exec prisma studio
+```
 
 ---
 
+## Migraciones
 
+Las migraciones se encuentran en `apps/api/prisma/migrations/`:
+
+| Migración | Descripción |
+|-----------|-------------|
+| `20260723043410_init` | Schema inicial (User, House, Task, etc.) |
+| `20260725_add_marketplace_listing` | Modelo Listing expandido para Marketplace |
+
+---
+
+## Scripts Disponibles
+
+| Script | Descripción |
+|--------|-------------|
+| `pnpm dev` | Desarrollo (todos los packages) |
+| `pnpm build` | Build de producción |
+| `pnpm lint` | ESLint en todo el monorepo |
+| `pnpm format` | Prettier en todo el monorepo |
+| `pnpm --filter api test` | Tests unitarios del backend |
+| `pnpm --filter api test:e2e` | Tests E2E del backend |
+
+---
+
+## Flujo del Proyecto
+
+```
+Registro/Login
+    ↓
+Crear Casa o Unirse (código de invitación)
+    ↓
+Configurar Tareas del Hogar (catálogo + custom)
+    ↓
+Generar Reparto Semanal (automático lunes o manual)
+    ↓
+Completar Tareas (con foto de evidencia)
+    ↓
+Actualización de Reputación (score dinámico)
+    ↓
+Encuentra Roomie (buscar habitaciones / publicar la tuya)
+```
+
+---
+
+## Marketplace (Sprint 4)
+
+El marketplace permite a los miembros de la comunidad publicar habitaciones disponibles y encontrar roomies compatibles. La reputación de cada usuario funciona como carta de presentación para generar confianza.
+
+### Endpoints
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| `POST` | `/listings` | Crear publicación de habitación (auth requerida) |
+| `GET` | `/listings` | Listar publicaciones con filtros y paginación |
+| `GET` | `/listings/:id` | Obtener una publicación |
+| `PATCH` | `/listings/:id` | Editar publicación (solo dueño) |
+| `DELETE` | `/listings/:id` | Eliminar publicación (solo dueño) |
+
+### Filtros disponibles (query params)
+
+- `location` — Ubicación (búsqueda parcial)
+- `minRent` / `maxRent` — Rango de renta mensual
+- `availableFrom` — Disponible a partir de (fecha ISO)
+- `petsAllowed` — Acepta mascotas (true/false)
+- `smokingAllowed` — Acepta fumadores (true/false)
+- `preferredGender` — Género preferido (MALE, FEMALE, ANY)
+- `search` — Búsqueda por título, descripción o ubicación
+- `page` / `limit` — Paginación
+
+### Integración con Reputación
+
+Cada publicación incluye automáticamente el score del publicador para generar confianza entre posibles roomies:
+
+```json
+{
+  "owner": {
+    "id": "uuid",
+    "name": "Ana Martínez",
+    "avatarUrl": null,
+    "reputationScore": 4.8
+  }
+}
+```
+
+---
+
+## Sistema de Reputación
+
+Score dinámico de 0.0 a 5.0 estrellas calculado en base al historial de cumplimiento:
+
+- **5.0** = Todas las tareas completadas a tiempo
+- **0.0** = Ninguna tarea completada
+
+Fórmula: `5.0 × (completadas a tiempo / total evaluables)`
+
+Las tareas expiradas cuentan como no completadas. El score se actualiza en tiempo real y se muestra en el perfil del usuario y en sus publicaciones del marketplace.
+
+---
+
+## Integrantes
+
+- Emilio Escobedo (PatoCrazy2)
+- Herson Urdiales

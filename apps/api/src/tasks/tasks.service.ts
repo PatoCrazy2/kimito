@@ -1,6 +1,16 @@
-import { Injectable, BadRequestException, NotFoundException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateTaskDto, UpdateTaskDto, TaskResponse } from '@kimito/shared-types';
+import {
+  CreateTaskDto,
+  UpdateTaskDto,
+  TaskResponse,
+} from '@kimito/shared-types';
 
 @Injectable()
 export class TasksService {
@@ -26,7 +36,9 @@ export class TasksService {
     }
 
     if (membership.role !== 'ADMIN') {
-      throw new ForbiddenException('Solo el administrador de la casa puede gestionar tareas');
+      throw new ForbiddenException(
+        'Solo el administrador de la casa puede gestionar tareas',
+      );
     }
 
     return membership;
@@ -34,11 +46,36 @@ export class TasksService {
 
   async seedDefaultTasks(houseId: string): Promise<void> {
     const defaultTasks = [
-      { title: 'Lavar platos', weight: 2, recurrence: 'daily', isCustom: false },
-      { title: 'Sacar basura', weight: 1, recurrence: 'weekly', isCustom: false },
-      { title: 'Limpiar baño', weight: 4, recurrence: 'weekly', isCustom: false },
-      { title: 'Limpiar cocina', weight: 3, recurrence: 'weekly', isCustom: false },
-      { title: 'Barrer y trapear', weight: 2, recurrence: 'weekly', isCustom: false },
+      {
+        title: 'Lavar platos',
+        weight: 2,
+        recurrence: 'daily',
+        isCustom: false,
+      },
+      {
+        title: 'Sacar basura',
+        weight: 1,
+        recurrence: 'weekly',
+        isCustom: false,
+      },
+      {
+        title: 'Limpiar baño',
+        weight: 4,
+        recurrence: 'weekly',
+        isCustom: false,
+      },
+      {
+        title: 'Limpiar cocina',
+        weight: 3,
+        recurrence: 'weekly',
+        isCustom: false,
+      },
+      {
+        title: 'Barrer y trapear',
+        weight: 2,
+        recurrence: 'weekly',
+        isCustom: false,
+      },
     ];
 
     await this.prisma.task.createMany({
@@ -56,7 +93,9 @@ export class TasksService {
     const membership = await this.getActiveMembershipAndVerifyAdmin(email);
 
     if (dto.weight < 1 || dto.weight > 5) {
-      throw new BadRequestException('El peso de la tarea debe estar entre 1 y 5');
+      throw new BadRequestException(
+        'El peso de la tarea debe estar entre 1 y 5',
+      );
     }
 
     const task = await this.prisma.task.create({
@@ -97,7 +136,9 @@ export class TasksService {
     });
 
     if (!membership) {
-      throw new ForbiddenException('No tienes acceso a las tareas de esta casa');
+      throw new ForbiddenException(
+        'No tienes acceso a las tareas de esta casa',
+      );
     }
 
     const tasks = await this.prisma.task.findMany({
@@ -114,7 +155,11 @@ export class TasksService {
     }));
   }
 
-  async updateTask(email: string, taskId: string, dto: UpdateTaskDto): Promise<TaskResponse> {
+  async updateTask(
+    email: string,
+    taskId: string,
+    dto: UpdateTaskDto,
+  ): Promise<TaskResponse> {
     const membership = await this.getActiveMembershipAndVerifyAdmin(email);
 
     const task = await this.prisma.task.findUnique({
@@ -126,11 +171,15 @@ export class TasksService {
     }
 
     if (task.houseId !== membership.houseId) {
-      throw new ForbiddenException('No tienes permisos para modificar esta tarea');
+      throw new ForbiddenException(
+        'No tienes permisos para modificar esta tarea',
+      );
     }
 
     if (dto.weight !== undefined && (dto.weight < 1 || dto.weight > 5)) {
-      throw new BadRequestException('El peso de la tarea debe estar entre 1 y 5');
+      throw new BadRequestException(
+        'El peso de la tarea debe estar entre 1 y 5',
+      );
     }
 
     const updatedTask = await this.prisma.task.update({
@@ -164,7 +213,9 @@ export class TasksService {
     }
 
     if (task.houseId !== membership.houseId) {
-      throw new ForbiddenException('No tienes permisos para eliminar esta tarea');
+      throw new ForbiddenException(
+        'No tienes permisos para eliminar esta tarea',
+      );
     }
 
     await this.prisma.task.delete({

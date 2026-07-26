@@ -9,7 +9,7 @@ const navItems = [
   { name: "Inicio", href: "/dashboard", icon: "space_dashboard" },
   { name: "Mi Casa", href: "/dashboard/house", icon: "home" },
   { name: "Tareas", href: "/dashboard/tasks", icon: "cleaning_services" },
-  { name: "Buscar", href: "/dashboard/listings", icon: "search" },
+  { name: "Roomies", href: "/dashboard/listings", icon: "group_add" },
 ];
 
 export default function Sidebar() {
