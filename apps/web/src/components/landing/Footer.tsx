@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Heart } from "lucide-react";
 
 export function Footer() {
   return (
     <footer id="reputation" className="bg-[#1D1B16] text-[#CDC5B4] border-t border-[#4D4639] pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#4D4639]/70">
-          {/* Column 1: Brand & Bio - 4 cols */}
-          <div className="md:col-span-4 space-y-4">
+          {/* Column 1: Brand & Bio - 6 cols */}
+          <div className="md:col-span-6 space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
               <Image
                 src="/logo.svg"
@@ -27,14 +26,14 @@ export function Footer() {
               </div>
             </Link>
 
-            <p className="text-sm leading-relaxed text-[#CDC5B4]/80 max-w-sm">
+            <p className="text-sm leading-relaxed text-[#CDC5B4]/80 max-w-md">
               La plataforma definitiva para organizar y gestionar la limpieza de áreas comunes en casas compartidas mediante reparto justo, evidencia fotográfica y pasaporte de reputación.
             </p>
 
             <div className="flex items-center gap-3 pt-2">
               {/* GitHub SVG */}
               <a
-                href="https://github.com"
+                href="https://github.com/PatoCrazy2/kimito"
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 rounded-full bg-[#2A2823] border border-[#4D4639] flex items-center justify-center text-[#CDC5B4] hover:text-[#F59E0B] hover:border-[#F59E0B] transition-colors"
@@ -102,29 +101,8 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Arquitectura & Tech - 3 cols */}
+          {/* Column 3: Acceso - 3 cols */}
           <div className="md:col-span-3 space-y-3">
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
-              Tecnología
-            </h3>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <span className="text-[#CDC5B4]/80">Next.js 16 (App Router)</span>
-              </li>
-              <li>
-                <span className="text-[#CDC5B4]/80">NestJS & Prisma ORM</span>
-              </li>
-              <li>
-                <span className="text-[#CDC5B4]/80">Web Push Nativos (VAPID)</span>
-              </li>
-              <li>
-                <span className="text-[#CDC5B4]/80">Amazon S3 Storage</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Legal & Acceso - 2 cols */}
-          <div className="md:col-span-2 space-y-3">
             <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
               Acceso
             </h3>
@@ -146,11 +124,6 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#CDC5B4]/60 gap-4">
           <p>© 2026 Kimito. Todos los derechos reservados.</p>
-          <div className="flex items-center gap-1">
-            <span>Hecho con</span>
-            <Heart className="w-3.5 h-3.5 text-[#AC3400] fill-current" />
-            <span>para el Hackathon 2026.</span>
-          </div>
         </div>
       </div>
     </footer>

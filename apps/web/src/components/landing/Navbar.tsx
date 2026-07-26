@@ -17,6 +17,11 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToTop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
@@ -28,7 +33,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
+          <a href="#" onClick={scrollToTop} className="flex items-center gap-2.5 group cursor-pointer">
             <Image
               src="/logo.svg"
               alt="Kimito Logo"
@@ -43,7 +48,7 @@ export function Navbar() {
               </span>
               <span className="text-2xl font-black text-[#F59E0B]">.</span>
             </div>
-          </Link>
+          </a>
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-8">
