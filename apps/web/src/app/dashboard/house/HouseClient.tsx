@@ -2,7 +2,15 @@
 
 import { useState, useEffect } from "react";
 import type { HouseResponse, HouseMemberResponse, UserDto } from "@kimito/shared-types";
-import { createHouseAction, joinHouseAction, updateHouseAction } from "@/app/actions/house-actions";
+import {
+  createHouseAction,
+  joinHouseAction,
+  updateHouseAction,
+  leaveHouseAction,
+  kickMemberAction,
+  deleteHouseAction,
+  getMembershipHistoryAction,
+} from "@/app/actions/house-actions";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
@@ -20,10 +28,29 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
   const [origin, setOrigin] = useState("...");
   const [activeSection, setActiveSection] = useState<"invite" | "info" | null>(null);
 
+  // Experience History State
+  const [history, setHistory] = useState<any[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setOrigin(window.location.origin);
     }
+
+    // Fetch membership history
+    const fetchHistory = async () => {
+      setHistoryLoading(true);
+      try {
+        const data = await getMembershipHistoryAction();
+        setHistory(data);
+      } catch (err) {
+        console.error("Error al cargar historial:", err);
+      } finally {
+        setHistoryLoading(false);
+      }
+    };
+    fetchHistory();
   }, []);
 
   // Form states for creating a house
@@ -108,6 +135,50 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
     navigator.clipboard.writeText(inviteLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleLeaveHouse = async () => {
+    if (!confirm("¿Estás seguro de que deseas salir de la casa?")) return;
+    setActionLoading(true);
+    try {
+      await leaveHouseAction();
+      window.location.reload();
+    } catch (err: any) {
+      alert(err.message || "Error al salir de la casa");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleKickMember = async (userId: string, name: string) => {
+    if (!confirm(`¿Estás seguro de que deseas expulsar a ${name} de la casa?`)) return;
+    setActionLoading(true);
+    try {
+      await kickMemberAction(userId);
+      setMembers((prev) => prev.filter((m) => m.userId !== userId));
+    } catch (err: any) {
+      alert(err.message || "Error al expulsar al miembro");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteHouse = async () => {
+    if (
+      !confirm(
+        "¡ADVERTENCIA CRÍTICA! ¿Estás seguro de que deseas eliminar la casa? Esta acción es irreversible y eliminará todos los registros asociados de forma permanente."
+      )
+    )
+      return;
+    setActionLoading(true);
+    try {
+      await deleteHouseAction();
+      window.location.reload();
+    } catch (err: any) {
+      alert(err.message || "Error al eliminar la casa");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const currentUserMember = members.find(m => m.email === currentUser?.email || m.userId === currentUser?.id);
@@ -196,6 +267,40 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
             </button>
           </form>
         </Card>
+
+        {/* History CV Section (When user doesn't belong to any house) */}
+        {history.length > 0 && (
+          <Card className="border-border/40 shadow-[0_4px_24px_rgba(133,83,0,0.02)] rounded-3xl bg-white p-6">
+            <h3 className="font-sans font-black text-base text-foreground flex items-center gap-2 mb-4 select-none">
+              <span className="material-symbols-rounded text-amber-primary">history</span>
+              Tu Historial de Roommate
+            </h3>
+            <div className="space-y-3">
+              {history.map((hist) => (
+                <div key={hist.id} className="bg-muted/30 border border-border/10 rounded-xl p-3 text-left">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-foreground">
+                      Rol: {hist.role === "ADMIN" ? "Administrador" : "Roommate"}
+                    </span>
+                    <span className={cn(
+                      "text-[9px] font-bold px-2 py-0.5 rounded-full uppercase",
+                      hist.actionType === "LEFT" && "bg-green-50 text-green-700",
+                      hist.actionType === "KICKED" && "bg-red-50 text-red-700",
+                      hist.actionType === "HOUSE_DELETED" && "bg-amber-50 text-amber-700"
+                    )}>
+                      {hist.actionType === "LEFT" && "Salió"}
+                      {hist.actionType === "KICKED" && "Expulsado"}
+                      {hist.actionType === "HOUSE_DELETED" && "Casa disuelta"}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Período: {new Date(hist.joinedAt).toLocaleDateString()} al {new Date(hist.leftAt).toLocaleDateString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
       </div>
     );
   }
@@ -242,13 +347,25 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
                   <p className="text-[10px] font-medium text-muted-foreground mt-0.5 max-w-[150px] truncate sm:max-w-none">{member.email}</p>
                 </div>
               </div>
-              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                member.role === "ADMIN" 
-                  ? "bg-amber-primary/10 text-amber-primary" 
-                  : "bg-muted text-muted-foreground border border-border/40"
-              }`}>
-                {member.role === "ADMIN" ? "Administrador" : "Roommate"}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                  member.role === "ADMIN" 
+                    ? "bg-amber-primary/10 text-amber-primary" 
+                    : "bg-muted text-muted-foreground border border-border/40"
+                }`}>
+                  {member.role === "ADMIN" ? "Administrador" : "Roommate"}
+                </span>
+
+                {isAdmin && member.userId !== currentUser?.id && (
+                  <button
+                    onClick={() => handleKickMember(member.userId, member.name)}
+                    disabled={actionLoading}
+                    className="text-[10px] font-bold text-red-500 hover:text-red-700 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors shrink-0 disabled:opacity-50"
+                  >
+                    Expulsar
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -417,33 +534,112 @@ export default function HouseClient({ initialHouse, initialMembers, currentUser 
               </div>
             </Card>
           )}
+          
+          {/* Danger Zone for admin */}
+          <Card className="border-red-200/50 bg-red-50/10 rounded-3xl p-5 border">
+            <h3 className="font-sans font-black text-sm text-red-700 flex items-center gap-2 mb-2 select-none">
+              <span className="material-symbols-rounded text-red-600">warning</span>
+              Zona de Peligro (Administrador)
+            </h3>
+            <p className="text-[11px] text-muted-foreground mb-4">
+              Eliminar la casa desvinculará a todos los miembros y la borrará del sistema. Puedes también salir si hay otro administrador.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleLeaveHouse}
+                disabled={actionLoading}
+                className="bg-white border border-red-200 text-red-600 hover:bg-red-50 font-bold rounded-xl px-4 py-2.5 text-xs transition-colors cursor-pointer flex-1 disabled:opacity-50"
+              >
+                Salir de la Casa
+              </button>
+              <button
+                onClick={handleDeleteHouse}
+                disabled={actionLoading}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl px-4 py-2.5 text-xs transition-colors cursor-pointer flex-1 disabled:opacity-50"
+              >
+                Eliminar Casa
+              </button>
+            </div>
+          </Card>
         </>
       ) : (
-        /* Para Roommates (no administradores): Mostrar la info estáticamente sin botones */
-        <Card className="border-border/40 shadow-[0_4px_24px_rgba(133,83,0,0.02)] rounded-3xl bg-white p-5">
-          <div className="text-left">
-            <h3 className="font-sans font-black text-base text-foreground flex items-center gap-2 mb-4 select-none">
-              <span className="material-symbols-rounded text-amber-primary">home</span>
-              Detalles del Hogar
-            </h3>
-            <div className="space-y-4">
-              <div className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4">
-                <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Descripción / Reglas</h4>
-                <p className="text-xs font-medium text-foreground leading-relaxed whitespace-pre-wrap">
-                  {house.description || "Sin descripción ni reglas registradas."}
-                </p>
-              </div>
-              <div className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4">
-                <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Dirección</h4>
-                <p className="text-xs font-medium text-foreground leading-relaxed">
-                  {house.address || "Sin dirección registrada."}
-                </p>
+        /* Para Roommates (no administradores): Mostrar la info y botón de salir */
+        <div className="space-y-4">
+          <Card className="border-border/40 shadow-[0_4px_24px_rgba(133,83,0,0.02)] rounded-3xl bg-white p-5">
+            <div className="text-left">
+              <h3 className="font-sans font-black text-base text-foreground flex items-center gap-2 mb-4 select-none">
+                <span className="material-symbols-rounded text-amber-primary">home</span>
+                Detalles del Hogar
+              </h3>
+              <div className="space-y-4">
+                <div className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4">
+                  <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Descripción / Reglas</h4>
+                  <p className="text-xs font-medium text-foreground leading-relaxed whitespace-pre-wrap">
+                    {house.description || "Sin descripción ni reglas registradas."}
+                  </p>
+                </div>
+                <div className="bg-[#FAF9F6] border border-border/30 rounded-2xl p-4">
+                  <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Dirección</h4>
+                  <p className="text-xs font-medium text-foreground leading-relaxed">
+                    {house.address || "Sin dirección registrada."}
+                  </p>
+                </div>
               </div>
             </div>
+          </Card>
+
+          <Card className="border-red-100 bg-red-50/10 rounded-3xl p-5 border">
+            <h3 className="font-sans font-black text-sm text-red-700 flex items-center gap-2 mb-2 select-none">
+              <span className="material-symbols-rounded text-red-600">directions_run</span>
+              Salir de la Casa
+            </h3>
+            <p className="text-[11px] text-muted-foreground mb-4">
+              Si decides salir de la casa, tu historial de tareas y reputación actual se guardarán en tu historial de experiencias como roommate.
+            </p>
+            <button
+              onClick={handleLeaveHouse}
+              disabled={actionLoading}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl px-4 py-2.5 text-xs transition-colors cursor-pointer w-full disabled:opacity-50"
+            >
+              Confirmar Salida
+            </button>
+          </Card>
+        </div>
+      )}
+
+      {/* History CV Section (When user belongs to a house) */}
+      {history.length > 0 && (
+        <Card className="border-border/40 shadow-[0_4px_24px_rgba(133,83,0,0.02)] rounded-3xl bg-white p-5 mt-4">
+          <h3 className="font-sans font-black text-base text-foreground flex items-center gap-2 mb-4 select-none">
+            <span className="material-symbols-rounded text-amber-primary">history</span>
+            Tu Historial de Roommate (Experiencias previas)
+          </h3>
+          <div className="space-y-3">
+            {history.map((hist) => (
+              <div key={hist.id} className="bg-muted/30 border border-border/10 rounded-xl p-3 text-left">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-foreground">
+                    Rol: {hist.role === "ADMIN" ? "Administrador" : "Roommate"}
+                  </span>
+                  <span className={cn(
+                    "text-[9px] font-bold px-2 py-0.5 rounded-full uppercase",
+                    hist.actionType === "LEFT" && "bg-green-50 text-green-700",
+                    hist.actionType === "KICKED" && "bg-red-50 text-red-700",
+                    hist.actionType === "HOUSE_DELETED" && "bg-amber-50 text-amber-700"
+                  )}>
+                    {hist.actionType === "LEFT" && "Salió"}
+                    {hist.actionType === "KICKED" && "Expulsado"}
+                    {hist.actionType === "HOUSE_DELETED" && "Casa disuelta"}
+                  </span>
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  Período: {new Date(hist.joinedAt).toLocaleDateString()} al {new Date(hist.leftAt).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
           </div>
         </Card>
       )}
     </div>
   );
 }
-
