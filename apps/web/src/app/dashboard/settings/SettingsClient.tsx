@@ -100,6 +100,13 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
   };
 
   const handleInstallPwa = async () => {
+    if (isPwaInstalled) {
+      alert(
+        "Para desinstalar Kimito, haz clic en el menú de tres puntos (Ajustes de la App) en la esquina superior de esta ventana de PWA y selecciona 'Desinstalar Kimito' o bórrala desde el lanzador de tu dispositivo."
+      );
+      return;
+    }
+
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
@@ -107,6 +114,27 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
       setDeferredPrompt(null);
     } else {
       alert("La app ya está instalada o tu navegador no soporta instalación automática.");
+    }
+  };
+
+  const handleUnsubscribe = async () => {
+    setIsSubscribing(true);
+    try {
+      if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+        if (subscription) {
+          await subscription.unsubscribe();
+          setIsSubscribed(false);
+          alert("Notificaciones desactivadas correctamente en este dispositivo.");
+        } else {
+          setIsSubscribed(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error al desactivar notificaciones:", error);
+    } finally {
+      setIsSubscribing(false);
     }
   };
 
@@ -158,10 +186,14 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
           </div>
           <button
             onClick={handleInstallPwa}
-            disabled={isPwaInstalled || !deferredPrompt}
-            className="bg-amber-primary hover:bg-amber-primary/95 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap"
+            disabled={!isPwaInstalled && !deferredPrompt}
+            className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${
+              isPwaInstalled
+                ? "bg-muted text-muted-foreground hover:bg-muted/80"
+                : "bg-amber-primary hover:bg-amber-primary/95 text-white"
+            }`}
           >
-            {isPwaInstalled ? "Instalada" : "Descargar"}
+            {isPwaInstalled ? "Desinstalar" : "Descargar"}
           </button>
         </div>
 
@@ -183,11 +215,15 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
             </div>
           </div>
           <button
-            onClick={handleSubscribe}
-            disabled={isSubscribed || isSubscribing}
-            className="bg-amber-primary hover:bg-amber-primary/95 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap"
+            onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
+            disabled={isSubscribing}
+            className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${
+              isSubscribed
+                ? "bg-muted text-muted-foreground hover:bg-muted/80"
+                : "bg-amber-primary hover:bg-amber-primary/95 text-white"
+            }`}
           >
-            {isSubscribing ? "Activando..." : isSubscribed ? "Activadas" : "Activar"}
+            {isSubscribing ? "Procesando..." : isSubscribed ? "Desactivar" : "Activar"}
           </button>
         </div>
 

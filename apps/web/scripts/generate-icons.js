@@ -7,6 +7,7 @@ const publicDir = path.join(__dirname, "../public");
 // Generar icono 192x192
 sharp(svgPath)
   .resize(192, 192)
+  .flatten({ background: "#FAF9F6" })
   .png()
   .toFile(path.join(publicDir, "icon-192.png"))
   .then(() => console.log("icon-192.png generado!"))
@@ -15,6 +16,7 @@ sharp(svgPath)
 // Generar icono 512x512
 sharp(svgPath)
   .resize(512, 512)
+  .flatten({ background: "#FAF9F6" })
   .png()
   .toFile(path.join(publicDir, "icon-512.png"))
   .then(() => console.log("icon-512.png generado!"))
