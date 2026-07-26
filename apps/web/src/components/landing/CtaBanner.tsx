@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export function CtaBanner() {
   return (
@@ -13,12 +13,6 @@ export function CtaBanner() {
           <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full border-[20px] border-white/5 pointer-events-none" />
 
           <div className="relative z-10 max-w-3xl mx-auto text-center space-y-8">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md text-white text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-              <span>Transforma la convivencia hoy</span>
-            </div>
-
             {/* Headline */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
               ¿Listo para vivir en una casa limpia y sin discusiones?

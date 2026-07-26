@@ -5,7 +5,6 @@ import {
   Camera,
   Award,
   BellRing,
-  Sparkles,
   CheckCircle2,
   TrendingUp,
   ShieldCheck,
@@ -22,12 +21,8 @@ export function BentoGrid() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EFE9DB] border border-[#855300]/20 text-[#855300] text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-            <span>Sistema Inteligente de Aseo</span>
-          </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1D1B16] tracking-tight">
-            Diseñado para la paz y la justicia en tu hogar
+            Organización clara, justa y transparente para tu hogar
           </h2>
           <p className="text-base sm:text-lg text-[#1D1B16]/70 leading-relaxed">
             Olvídate de las discusiones sobre quién limpia más. Kimito automatiza el reparto, valida con fotos y recompensa la constancia.
