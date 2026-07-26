@@ -420,12 +420,44 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
 
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold text-muted-foreground">Preferencia de Género</label>
-                  <select value={genderFilter} onChange={(e) => setGenderFilter(e.target.value)} className="w-full h-8 rounded-xl border border-input bg-transparent px-2 text-xs outline-none focus-visible:border-ring">
-                    <option value="">Cualquier género</option>
-                    <option value="FEMALE">Mujer</option>
-                    <option value="MALE">Hombre</option>
-                    <option value="ANY">Sin preferencia</option>
-                  </select>
+                  <div className="flex border border-border/40 p-0.5 bg-muted/10 rounded-xl h-8 items-center">
+                    <button
+                      type="button"
+                      onClick={() => setGenderFilter("")}
+                      className={cn(
+                        "flex-1 py-1 text-[10px] font-bold rounded-lg transition-colors cursor-pointer text-center h-full flex items-center justify-center",
+                        genderFilter === ""
+                          ? "bg-white text-amber-primary shadow-xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Cualquiera
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGenderFilter("FEMALE")}
+                      className={cn(
+                        "flex-1 py-1 text-[10px] font-bold rounded-lg transition-colors cursor-pointer text-center h-full flex items-center justify-center",
+                        genderFilter === "FEMALE"
+                          ? "bg-white text-amber-primary shadow-xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Mujeres
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGenderFilter("MALE")}
+                      className={cn(
+                        "flex-1 py-1 text-[10px] font-bold rounded-lg transition-colors cursor-pointer text-center h-full flex items-center justify-center",
+                        genderFilter === "MALE"
+                          ? "bg-white text-amber-primary shadow-xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Hombres
+                    </button>
+                  </div>
                 </div>
 
                 <div className="sm:col-span-3 flex flex-wrap gap-4 pt-1">
@@ -695,14 +727,46 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                   <label className="text-xs font-semibold text-muted-foreground">Disponible a partir de</label>
                   <Input type="date" value={formAvailableFrom} onChange={(e) => setFormAvailableFrom(e.target.value)} className="h-9 rounded-xl" />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground">Gusto / Género preferido</label>
-                  <select value={formGender} onChange={(e) => setFormGender(e.target.value as PreferredGender | "")} className="w-full h-9 rounded-xl border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring">
-                    <option value="">Sin preferencia</option>
-                    <option value="FEMALE">Mujer</option>
-                    <option value="MALE">Hombre</option>
-                    <option value="ANY">Cualquiera</option>
-                  </select>
+                <div className="space-y-1.5 sm:col-span-2">
+                  <label className="text-xs font-semibold text-muted-foreground">Preferencia de Género de Roommate</label>
+                  <div className="flex border border-border/40 p-0.5 bg-[#FAF9F6] rounded-xl w-full max-w-md h-9 items-center">
+                    <button
+                      type="button"
+                      onClick={() => setFormGender("")}
+                      className={cn(
+                        "flex-1 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer text-center h-full flex items-center justify-center",
+                        formGender === ""
+                          ? "bg-white text-amber-primary shadow-xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Sin preferencia
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormGender("FEMALE")}
+                      className={cn(
+                        "flex-1 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer text-center h-full flex items-center justify-center",
+                        formGender === "FEMALE"
+                          ? "bg-white text-amber-primary shadow-xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Solo Mujeres
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormGender("MALE")}
+                      className={cn(
+                        "flex-1 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer text-center h-full flex items-center justify-center",
+                        formGender === "MALE"
+                          ? "bg-white text-amber-primary shadow-xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Solo Hombres
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-1.5 sm:col-span-2">
@@ -789,8 +853,20 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                 return (
                   <div
                     key={listing.id}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      if (
+                        target.closest("button") ||
+                        target.closest("a") ||
+                        target.closest("input") ||
+                        target.closest("textarea")
+                      ) {
+                        return;
+                      }
+                      toggleExpandListing(listing.id);
+                    }}
                     className={cn(
-                      "bg-white rounded-2xl border border-border/30 p-5 space-y-4 transition-all duration-200 text-left",
+                      "bg-white rounded-2xl border border-border/30 p-5 space-y-4 transition-all duration-200 text-left cursor-pointer hover:border-amber-primary/25",
                       isExpanded && "border-amber-primary/30 shadow-[0_4px_16px_rgba(133,83,0,0.04)]"
                     )}
                   >
