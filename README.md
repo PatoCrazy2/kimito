@@ -1,28 +1,20 @@
-# Kimito — El Pasaporte de Coexistencia y Roommates
+<p align="center">
+  <img src="apps/web/public/kimitohero.webp" alt="Kimito Hero Banner" width="100%" style="border-radius: 16px;" />
+</p>
+
+# Kimito — La Infraestructura de Confianza para Co-Living
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
 [![AWS](https://img.shields.io/badge/Amazon_Web_Services-232F3E?style=flat-square&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
 
-> **Kimito** transforma la vida compartida sustituyendo los conflictos cotidianos por un registro de reputación algorítmico y basado en evidencias. Actúa como un "Pasaporte de Coexistencia" descentralizado para inquilinos modernos, combinando una distribución equitativa de tareas con un marketplace premium de roommates.
+> **Kimito** transforma la vida compartida sustituyendo los conflictos cotidianos por un registro de reputación algorítmico y basado en evidencias. Actúa como el primer **Pasaporte de Coexistencia** descentralizado para inquilinos y roommates, combinando una distribución equitativa de tareas domésticas con un marketplace verificado de alojamiento.
 
 ---
 
-```
-                                  [ K I M I T O ]
-                     Infraestructura de Confianza para Co-Living
-                                  
- +---------------------------------------------------------------------------------+
- |                                                                                 |
- |  [PLACEHOLDER: Imagen Destacada - Mockups profesionales mostrando el Dashboard  |
- |   de Kimito junto al Pasaporte de Reputación en un dispositivo móvil]           |
- |                                                                                 |
- +---------------------------------------------------------------------------------+
-```
-
----
 
 ## El Producto & Funcionalidades en Orden
 
