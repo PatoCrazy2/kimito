@@ -22,6 +22,7 @@ import { uploadEvidenceAction } from "@/app/actions/storage-actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
 
 interface ListingsClientProps {
   initialData: PaginatedListings;
@@ -88,6 +89,7 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Loaded applications per listing lookup
+  const [activeMapListingId, setActiveMapListingId] = useState<string | null>(null);
   const [applicationsMap, setApplicationsMap] = useState<Record<string, ListingApplicationResponse[]>>({});
   const [expandedListingId, setExpandedListingId] = useState<string | null>(null);
   const [loadingAppsId, setLoadingAppsId] = useState<string | null>(null);
@@ -507,11 +509,34 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                         <h3 className="font-bold text-base text-foreground leading-snug">
                           {listing.title}
                         </h3>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                          <span className="material-symbols-rounded text-sm text-amber-primary">location_on</span>
-                          {listing.location}
-                        </p>
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <span className="material-symbols-rounded text-sm text-amber-primary">location_on</span>
+                            {listing.location}
+                          </p>
+                          <button
+                            onClick={() => setActiveMapListingId(activeMapListingId === listing.id ? null : listing.id)}
+                            className="text-[10px] font-bold text-amber-primary hover:underline flex items-center gap-0.5 cursor-pointer shrink-0"
+                          >
+                            <span className="material-symbols-rounded text-xs">map</span>
+                            {activeMapListingId === listing.id ? "Cerrar mapa" : "Ver mapa"}
+                          </button>
+                        </div>
                       </div>
+
+                      {/* Map Inline Preview */}
+                      {activeMapListingId === listing.id && (
+                        <div className="rounded-xl overflow-hidden border border-border/20 aspect-video w-full bg-muted animate-in fade-in zoom-in-95 duration-200">
+                          <iframe
+                            width="100%"
+                            height="100%"
+                            style={{ border: 0 }}
+                            loading="lazy"
+                            allowFullScreen
+                            src={`https://maps.google.com/maps?q=${encodeURIComponent(listing.location)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                          />
+                        </div>
+                      )}
 
                       {/* Description */}
                       <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
@@ -647,7 +672,12 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-muted-foreground">Ubicación / Zona</label>
-                  <Input placeholder="Ej: San Andrés Cholula" value={formLocation} onChange={(e) => setFormLocation(e.target.value)} className="h-9 rounded-xl" />
+                  <AddressAutocomplete
+                    value={formLocation}
+                    onChange={setFormLocation}
+                    placeholder="Ej: San Andrés Cholula, Puebla..."
+                    className="h-9 rounded-xl"
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-muted-foreground">Renta Mensual (MXN)</label>
