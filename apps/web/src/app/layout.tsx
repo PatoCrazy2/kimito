@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AppPreloader } from "@/components/landing/AppPreloader";
 
 export const metadata: Metadata = {
   title: "Kimito - Gestión de Aseo Compartido",
@@ -26,7 +25,6 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
-        <AppPreloader />
         <div className="flex flex-col flex-1">
           {children}
         </div>
