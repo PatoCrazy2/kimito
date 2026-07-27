@@ -24,7 +24,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-4 z-50 w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
+      className={`sticky top-4 z-50 w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
         scrolled ? "translate-y-[-4px]" : ""
       }`}
     >
