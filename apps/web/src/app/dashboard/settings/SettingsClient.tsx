@@ -200,10 +200,9 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
           </div>
           <button
             onClick={handleInstallPwa}
-<<<<<<< HEAD
             className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap ${isPwaInstalled
-                ? "bg-muted text-muted-foreground hover:bg-muted/80"
-                : "bg-amber-primary hover:bg-amber-primary/95 text-white"
+              ? "bg-muted text-muted-foreground hover:bg-muted/80"
+              : "bg-amber-primary hover:bg-amber-primary/95 text-white"
               }`}
           >
             {isPwaInstalled ? "Desinstalar" : "Descargar"}
@@ -231,8 +230,8 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
             onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
             disabled={isSubscribing}
             className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${isSubscribed
-                ? "bg-muted text-muted-foreground hover:bg-muted/80"
-                : "bg-amber-primary hover:bg-amber-primary/95 text-white"
+              ? "bg-muted text-muted-foreground hover:bg-muted/80"
+              : "bg-amber-primary hover:bg-amber-primary/95 text-white"
               }`}
           >
             {isSubscribing ? "Procesando..." : isSubscribed ? "Desactivar" : "Activar"}

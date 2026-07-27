@@ -11,10 +11,14 @@ import type {
   OverrideAssignmentDto,
 } from '@kimito/shared-types';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class SchedulingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   private async getUserActiveMembership(email: string) {
     const user = await this.prisma.user.findUnique({
@@ -314,6 +318,35 @@ export class SchedulingService {
         },
       },
     });
+
+    // Enviar notificación a los demás miembros de la casa
+    try {
+      const otherMembers = await this.prisma.houseMembership.findMany({
+        where: {
+          houseId: membership.houseId,
+          active: true,
+          userId: { not: updated.user.id },
+        },
+        select: { userId: true },
+      });
+
+      const payload = {
+        title: '¡Tarea Completada!',
+        body: `${updated.user.name} completó la tarea "${updated.task.title}".${evidenceUrl ? ' 📸' : ''}`,
+        url: '/dashboard',
+      };
+
+      await Promise.all(
+        otherMembers.map((member) =>
+          this.notificationsService.sendNotificationToUser(
+            member.userId,
+            payload,
+          ),
+        ),
+      );
+    } catch (error) {
+      console.error('Error al enviar notificaciones de tarea completada:', error);
+    }
 
     return updated as unknown as TaskAssignmentResponse;
   }
