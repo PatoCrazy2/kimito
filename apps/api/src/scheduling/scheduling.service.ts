@@ -124,6 +124,23 @@ export class SchedulingService {
       ),
     );
 
+    // Notificar a cada usuario asignado
+    try {
+      const uniqueUserIds = [...new Set(createdAssignments.map((a) => a.userId))];
+      const payload = {
+        title: 'Nuevas tareas asignadas',
+        body: 'Se te han asignado nuevas tareas para esta semana. ¡A brillar! ✨',
+        url: '/dashboard',
+      };
+      await Promise.all(
+        uniqueUserIds.map((userId) =>
+          this.notificationsService.sendNotificationToUser(userId, payload),
+        ),
+      );
+    } catch (error) {
+      console.error('Error al enviar notificaciones de asignación:', error);
+    }
+
     return createdAssignments as unknown as TaskAssignmentResponse[];
   }
 
@@ -272,6 +289,21 @@ export class SchedulingService {
         },
       },
     });
+
+    // Notificar al usuario reasignado
+    try {
+      const payload = {
+        title: 'Tarea reasignada 🔄',
+        body: `Se te ha asignado la tarea "${updated.task.title}" para este periodo.`,
+        url: '/dashboard',
+      };
+      await this.notificationsService.sendNotificationToUser(
+        dto.newUserId,
+        payload,
+      );
+    } catch (error) {
+      console.error('Error al enviar notificación de reasignación:', error);
+    }
 
     return updated as unknown as TaskAssignmentResponse;
   }
@@ -423,6 +455,26 @@ export class SchedulingService {
               }),
             ),
           );
+
+          // Notificar a los usuarios asignados
+          try {
+            const uniqueUserIds = [...new Set(assignments.map((a) => a.userId))];
+            const payload = {
+              title: 'Nuevas tareas asignadas',
+              body: 'Se te han asignado nuevas tareas para esta semana. ¡A brillar! ✨',
+              url: '/dashboard',
+            };
+            await Promise.all(
+              uniqueUserIds.map((userId) =>
+                this.notificationsService.sendNotificationToUser(userId, payload),
+              ),
+            );
+          } catch (err) {
+            console.error(
+              `[Cron Job] Error al notificar asignaciones para la casa ${house.id}:`,
+              err,
+            );
+          }
 
           console.log(
             `[Cron Job] Casa ${house.id}: ${assignments.length} tareas asignadas.`,
