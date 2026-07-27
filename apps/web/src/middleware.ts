@@ -5,8 +5,8 @@ export default auth((req) => {
     const isLoggedIn = !!req.auth;
     const { pathname } = req.nextUrl;
 
-    // Si está autenticado e intenta ir a login o a la raíz, redirigir a dashboard
-    if (isLoggedIn && (pathname === "/login" || pathname === "/")) {
+    // Si está autenticado e intenta ir a login, redirigir a dashboard
+    if (isLoggedIn && pathname === "/login") {
         return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 

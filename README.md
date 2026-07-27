@@ -1,80 +1,152 @@
-# Kimito - Sistema de Gestión de Limpieza de Áreas Comunes
+<p align="center">
+  <img src="apps/web/public/kimitohero.webp" alt="Kimito Hero Banner" width="100%" style="border-radius: 16px;" />
+</p>
 
-Kimito es un monorepo para gestionar la limpieza de áreas comunes en casas compartidas. Permite repartir tareas de forma manual y automática, generar calendarios equitativos según el peso de cada labor, enviar notificaciones al completarlas, y mantener una reputación por usuario que sirve como carta de presentación al buscar roomies. También incluye un marketplace para publicar habitaciones disponibles y encontrar compañeros de vivienda compatibles.
+# Kimito — La Infraestructura de Confianza para Co-Living
 
----
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![AWS](https://img.shields.io/badge/Amazon_Web_Services-232F3E?style=flat-square&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
 
-## Tecnologías
-
-| Capa | Stack |
-|------|-------|
-| Frontend | Next.js 16 (App Router, Turbopack), React 19, TailwindCSS 4, shadcn/ui, Framer Motion |
-| Backend | NestJS 11, Prisma ORM 6, PostgreSQL 16 |
-| Autenticación | Auth.js (NextAuth) v5 beta + JWT HS256 compartido |
-| Notificaciones | Web Push nativo (VAPID) con Service Worker |
-| Almacenamiento | AWS S3 / fallback local (`/uploads`) |
-| Monorepo | Turborepo + pnpm workspaces |
-| Infraestructura | Docker Compose (dev), Dockerfile multi-stage (prod) |
+> **Kimito** transforma la vida compartida sustituyendo los conflictos cotidianos por un registro de reputación algorítmico y basado en evidencias. Actúa como el primer **Pasaporte de Coexistencia** descentralizado para inquilinos y roommates, combinando una distribución equitativa de tareas domésticas con un marketplace verificado de alojamiento.
 
 ---
 
-## Arquitectura
 
+## El Producto & Funcionalidades en Orden
+
+Compartir vivienda presenta retos organizacionales complejos. Un alto porcentaje de los conflictos entre roommates surge por la desigualdad en la limpieza y la falta de rendición de cuentas. Kimito resuelve esto mediante un registro de rendimiento del hogar transparente y estructurado.
+
+A continuación, se presenta el flujo completo de funcionalidades en orden secuencial del producto:
+
+### 1. Gestión de Hogares y Coexistencia (Casas)
+*   **Crear un Hogar Compartido:** Cualquier usuario puede fundar una nueva casa y registrar su descripción, reglas y dirección física.
+*   **Código de Invitación Directo y Enlace Social:** El creador (administrador) puede compartir el código manual y el link directo a través de redes sociales (WhatsApp, Telegram, Facebook) con soporte para la API de compartir nativa en móviles.
+*   **Unirse a un Hogar:** Los nuevos roommates se unen de forma instantánea ingresando el código de invitación o mediante el link compartido.
+
+### 2. Organización y Equidad en Tareas del Hogar (Scheduling)
+*   **Catálogo de Tareas con Peso:** Las tareas comunes tienen un "peso" específico basado en su dificultad y duración.
+*   **Algoritmo de Asignación Equitativa:** Las tareas se distribuyen automáticamente cada semana de forma equitativa utilizando un algoritmo codicioso de empaquetado (greedy bin-packing), garantizando que la carga de trabajo de todos los integrantes sea justa.
+*   **Registro de Evidencia con Fotos:** Al finalizar una tarea, el roommate sube una foto como evidencia, almacenándose localmente (en desarrollo) o en Amazon S3 (en producción) con fallback automático.
+
+### 3. El Pasaporte de Coexistencia (Reputación)
+*   **Score Dinámico de Reputación:** Un sistema califica a los inquilinos de 0.0 a 5.0 estrellas según su tasa de cumplimiento de tareas en tiempo real.
+*   **Currículum de Roommate Permanente:** Si un roommate sale de la casa, es expulsado o la casa es eliminada, sus datos de permanencia y su rol se guardan permanentemente en su historial de experiencias (`MembershipHistory`), sirviendo como su "carta de presentación" verificada al buscar un nuevo hogar.
+
+### 4. Administración de Casa y Zona de Peligro
+*   **Expulsión de Miembros (Admin):** Los administradores pueden expulsar de forma segura a cualquier roommate que no cumpla con las normas.
+*   **Disolución de la Casa (Admin):** El administrador puede eliminar la casa por completo, registrándose automáticamente la experiencia de salida de todos los miembros.
+*   **Salida Voluntaria (Miembro):** Los roommates pueden salir de la casa cuando lo deseen, resguardando su reputación obtenida.
+
+### 5. Integración de Mapas y Ubicaciones Precisas
+*   **Buscador de Direcciones Inteligente (Nominatim):** Al ingresar una dirección (al crear la casa o publicar un anuncio), se consultan en tiempo real sugerencias de direcciones precisas mediante la API de OpenStreetMap con un debounce óptimo.
+*   **Mapas Interactivos Embebidos (Google Maps Embed):** Muestra de forma estética y responsiva la ubicación del hogar y de las habitaciones en el Marketplace con paneles colapsables.
+
+### 6. Marketplace de Roommates y Postulaciones
+*   **Publicar Habitación Disponible:** Permite crear anuncios con detalles de renta, depósito, imágenes (hasta 4 fotos con previsualización en tiempo real y carga segura autorizada) y características de convivencia.
+*   **Exploración y Filtros Premium:** Los buscadores pueden filtrar habitaciones usando controles segmentados interactivos de género, precio, mascotas o fumadores.
+*   **Postulaciones Directas:** Al postularse, se ingresa el teléfono del candidato y un mensaje, guardando el registro y habilitando un botón para contactar directamente a su WhatsApp (`wa.me`).
+*   **Invitación Web Push:** El dueño del anuncio puede compartir el código de invitación directamente al candidato usando notificaciones Push nativas en el navegador (VAPID).
+
+
+---
+
+## Arquitectura y Estructura del Monorepo
+
+Kimito se estructura en un monorepo altamente optimizado gestionado con Turborepo y pnpm.
+
+```mermaid
+graph TD
+    subgraph Frontend [Cliente Web Next.js]
+        A[Dashboard Component] --> B[Reputation Page]
+        A --> C[Marketplace]
+    end
+
+    subgraph Backend [Core API NestJS]
+        D[Auth Module]
+        E[Houses Module]
+        F[Tasks & Scheduling Module]
+        G[Reputation Ledger]
+        H[Notification Gateway]
+    end
+
+    subgraph Packages [Librerías Compartidas]
+        I[shared-types]
+    end
+
+    Frontend -->|HTTP / Web Push| Backend
+    Frontend -.->|Depende de| I
+    Backend -.->|Depende de| I
 ```
-kimito/
+
+### Distribución de Directorios
+```
 ├── apps/
-│   ├── web/             → Frontend Next.js 16 (puerto 3001)
-│   └── api/             → Backend NestJS (puerto 3000)
+│   ├── web/          # Frontend Next.js (Desplegado en Vercel)
+│   │                 # App Router, componentes de shadcn/ui, autenticación con Auth.js
+│   └── api/          # Backend API NestJS (Desplegado en AWS Elastic Beanstalk)
+│                     # Modular por funcionalidad: auth, houses, tasks, scheduling, reputation, listings
 ├── packages/
-│   └── shared-types/    → Tipos TypeScript compartidos (DTOs, Responses)
-├── docker-compose.yml   → PostgreSQL local
-├── turbo.json           → Configuración Turborepo
-└── pnpm-workspace.yaml  → Definición de workspaces
+│   ├── shared-types/ # Tipos e interfaces de TypeScript compartidos
+│   └── infra/        # Infraestructura como Código (IaC)
+│       └── terraform/# Manifiestos de Terraform (RDS, S3, IAM, Elastic Beanstalk)
+└── pnpm-workspace.yaml
 ```
 
-### Módulos del Backend
+---
 
-| Módulo | Descripción |
-|--------|-------------|
-| `AuthModule` | Registro, login, verificación JWT |
-| `HousesModule` | CRUD casas, invitaciones, membresías |
-| `TasksModule` | Catálogo de tareas del hogar |
-| `SchedulingModule` | Algoritmo Greedy Bin Packing + Cron semanal |
-| `NotificationsModule` | Push VAPID nativo |
-| `ReputationModule` | Score dinámico 0.0–5.0 estrellas |
-| `StorageModule` | Upload de evidencias (S3/local) |
-| `ListingsModule` | Marketplace de roomies y habitaciones (Sprint 4) |
+## Primeros Pasos
+
+Siga las siguientes instrucciones para configurar y ejecutar el entorno de desarrollo local.
+
+### Requisitos Previos
+*   **Node.js** v20.x o superior
+*   **pnpm** v10.x o superior (`npm install -g pnpm`)
+*   **Docker & Docker Compose** (para la base de datos PostgreSQL local)
 
 ---
 
-## Requisitos Previos
+### Proceso de Instalación
 
-- **Node.js** v20 o superior
-- **pnpm** v10 o superior (`npm install -g pnpm`)
-- **Docker & Docker Compose** (para PostgreSQL local)
-
----
-
-## Instalación
-
+#### 1. Clonar el repositorio e instalar dependencias
+Ejecute el siguiente comando en la raíz del proyecto para descargar las dependencias y vincular los paquetes locales:
 ```bash
-# 1. Clonar el repositorio
-git clone <repo-url> && cd kimito
-
-# 2. Instalar dependencias (genera Prisma Client automáticamente)
 pnpm install
+```
 
-# 3. Configurar variables de entorno
+#### 2. Configurar variables de entorno
+Copie las plantillas de configuración de entorno en ambas aplicaciones:
+```bash
 cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env
-# Editar ambos archivos con tus credenciales
+```
 
-# 4. Levantar base de datos
+Asegúrese de configurar adecuadamente las variables correspondientes en los archivos `apps/api/.env` and `apps/web/.env` (claves de JWT, credenciales de base de datos y llaves VAPID).
+
+#### 3. Iniciar la base de datos local
+Levante el contenedor de PostgreSQL en segundo plano:
+```bash
 docker compose up -d
+```
 
-# 5. Sincronizar esquema de Prisma
+#### 4. Sincronizar el esquema de la base de datos
+Aplique los esquemas de Prisma a la base de datos PostgreSQL local:
+```bash
 pnpm --filter api exec prisma db push
 ```
+
+#### 5. Ejecutar los servicios en modo de desarrollo
+Inicie el entorno de desarrollo concurrente con Turborepo:
+```bash
+pnpm dev
+```
+
+Esto inicia:
+- **Backend (NestJS):** `http://localhost:3000`
+- **Frontend (Next.js):** `http://localhost:3001`
 
 ---
 
@@ -154,31 +226,6 @@ Las migraciones se encuentran en `apps/api/prisma/migrations/`:
 |-----------|-------------|
 | `20260723043410_init` | Schema inicial (User, House, Task, etc.) |
 | `20260725_add_marketplace_listing` | Modelo Listing expandido para Marketplace |
-
----
-
-## Desarrollo Local
-
-```bash
-# Levantar frontend + backend simultáneamente
-pnpm dev
-```
-
-Esto inicia:
-- **Backend (NestJS):** http://localhost:3000
-- **Frontend (Next.js):** http://localhost:3001
-
-### Ejecutar solo backend
-
-```bash
-pnpm --filter api dev
-```
-
-### Ejecutar solo frontend
-
-```bash
-pnpm --filter web dev
-```
 
 ---
 
@@ -272,5 +319,33 @@ Las tareas expiradas cuentan como no completadas. El score se actualiza en tiemp
 
 ## Integrantes
 
+- Emilio Escobedo (PatoCrazy2)
 - Herson Urdiales
 
+---
+
+## Capturas de Pantalla
+
+### Dashboard y Tareas
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/dashboard-tareas.png" width="220" /> | <img src="docs/screenshots/gestor-tareas.png" width="220" /> | <img src="docs/screenshots/tareas-catalogo.png" width="220" /> |
+| Dashboard | Gestor de Tareas | Añadir Tarea |
+
+### Mi Casa
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/mi-casa.png" width="220" /> | <img src="docs/screenshots/casa-detalle.png" width="220" /> | <img src="docs/screenshots/crear-hogar.png" width="220" /> |
+| Miembros e Invitación | Detalles y Mapa | Crear Hogar |
+
+### Marketplace de Roomies
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/marketplace-listing.png" width="220" /> | <img src="docs/screenshots/marketplace-edit.png" width="220" /> | |
+| Publicación | Editar Anuncio | |
+
+### Perfil y Onboarding
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/perfil-reputacion.png" width="220" /> | <img src="docs/screenshots/onboarding.png" width="220" /> | |
+| Reputación | Onboarding | |
