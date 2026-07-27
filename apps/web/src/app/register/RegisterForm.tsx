@@ -1,14 +1,22 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { registerWithCredentials, loginWithGoogle } from "@/app/actions/auth-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export function RegisterForm() {
+export function RegisterForm({ callbackUrl }: { callbackUrl?: string }) {
   const [state, formAction, isPending] = useActionState(registerWithCredentials, null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state && "success" in state && state.success) {
+      router.replace(callbackUrl || "/dashboard");
+    }
+  }, [state, callbackUrl, router]);
 
   return (
     <div className="w-full">
@@ -103,7 +111,7 @@ export function RegisterForm() {
         </div>
       </div>
 
-      <form action={loginWithGoogle}>
+      <form action={loginWithGoogle.bind(null, callbackUrl)}>
         <Button
           type="submit"
           variant="outline"
@@ -133,7 +141,10 @@ export function RegisterForm() {
 
       <div className="mt-8 text-center text-[13px] font-medium text-muted-foreground">
         ¿Ya tienes una cuenta?{" "}
-        <Link href="/login" className="text-amber-primary font-semibold hover:underline transition-colors">
+        <Link 
+          href={callbackUrl ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/login"} 
+          className="text-amber-primary font-semibold hover:underline transition-colors"
+        >
           Iniciar sesión
         </Link>
       </div>

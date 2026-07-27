@@ -6,8 +6,11 @@ import { AuthError } from "next-auth";
 /**
  * Inicia el flujo de autenticación con Google OAuth.
  */
-export async function loginWithGoogle() {
-  await signIn("google", { redirectTo: "/login?success=true" });
+export async function loginWithGoogle(callbackUrl?: string) {
+  const target = callbackUrl
+    ? `/login?success=true&callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/login?success=true";
+  await signIn("google", { redirectTo: target });
 }
 
 /**

@@ -7,15 +7,16 @@ import { KimitoLogo } from "@/components/KimitoLogo";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string }>;
+  searchParams: Promise<{ success?: string; callbackUrl?: string }>;
 }) {
   const session = await auth();
   const sp = await searchParams;
   const isSuccess = sp.success === "true";
+  const callbackUrl = sp.callbackUrl;
 
   // Redirección si ya está autenticado y no venimos de un login de oauth recién completado
   if (session && !isSuccess) {
-    redirect("/dashboard");
+    redirect(callbackUrl || "/dashboard");
   }
 
   return (
@@ -47,7 +48,7 @@ export default async function LoginPage({
         </p>
 
         {/* LoginForm (Client Component) */}
-        <LoginForm oauthSuccess={isSuccess} />
+        <LoginForm oauthSuccess={isSuccess} callbackUrl={callbackUrl} />
       </div>
     </main>
   );
