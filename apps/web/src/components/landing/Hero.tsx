@@ -15,10 +15,20 @@ import {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pt-6 pb-20 lg:pt-12 lg:pb-32 bg-gradient-to-b from-[#FAF9F6] via-[#F4EFE6]/40 to-[#FAF9F6]">
-      {/* Decorative Radial Background Blurs */}
-      <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-gradient-to-br from-[#F59E0B]/15 to-[#855300]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 left-0 -z-10 w-[450px] h-[450px] bg-gradient-to-tr from-[#006B5F]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+    <section className="relative overflow-hidden pt-6 pb-20 lg:pt-12 lg:pb-32 bg-[#FAF9F6]">
+      {/* Patrón repetido de logotipos (esencia de login) para dar profundidad */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.03] -z-20"
+        style={{
+          backgroundImage: "url('/logo.svg')",
+          backgroundSize: "80px 80px",
+          backgroundRepeat: "repeat",
+        }}
+        aria-hidden="true"
+      />
+      {/* Luces radiales de los colores del tema */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,185,91,0.06),transparent_60%)] -z-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(128,213,199,0.06),transparent_60%)] -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -27,7 +37,7 @@ export function Hero() {
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#1D1B16] tracking-tight leading-[1.12]">
               La forma{" "}
-              <span className="bg-gradient-to-r from-[#855300] via-[#D97706] to-[#F59E0B] bg-clip-text text-transparent">
+              <span className="text-[#855300]">
                 inteligente y justa
               </span>{" "}
               de compartir casa
@@ -76,7 +86,7 @@ export function Hero() {
 
               <a
                 href="#marketplace"
-                className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#F4EFE6] text-[#006B5F] border-2 border-[#006B5F] text-base font-bold px-7 py-4 rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#F4EFE6] text-[#855300] border-2 border-[#855300]/30 text-base font-bold px-7 py-4 rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
               >
                 <Users className="w-5 h-5" />
                 <span>Explorar Marketplace</span>
@@ -84,11 +94,17 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right Column: Interactive Marketing Demo Cards Showcase */}
-          <div className="lg:col-span-5 relative">
+          {/* Right Column: Interactive Marketing Demo Cards Showcase with Drop Entrance Animation */}
+          <div className="lg:col-span-5 relative mt-6 lg:mt-0 select-none">
+            {/* Ambient decorative glow behind mockup */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#FFB95B]/15 via-[#FFB49C]/5 to-transparent rounded-full blur-2xl pointer-events-none transform -rotate-12" />
+
             <div className="relative mx-auto max-w-md lg:max-w-none space-y-4">
               {/* Floating Demo Card 1: Live Task Checklist */}
-              <div className="bg-white rounded-3xl p-5 border border-[#E8E1D3] shadow-xl shadow-[#855300]/8 transform transition-transform duration-500 hover:scale-[1.02]">
+              <div 
+                className="bg-white rounded-3xl p-5 border border-[#E8E1D3] shadow-xl shadow-[#855300]/8 transform hover:scale-[1.02] transition-all duration-500 animate-in fade-in slide-in-from-top-12 duration-1000 fill-mode-both"
+                style={{ animationDelay: "150ms" }}
+              >
                 <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#F4EFE6]">
                   <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-xl bg-[#F59E0B]/15 flex items-center justify-center text-[#855300]">
@@ -103,7 +119,7 @@ export function Hero() {
                       </p>
                     </div>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-[#006B5F]/10 text-[#006B5F]">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-[#FFB95B]/15 text-[#855300]">
                     En curso
                   </span>
                 </div>
@@ -130,19 +146,19 @@ export function Hero() {
                   </div>
 
                   {/* Task 2 */}
-                  <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[#006B5F]/5 border border-[#006B5F]/20">
+                  <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[#FFB95B]/5 border border-[#FFB95B]/20">
                     <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-5 h-5 text-[#006B5F] fill-[#006B5F]/20" />
+                      <CheckCircle2 className="w-5 h-5 text-[#855300] fill-[#FFB95B]/20" />
                       <div>
                         <p className="text-xs font-bold text-[#1D1B16] line-through text-[#1D1B16]/50">
                           Sacar basura y reciclaje
                         </p>
-                        <p className="text-[11px] text-[#006B5F] font-medium">
+                        <p className="text-[11px] text-[#855300] font-medium">
                           Sofía • 2 pts completados
                         </p>
                       </div>
                     </div>
-                    <span className="text-[11px] font-extrabold text-[#006B5F] px-2 py-0.5 rounded-md bg-[#006B5F]/15">
+                    <span className="text-[11px] font-extrabold text-[#855300] px-2 py-0.5 rounded-md bg-[#FFB95B]/15">
                       ✓ Verificado
                     </span>
                   </div>
@@ -168,7 +184,10 @@ export function Hero() {
               </div>
 
               {/* Floating Demo Card 2: Dark Passport Score Card */}
-              <div className="bg-[#1D1B16] text-white rounded-3xl p-5 border border-[#4D4639] shadow-2xl shadow-[#1D1B16]/30 transform lg:-rotate-2 transition-transform duration-500 hover:rotate-0 hover:scale-[1.02]">
+              <div 
+                className="bg-[#1D1B16] text-white rounded-3xl p-5 border border-[#4D4639] shadow-2xl shadow-[#1D1B16]/30 transform lg:-rotate-2 hover:rotate-0 hover:scale-[1.02] transition-all duration-500 animate-in fade-in slide-in-from-top-12 duration-1000 fill-mode-both"
+                style={{ animationDelay: "450ms" }}
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#F59E0B] to-[#855300] p-0.5">
@@ -221,7 +240,10 @@ export function Hero() {
               </div>
 
               {/* Floating Demo Card 3: Native Web Push Alert Pill */}
-              <div className="bg-white/95 backdrop-blur-md rounded-full px-4 py-3 border border-[#E8E1D3] shadow-lg flex items-center gap-3 animate-pulse">
+              <div 
+                className="bg-white/95 backdrop-blur-md rounded-full px-4 py-3 border border-[#E8E1D3] shadow-lg flex items-center gap-3 animate-in fade-in slide-in-from-top-12 duration-1000 fill-mode-both"
+                style={{ animationDelay: "750ms" }}
+              >
                 <div className="w-8 h-8 rounded-full bg-[#AC3400]/15 flex items-center justify-center text-[#AC3400] shrink-0">
                   <Bell className="w-4 h-4" />
                 </div>

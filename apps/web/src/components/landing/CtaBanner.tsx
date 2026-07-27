@@ -7,19 +7,24 @@ export function CtaBanner() {
   return (
     <section className="py-16 bg-[#FAF9F6]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden bg-gradient-to-r from-[#006B5F] via-[#00574D] to-[#004A41] text-white rounded-[32px] p-8 sm:p-12 md:p-16 shadow-2xl shadow-[#006B5F]/20">
-          {/* Decorative Background Patterns */}
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full border-[30px] border-white/10 pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full border-[20px] border-white/5 pointer-events-none" />
+        <div className="relative overflow-hidden bg-gradient-to-br from-[#F4EFE6] to-[#E8E1D3]/45 text-[#1D1B16] border border-[#E8E1D3]/80 rounded-[32px] p-8 sm:p-12 md:p-16 shadow-[0_4px_30px_rgba(133,83,0,0.02)]">
+          {/* Subtle Thick Line Patterns instead of circles */}
+          <div className="absolute top-0 right-0 w-80 h-full pointer-events-none opacity-20">
+            <div className="w-16 h-[200%] bg-white/40 rotate-12 -translate-y-24" />
+            <div className="w-8 h-[200%] bg-white/40 rotate-12 -translate-y-24 ml-8" />
+          </div>
+          <div className="absolute bottom-0 left-0 w-80 h-full pointer-events-none opacity-20">
+            <div className="w-12 h-[200%] bg-white/40 rotate-12 -translate-y-24" />
+          </div>
 
           <div className="relative z-10 max-w-3xl mx-auto text-center space-y-8">
             {/* Headline */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1D1B16] tracking-tight leading-tight">
               ¿Listo para vivir en una casa limpia y sin discusiones?
             </h2>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-white/80 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-[#1D1B16]/80 leading-relaxed max-w-2xl mx-auto">
               Únete a Kimito hoy mismo. Organiza tu hogar con el algoritmo equitativo y empieza a construir tu reputación como roommate en menos de 2 minutos.
             </p>
 

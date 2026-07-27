@@ -47,6 +47,16 @@ export function HowItWorks() {
       id="how-it-works"
       className="py-24 bg-[#F4EFE6]/60 border-y border-[#E8E1D3]/80 relative overflow-hidden"
     >
+      {/* Patrón repetido de logotipos (esencia de login) */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        style={{
+          backgroundImage: "url('/logo.svg')",
+          backgroundSize: "60px 60px",
+          backgroundRepeat: "repeat",
+        }}
+        aria-hidden="true"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
