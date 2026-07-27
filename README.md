@@ -321,3 +321,31 @@ Las tareas expiradas cuentan como no completadas. El score se actualiza en tiemp
 
 - Emilio Escobedo (PatoCrazy2)
 - Herson Urdiales
+
+---
+
+## Capturas de Pantalla
+
+### Dashboard y Tareas
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/dashboard-tareas.png" width="220" /> | <img src="docs/screenshots/gestor-tareas.png" width="220" /> | <img src="docs/screenshots/tareas-catalogo.png" width="220" /> |
+| Dashboard | Gestor de Tareas | Añadir Tarea |
+
+### Mi Casa
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/mi-casa.png" width="220" /> | <img src="docs/screenshots/casa-detalle.png" width="220" /> | <img src="docs/screenshots/crear-hogar.png" width="220" /> |
+| Miembros e Invitación | Detalles y Mapa | Crear Hogar |
+
+### Marketplace de Roomies
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/marketplace-listing.png" width="220" /> | <img src="docs/screenshots/marketplace-edit.png" width="220" /> | |
+| Publicación | Editar Anuncio | |
+
+### Perfil y Onboarding
+| | | |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/perfil-reputacion.png" width="220" /> | <img src="docs/screenshots/onboarding.png" width="220" /> | |
+| Reputación | Onboarding | |

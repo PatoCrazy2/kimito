@@ -10,6 +10,9 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json ./apps/api/
 COPY packages/shared-types/package.json ./packages/shared-types/
 
+# Copy Prisma schema before install (needed by prepare script)
+COPY apps/api/prisma ./apps/api/prisma
+
 # Install all dependencies (including devDependencies)
 RUN pnpm install --frozen-lockfile
 
@@ -17,11 +20,9 @@ COPY apps/api ./apps/api
 COPY packages/shared-types ./packages/shared-types
 
 # Generate Prisma Client and build the application
+RUN pnpm --filter @kimito/shared-types build
 RUN pnpm --filter api exec prisma generate
 RUN pnpm --filter api build
-
-# Prune to production-only dependencies
-RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Stage 2: Production runner
 FROM node:20-alpine AS runner
