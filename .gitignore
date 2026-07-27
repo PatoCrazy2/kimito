@@ -45,3 +45,8 @@ Desktop.ini
 
 # System-specific
 .DS_Store
+
+# Local Uploads / Temporary Media
+uploads/
+**/uploads/
+
