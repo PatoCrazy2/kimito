@@ -43,9 +43,6 @@ export default function Navbar({ user }: NavbarProps) {
         <span className="font-sans font-bold text-xl tracking-tight text-foreground">
           Kimito
         </span>
-        <span className="text-[9px] bg-amber-primary/8 text-amber-primary/80 px-2 py-0.5 rounded-full font-semibold uppercase tracking-wider">
-          MVP
-        </span>
       </Link>
 
       {/* Navegación Desktop */}

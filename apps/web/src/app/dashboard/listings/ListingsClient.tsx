@@ -329,7 +329,7 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
         <div>
           <h1 className="font-sans font-extrabold text-2xl text-foreground tracking-tight flex items-center gap-2">
             <span className="material-symbols-rounded text-amber-primary text-2xl">apartment</span>
-            Marketplace de Roommates
+            Buscar Roommate
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
             Encuentra tu próximo hogar o publica una habitación disponible para tus futuros roomies.
