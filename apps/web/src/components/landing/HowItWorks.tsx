@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Sliders, CheckCheck, Award } from "lucide-react";
+import { Home, Sliders, CheckCheck, Award, Users } from "lucide-react";
 
 export function HowItWorks() {
   const steps = [
@@ -40,6 +40,15 @@ export function HowItWorks() {
       accentColor: "text-[#AC3400]",
       bgColor: "bg-[#AC3400]/10",
     },
+    {
+      number: "05",
+      title: "Encuentra el Roomie Perfecto",
+      description:
+        "Selecciona roomies viendo su calificación de huésped. Y como huésped, mira la calificación promedio de la gente que ya vive en la casa.",
+      icon: Users,
+      accentColor: "text-[#006B5F]",
+      bgColor: "bg-[#006B5F]/10",
+    },
   ];
 
   return (
@@ -47,7 +56,7 @@ export function HowItWorks() {
       id="how-it-works"
       className="py-24 bg-[#F4EFE6]/60 border-y border-[#E8E1D3]/80 relative overflow-hidden"
     >
-      {/* Patrón repetido de logotipos (esencia de login) */}
+      {/* Patrón de logotipos */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-[0.04]"
         style={{
@@ -64,13 +73,12 @@ export function HowItWorks() {
             ¿Cómo funciona Kimito?
           </h2>
           <p className="text-base sm:text-lg text-[#1D1B16]/75 leading-relaxed">
-            Cuatro sencillos pasos para transformar la convivencia y mantener el
-            orden sin complicaciones.
+            Pasos sencillos para transformar la convivencia, mantener el orden y encontrar el hogar o roommate ideal.
           </p>
         </div>
 
-        {/* 4-Step Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+        {/* 5-Step Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 relative">
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
