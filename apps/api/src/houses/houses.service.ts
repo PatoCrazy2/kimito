@@ -11,6 +11,7 @@ import {
   HouseMemberResponse,
 } from '@kimito/shared-types';
 import { TasksService } from '../tasks/tasks.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import * as crypto from 'crypto';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class HousesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tasksService: TasksService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   private generateInviteCode(): string {
@@ -142,6 +144,42 @@ export class HousesService {
         active: true,
       },
     });
+
+    // Obtener los datos del nuevo miembro
+    const joiningUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true },
+    });
+
+    // Obtener todos los otros miembros existentes de la casa
+    const existingMembers = await this.prisma.houseMembership.findMany({
+      where: {
+        houseId: house.id,
+        active: true,
+        userId: { not: userId },
+      },
+      select: { userId: true },
+    });
+
+    const joinPayload = {
+      title: '¡Nuevo roomie en casa! 🏠',
+      body: `${joiningUser?.name || 'Un usuario'} se ha unido a la casa "${house.name}".`,
+      url: '/dashboard',
+    };
+
+    // Enviar notificaciones en paralelo
+    try {
+      await Promise.all(
+        existingMembers.map((member) =>
+          this.notificationsService.sendNotificationToUser(
+            member.userId,
+            joinPayload,
+          ),
+        ),
+      );
+    } catch (error) {
+      console.error('Error al enviar notificaciones de unión a la casa:', error);
+    }
 
     return {
       id: house.id,
