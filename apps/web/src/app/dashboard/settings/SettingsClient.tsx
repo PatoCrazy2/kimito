@@ -166,7 +166,7 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
 
       {/* Tarjeta de Opciones */}
       <Card className="border-border/40 shadow-[0_4px_24px_rgba(133,83,0,0.02)] rounded-3xl bg-white divide-y divide-border/30">
-        
+
         {/* Opción 1: Descargar App */}
         <div className="p-5 flex items-center justify-between gap-4 text-left">
           <div className="flex items-center gap-3">
@@ -178,8 +178,8 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
                 Descargar Aplicación (PWA)
               </h4>
               <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed font-medium">
-                {isPwaInstalled 
-                  ? "Ya estás usando la versión instalada en tu dispositivo." 
+                {isPwaInstalled
+                  ? "Ya estás usando la versión instalada en tu dispositivo."
                   : "Instala Kimito en tu pantalla de inicio para una experiencia nativa."}
               </p>
             </div>
@@ -187,11 +187,10 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
           <button
             onClick={handleInstallPwa}
             disabled={!isPwaInstalled && !deferredPrompt}
-            className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${
-              isPwaInstalled
+            className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${isPwaInstalled
                 ? "bg-muted text-muted-foreground hover:bg-muted/80"
                 : "bg-amber-primary hover:bg-amber-primary/95 text-white"
-            }`}
+              }`}
           >
             {isPwaInstalled ? "Desinstalar" : "Descargar"}
           </button>
@@ -208,8 +207,8 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
                 Notificaciones Push
               </h4>
               <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed font-medium">
-                {isSubscribed 
-                  ? "Las notificaciones están activadas en este dispositivo." 
+                {isSubscribed
+                  ? "Las notificaciones están activadas en este dispositivo."
                   : "Recibe avisos en tiempo real sobre tareas asignadas y completadas."}
               </p>
             </div>
@@ -217,11 +216,10 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
           <button
             onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
             disabled={isSubscribing}
-            className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${
-              isSubscribed
+            className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${isSubscribed
                 ? "bg-muted text-muted-foreground hover:bg-muted/80"
                 : "bg-amber-primary hover:bg-amber-primary/95 text-white"
-            }`}
+              }`}
           >
             {isSubscribing ? "Procesando..." : isSubscribed ? "Desactivar" : "Activar"}
           </button>

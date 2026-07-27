@@ -50,12 +50,12 @@ export default function PushNotificationBanner() {
     const hasNotificationSupport = typeof window !== "undefined" && "Notification" in window;
     const isPermissionGranted = hasNotificationSupport && Notification.permission === "granted";
 
-    // 4. Iniciar timer de delay de 1 minuto (60000ms)
+    // 4. Iniciar timer de delay de 30 segundos (30000ms)
     let timer: NodeJS.Timeout;
     if (!isDismissed && !isPermissionGranted) {
       timer = setTimeout(() => {
         setShowPrompt(true);
-      }, 60000); // 1 minuto
+      }, 30000); // 30 segundos
     }
 
     return () => {
