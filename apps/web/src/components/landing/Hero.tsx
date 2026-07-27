@@ -14,16 +14,16 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12 mb-16 sm:mb-24 select-none">
+    <section className="relative w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10 mb-16 sm:mb-24 select-none">
       {/* GPU Optimized Keyframes & Custom Styles */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes bg-pan-zoom {
-          0% { transform: translate(-15px, -12px) scale(1.02); }
-          50% { transform: translate(15px, 12px) scale(1.06); }
-          100% { transform: translate(-15px, -12px) scale(1.02); }
+          0% { transform: translate(-25px, -18px) scale(1.03); }
+          50% { transform: translate(25px, 18px) scale(1.10); }
+          100% { transform: translate(-25px, -18px) scale(1.03); }
         }
         .animate-bg-pan-zoom {
-          animation: bg-pan-zoom 30s ease-in-out infinite;
+          animation: bg-pan-zoom 22s ease-in-out infinite;
           will-change: transform;
         }
 
@@ -55,19 +55,19 @@ export function Hero() {
           100% { transform: translate(5%, 5%) scale(1.08); }
         }
         .animate-grad-a {
-          animation: float-gradient-a 25s ease-in-out infinite;
+          animation: float-gradient-a 22s ease-in-out infinite;
           will-change: transform;
         }
         .animate-grad-b {
-          animation: float-gradient-b 28s ease-in-out infinite;
+          animation: float-gradient-b 25s ease-in-out infinite;
           will-change: transform;
         }
       `}} />
 
-      {/* Main Hero Container ("Stage") */}
-      <div className="relative w-full overflow-hidden rounded-[32px] border border-[#E8E1D3]/60 bg-[#FAF9F6] shadow-sm min-h-[60vh] sm:min-h-[70vh] md:min-h-[80vh] flex flex-col justify-center items-center text-center p-6 sm:p-12 md:p-24">
+      {/* Main Hero Container ("Stage") - Immersive Height */}
+      <div className="relative w-full overflow-hidden rounded-[32px] border border-[#E8E1D3]/60 bg-[#FAF9F6] shadow-sm min-h-[75vh] sm:min-h-[80vh] md:min-h-[85vh] flex flex-col justify-center items-center text-center p-6 sm:p-12 md:py-24 md:px-24">
         
-        {/* Layer 1: GPU Animated Background Image (z-0 to render on top of container bg) */}
+        {/* Layer 1: GPU Animated Background Image */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img
             src="/bghero.webp"
@@ -98,7 +98,7 @@ export function Hero() {
           />
         </div>
 
-        {/* Layer 4: Content Overlay (z-10 to stay on top of the background layers) */}
+        {/* Layer 4: Content Overlay */}
         <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center px-4">
           {/* Headline */}
           <h1 className="text-4xl sm:text-6xl md:text-7xl tracking-tight leading-[1.1] text-[#1D1B16] font-normal mb-6">
@@ -107,7 +107,7 @@ export function Hero() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg md:text-xl text-[#1D1B16]/75 font-normal max-w-xl leading-relaxed mb-10 sm:mb-12">
+          <p className="text-base sm:text-lg md:text-xl text-[#1D1B16]/75 font-normal max-w-xl leading-relaxed mb-8 sm:mb-10">
             Equilibra las tareas domésticas y valida el cumplimiento para una convivencia perfecta.
           </p>
 
