@@ -1,8 +1,4 @@
-<p align="center">
-  <a href="https://kimito-peach.vercel.app">
-    <img src="apps/web/public/kimitohero.webp" alt="Kimito Hero Banner" width="100%" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);" />
-  </a>
-</p>
+[![Kimito Hero Banner](apps/web/public/kimitohero.webp)](https://kimito-peach.vercel.app)
 
 <h1 align="center">Kimito — Plataforma de Confianza para Co-Living</h1>
 
