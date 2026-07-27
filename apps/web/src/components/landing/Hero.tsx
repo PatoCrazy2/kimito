@@ -18,9 +18,9 @@ export function Hero() {
       {/* GPU Optimized Keyframes & Custom Styles */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes bg-pan-zoom {
-          0% { transform: translate(-25px, -18px) scale(1.03); }
-          50% { transform: translate(25px, 18px) scale(1.10); }
-          100% { transform: translate(-25px, -18px) scale(1.03); }
+          0% { transform: translate(-25px, -18px) scale(1.15); }
+          50% { transform: translate(25px, 18px) scale(1.25); }
+          100% { transform: translate(-25px, -18px) scale(1.15); }
         }
         .animate-bg-pan-zoom {
           animation: bg-pan-zoom 22s ease-in-out infinite;
