@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Sliders, CheckCheck, Award, Sparkles } from "lucide-react";
+import { Home, Sliders, CheckCheck, Award } from "lucide-react";
 
 export function HowItWorks() {
   const steps = [
@@ -43,19 +43,19 @@ export function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="py-24 bg-[#F4EFE6]/60 border-y border-[#E8E1D3]/80 relative overflow-hidden">
+    <section
+      id="how-it-works"
+      className="py-24 bg-[#F4EFE6]/60 border-y border-[#E8E1D3]/80 relative overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#855300]/20 text-[#855300] text-xs font-bold uppercase tracking-wider shadow-2xs">
-            <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-            <span>Paso a Paso</span>
-          </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1D1B16] tracking-tight">
             ¿Cómo funciona Kimito?
           </h2>
           <p className="text-base sm:text-lg text-[#1D1B16]/75 leading-relaxed">
-            Cuatro sencillos pasos para transformar la convivencia y mantener el orden sin complicaciones.
+            Cuatro sencillos pasos para transformar la convivencia y mantener el
+            orden sin complicaciones.
           </p>
         </div>
 

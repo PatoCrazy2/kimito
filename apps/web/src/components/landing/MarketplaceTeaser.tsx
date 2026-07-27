@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star, ShieldCheck, MapPin, Sparkles, ArrowRight, Heart } from "lucide-react";
+import { Star, ShieldCheck, MapPin, ArrowRight, Heart } from "lucide-react";
 
 export function MarketplaceTeaser() {
   const listings = [
@@ -61,10 +61,6 @@ export function MarketplaceTeaser() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4 max-w-2xl text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#006B5F]/10 border border-[#006B5F]/20 text-[#006B5F] text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-4 h-4 text-[#006B5F]" />
-              <span>Comunidad Verificada</span>
-            </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1D1B16] tracking-tight">
               Marketplace de Roommates
             </h2>
