@@ -467,6 +467,21 @@ export class ListingsService {
       reputationScore = rep.score;
     } catch {}
 
+    // Enviar notificación al dueño de la publicación
+    try {
+      const payload = {
+        title: 'Nueva postulación 🤝',
+        body: `${application.user.name} se ha postulado a tu anuncio "${listing.title}".`,
+        url: '/dashboard',
+      };
+      await this.notificationsService.sendNotificationToUser(
+        listing.userId,
+        payload,
+      );
+    } catch (error) {
+      console.error('Error al enviar notificación de postulación:', error);
+    }
+
     return {
       id: application.id,
       listingId: application.listingId,
