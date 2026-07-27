@@ -1,69 +1,147 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Sparkles,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  Camera,
-  Star,
-  Bell,
-  ShieldCheck,
-  Users,
-} from "lucide-react";
 
 export function Hero() {
+  const [showLogo, setShowLogo] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowLogo((prev) => !prev);
+    }, 4000); // 4 seconds interval for a slower, calmer transition
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section className="relative overflow-hidden pt-6 pb-20 lg:pt-12 lg:pb-32 bg-[#FAF9F6]">
-      {/* Patrón repetido de logotipos (esencia de login) para dar profundidad */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.03] -z-20"
-        style={{
-          backgroundImage: "url('/logo.svg')",
-          backgroundSize: "80px 80px",
-          backgroundRepeat: "repeat",
-        }}
-        aria-hidden="true"
-      />
-      {/* Luces radiales de los colores del tema */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,185,91,0.06),transparent_60%)] -z-10 pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(128,213,199,0.06),transparent_60%)] -z-10 pointer-events-none" />
+    <section className="relative w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12 mb-16 sm:mb-24 select-none">
+      {/* GPU Optimized Keyframes & Custom Styles */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes bg-pan-zoom {
+          0% { transform: translate(-15px, -12px) scale(1.02); }
+          50% { transform: translate(15px, 12px) scale(1.06); }
+          100% { transform: translate(-15px, -12px) scale(1.02); }
+        }
+        .animate-bg-pan-zoom {
+          animation: bg-pan-zoom 30s ease-in-out infinite;
+          will-change: transform;
+        }
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Headline, Subtitle, Dual CTAs & Social Proof */}
-          <div className="lg:col-span-7 flex flex-col items-start space-y-8 text-left">
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#1D1B16] tracking-tight leading-[1.12]">
-              La forma{" "}
-              <span className="text-[#855300]">
-                inteligente y justa
-              </span>{" "}
-              de compartir casa
-            </h1>
+        @keyframes grain-shift {
+          0%, 100% { transform: translate(0, 0); }
+          10% { transform: translate(-1%, -1%); }
+          20% { transform: translate(-2%, 1%); }
+          30% { transform: translate(1%, -2%); }
+          40% { transform: translate(-1%, 2%); }
+          50% { transform: translate(-2%, 1%); }
+          60% { transform: translate(2%, -1%); }
+          70% { transform: translate(1%, 1%); }
+          80% { transform: translate(-1%, -1%); }
+          90% { transform: translate(1%, 1%); }
+        }
+        .animate-grain {
+          animation: grain-shift 8s steps(6) infinite;
+          will-change: transform;
+        }
 
-            {/* Subtitle */}
-            <p className="text-lg sm:text-xl text-[#1D1B16]/75 font-normal leading-relaxed max-w-2xl">
-              Kimito calcula el peso real de cada labor de limpieza, las reparte
-              de forma equitativa, valida las evidencias y construye tu{" "}
-              <span className="font-semibold text-[#855300]">
-                Pasaporte de Reputación
-              </span>{" "}
-              como roommate.
-            </p>
+        @keyframes float-gradient-a {
+          0% { transform: translate(-5%, -5%) scale(1); }
+          50% { transform: translate(5%, 5%) scale(1.08); }
+          100% { transform: translate(-5%, -5%) scale(1); }
+        }
+        @keyframes float-gradient-b {
+          0% { transform: translate(5%, 5%) scale(1.08); }
+          50% { transform: translate(-5%, -5%) scale(1); }
+          100% { transform: translate(5%, 5%) scale(1.08); }
+        }
+        .animate-grad-a {
+          animation: float-gradient-a 25s ease-in-out infinite;
+          will-change: transform;
+        }
+        .animate-grad-b {
+          animation: float-gradient-b 28s ease-in-out infinite;
+          will-change: transform;
+        }
+      `}} />
 
-            {/* Dual CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto pt-2">
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#855300] to-[#A36600] hover:from-[#6C4300] hover:to-[#855300] text-white text-base font-bold px-7 py-4 rounded-full shadow-lg shadow-[#855300]/25 hover:shadow-xl hover:shadow-[#855300]/35 transition-all duration-300 hover:-translate-y-0.5"
+      {/* Main Hero Container ("Stage") */}
+      <div className="relative w-full overflow-hidden rounded-[32px] border border-[#E8E1D3]/60 bg-[#FAF9F6] shadow-sm min-h-[60vh] sm:min-h-[70vh] md:min-h-[80vh] flex flex-col justify-center items-center text-center p-6 sm:p-12 md:p-24">
+        
+        {/* Layer 1: GPU Animated Background Image (z-0 to render on top of container bg) */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            src="/bghero.webp"
+            alt="Hero Background"
+            className="w-full h-full object-cover opacity-[0.95] animate-bg-pan-zoom"
+          />
+        </div>
+
+        {/* Layer 2: Slow-Moving Ambient CSS Radial Gradients */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none mix-blend-color-burn">
+          {/* Amber Gradient */}
+          <div 
+            className="absolute -top-[20%] -left-[10%] w-[80%] h-[80%] rounded-full bg-[radial-gradient(circle_at_center,rgba(133,83,0,0.06)_0%,transparent_70%)] animate-grad-a"
+          />
+          {/* Warm Cream / Light Terracotta Gradient */}
+          <div 
+            className="absolute -bottom-[20%] -right-[10%] w-[85%] h-[85%] rounded-full bg-[radial-gradient(circle_at_center,rgba(172,52,0,0.04)_0%,transparent_70%)] animate-grad-b"
+          />
+        </div>
+
+        {/* Layer 3: Animated Grain/Noise Overlay */}
+        <div className="absolute inset-[-50%] z-0 pointer-events-none opacity-[0.05] mix-blend-soft-light overflow-hidden">
+          <div 
+            className="w-[200%] h-[200%] animate-grain"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            }}
+          />
+        </div>
+
+        {/* Layer 4: Content Overlay (z-10 to stay on top of the background layers) */}
+        <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center px-4">
+          {/* Headline */}
+          <h1 className="text-4xl sm:text-6xl md:text-7xl tracking-tight leading-[1.1] text-[#1D1B16] font-normal mb-6">
+            <span className="font-serif italic block sm:inline text-[#1D1B16]/90">Hogar compartido,</span>
+            <span className="font-sans font-black block sm:inline sm:ml-4 text-[#1D1B16]">paz mental garantizada.</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg md:text-xl text-[#1D1B16]/75 font-normal max-w-xl leading-relaxed mb-10 sm:mb-12">
+            Equilibra las tareas domésticas y valida el cumplimiento para una convivencia perfecta.
+          </p>
+
+          {/* CTA Section */}
+          <div className="flex flex-col items-center gap-3.5">
+            <Link
+              href="/login"
+              className="relative inline-flex items-center justify-center bg-[#EFE9DB] hover:bg-[#E2D9C6] text-[#1D1B16] border border-[#1D1B16] text-base font-semibold rounded-full shadow-sm hover:shadow transition-all duration-300 w-72 h-14 overflow-hidden"
+            >
+              {/* Slide-in Logo State */}
+              <div
+                className="absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out"
+                style={{
+                  opacity: showLogo ? 1 : 0,
+                  transform: showLogo ? "translateY(0)" : "translateY(25px)",
+                }}
+              >
+                <img
+                  src="/logo.svg"
+                  alt="Kimito Logo"
+                  className="w-9 h-9 filter grayscale contrast-200"
+                />
+              </div>
+
+              {/* Slide-in Text State */}
+              <div
+                className="absolute inset-0 flex items-center justify-center gap-3 transition-all duration-500 ease-in-out"
+                style={{
+                  opacity: !showLogo ? 1 : 0,
+                  transform: !showLogo ? "translateY(0)" : "translateY(-25px)",
+                }}
               >
                 {/* Google Icon SVG */}
-                <svg
-                  className="w-5 h-5 bg-white rounded-full p-0.5"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-5 h-5 bg-white rounded-full p-0.5 shrink-0" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
                     d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
@@ -81,182 +159,12 @@ export function Hero() {
                     d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.37 0 3.26 2.7 1.29 6.61l3.99 3.15c.95-2.85 3.6-4.96 6.72-4.96z"
                   />
                 </svg>
-                <span>Empieza Gratis con Google</span>
-              </Link>
-
-              <a
-                href="#marketplace"
-                className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#F4EFE6] text-[#855300] border-2 border-[#855300]/30 text-base font-bold px-7 py-4 rounded-full shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
-              >
-                <Users className="w-5 h-5" />
-                <span>Explorar Marketplace</span>
-              </a>
-            </div>
-          </div>
-
-          {/* Right Column: Interactive Marketing Demo Cards Showcase with Drop Entrance Animation */}
-          <div className="lg:col-span-5 relative mt-6 lg:mt-0 select-none">
-            {/* Ambient decorative glow behind mockup */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#FFB95B]/15 via-[#FFB49C]/5 to-transparent rounded-full blur-2xl pointer-events-none transform -rotate-12" />
-
-            <div className="relative mx-auto max-w-md lg:max-w-none space-y-4">
-              {/* Floating Demo Card 1: Live Task Checklist */}
-              <div 
-                className="bg-white rounded-3xl p-5 border border-[#E8E1D3] shadow-xl shadow-[#855300]/8 transform hover:scale-[1.02] transition-all duration-500 animate-in fade-in slide-in-from-top-12 duration-1000 fill-mode-both"
-                style={{ animationDelay: "150ms" }}
-              >
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#F4EFE6]">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-[#F59E0B]/15 flex items-center justify-center text-[#855300]">
-                      <Clock className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-[#1D1B16]">
-                        Tareas de la semana
-                      </h3>
-                      <p className="text-xs text-[#1D1B16]/60">
-                        Semana 30 • Distribución justa
-                      </p>
-                    </div>
-                  </div>
-                  <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-[#FFB95B]/15 text-[#855300]">
-                    En curso
-                  </span>
-                </div>
-
-                <div className="space-y-2.5">
-                  {/* Task 1 */}
-                  <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[#FAF9F6] border border-[#E8E1D3]/60">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-5 h-5 rounded-full border-2 border-[#855300] flex items-center justify-center">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#855300]" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-[#1D1B16]">
-                          Limpieza de cocina profunda
-                        </p>
-                        <p className="text-[11px] text-[#1D1B16]/60">
-                          Asignado a Luis • 5 pts
-                        </p>
-                      </div>
-                    </div>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-[#F59E0B]/15 text-[#855300]">
-                      <Camera className="w-3 h-3" /> Foto req.
-                    </span>
-                  </div>
-
-                  {/* Task 2 */}
-                  <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[#FFB95B]/5 border border-[#FFB95B]/20">
-                    <div className="flex items-center gap-2.5">
-                      <CheckCircle2 className="w-5 h-5 text-[#855300] fill-[#FFB95B]/20" />
-                      <div>
-                        <p className="text-xs font-bold text-[#1D1B16] line-through text-[#1D1B16]/50">
-                          Sacar basura y reciclaje
-                        </p>
-                        <p className="text-[11px] text-[#855300] font-medium">
-                          Sofía • 2 pts completados
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[11px] font-extrabold text-[#855300] px-2 py-0.5 rounded-md bg-[#FFB95B]/15">
-                      ✓ Verificado
-                    </span>
-                  </div>
-
-                  {/* Task 3 */}
-                  <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[#FAF9F6] border border-[#E8E1D3]/60">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-5 h-5 rounded-full border-2 border-[#E8E1D3]" />
-                      <div>
-                        <p className="text-xs font-bold text-[#1D1B16]">
-                          Aseo de baño principal
-                        </p>
-                        <p className="text-[11px] text-[#1D1B16]/60">
-                          Carlos M. • 4 pts
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[11px] font-semibold text-[#1D1B16]/60 px-2 py-0.5 bg-[#F4EFE6] rounded-md">
-                      Pendiente
-                    </span>
-                  </div>
-                </div>
+                <span>Empieza gratis con Google</span>
               </div>
-
-              {/* Floating Demo Card 2: Dark Passport Score Card */}
-              <div 
-                className="bg-[#1D1B16] text-white rounded-3xl p-5 border border-[#4D4639] shadow-2xl shadow-[#1D1B16]/30 transform lg:-rotate-2 hover:rotate-0 hover:scale-[1.02] transition-all duration-500 animate-in fade-in slide-in-from-top-12 duration-1000 fill-mode-both"
-                style={{ animationDelay: "450ms" }}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#F59E0B] to-[#855300] p-0.5">
-                      <img
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-                        alt="Roommate Profile"
-                        className="w-full h-full object-cover rounded-full"
-                      />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-sm text-white">
-                          Carlos Mendoza
-                        </span>
-                        <ShieldCheck className="w-4 h-4 text-[#F59E0B]" />
-                      </div>
-                      <p className="text-xs text-[#CDC5B4]">
-                        Pasaporte Roommate Certificado
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <div className="flex items-center gap-1 text-[#F59E0B]">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span className="text-base font-black text-white">
-                        4.9
-                      </span>
-                      <span className="text-xs text-[#CDC5B4]">/5</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[#4D4639]/70 text-xs">
-                  <div className="bg-[#2A2823] p-2.5 rounded-xl border border-[#4D4639]/40">
-                    <p className="text-[#CDC5B4] text-[11px]">
-                      Historial de Aseo
-                    </p>
-                    <p className="font-bold text-white text-sm mt-0.5">
-                      28 a tiempo
-                    </p>
-                  </div>
-                  <div className="bg-[#2A2823] p-2.5 rounded-xl border border-[#4D4639]/40">
-                    <p className="text-[#CDC5B4] text-[11px]">Cumplimiento</p>
-                    <p className="font-bold text-[#F59E0B] text-sm mt-0.5">
-                      100% verificado
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating Demo Card 3: Native Web Push Alert Pill */}
-              <div 
-                className="bg-white/95 backdrop-blur-md rounded-full px-4 py-3 border border-[#E8E1D3] shadow-lg flex items-center gap-3 animate-in fade-in slide-in-from-top-12 duration-1000 fill-mode-both"
-                style={{ animationDelay: "750ms" }}
-              >
-                <div className="w-8 h-8 rounded-full bg-[#AC3400]/15 flex items-center justify-center text-[#AC3400] shrink-0">
-                  <Bell className="w-4 h-4" />
-                </div>
-                <div className="text-xs">
-                  <p className="font-bold text-[#1D1B16]">
-                    ¡Sofía subió evidencia para &quot;Cocina&quot;! 📸
-                  </p>
-                  <p className="text-[#1D1B16]/60 text-[11px]">
-                    Web Push Alert • Hace 2 min
-                  </p>
-                </div>
-              </div>
-            </div>
+            </Link>
+            <p className="text-xs text-[#1D1B16]/50 tracking-wide">
+              Disponible para web y dispositivos móviles
+            </p>
           </div>
         </div>
       </div>
