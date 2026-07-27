@@ -404,8 +404,13 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold text-muted-foreground">Ubicación</label>
                   <div className="relative">
-                    <span className="material-symbols-rounded absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">location_on</span>
-                    <Input placeholder="Ej: Cholula" value={location} onChange={(e) => setLocation(e.target.value)} className="h-8 rounded-xl text-xs pl-6" />
+                    <span className="material-symbols-rounded absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-xs z-10">location_on</span>
+                    <AddressAutocomplete
+                      value={location}
+                      onChange={setLocation}
+                      placeholder="Ej: Cholula"
+                      className="h-8 rounded-xl text-xs pl-6"
+                    />
                   </div>
                 </div>
 
