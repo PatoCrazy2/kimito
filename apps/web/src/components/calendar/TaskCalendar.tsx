@@ -7,6 +7,7 @@ import type {
 } from "@kimito/shared-types";
 import {
   overrideAssignmentAction,
+  uncompleteAssignmentAction,
 } from "@/app/actions/scheduling-actions";
 
 interface TaskCalendarProps {
@@ -28,6 +29,9 @@ export default function TaskCalendar({
     useState<TaskAssignmentResponse[]>(initialAssignments);
   const [selectedMemberFilter, setSelectedMemberFilter] =
     useState<string>("ALL");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [confirmingRejectionId, setConfirmingRejectionId] = useState<string | null>(null);
 
   // Reasignar tarea a otro compañero
   const handleOverride = async (assignmentId: string, newUserId: string) => {
@@ -41,6 +45,20 @@ export default function TaskCalendar({
       );
     } catch (err) {
       console.error("Error al reasignar tarea:", err);
+    }
+  };
+
+  // Rechazar y desmarcar tarea completada
+  const handleUncomplete = async (assignmentId: string) => {
+    setError(null);
+    try {
+      const updated = await uncompleteAssignmentAction(assignmentId);
+      setAssignments((prev) =>
+        prev.map((a) => (a.id === assignmentId ? { ...updated, evidenceUrl: null } : a))
+      );
+    } catch (err) {
+      console.error("Error al desmarcar la tarea:", err);
+      setError("No se pudo desmarcar la tarea. Solo los administradores pueden realizar esta acción.");
     }
   };
 
@@ -68,6 +86,18 @@ export default function TaskCalendar({
         <div className="flex items-center gap-1.5 text-[11px] font-bold text-muted-foreground select-none pb-1">
           <span className="material-symbols-rounded text-sm">calendar_today</span>
           <span>{dateRangeText}</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="p-3.5 bg-red-50 border border-red-100 text-red-700 text-xs font-bold rounded-2xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-rounded text-base text-red-600">warning</span>
+            <span>{error}</span>
+          </div>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-700 transition-colors cursor-pointer">
+            <span className="material-symbols-rounded text-sm block">close</span>
+          </button>
         </div>
       )}
 
@@ -152,6 +182,22 @@ export default function TaskCalendar({
                   </span>
                 </div>
 
+                {isCompleted && assignment.evidenceUrl && (
+                  <div
+                    onClick={() => setSelectedImage(assignment.evidenceUrl!)}
+                    className="relative aspect-video w-full rounded-2xl overflow-hidden bg-muted border border-border/10 cursor-pointer group mt-2"
+                  >
+                    <img
+                      src={assignment.evidenceUrl}
+                      alt="Evidencia"
+                      className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
+                      <span className="material-symbols-rounded text-white text-2xl drop-shadow-md">zoom_in</span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Acciones de la tarjeta */}
                 <div className="flex items-center justify-between pt-2 border-t border-border/30 text-xs">
                   {/* Select de Reasignación manual (Solo Admin y estilizado premium) */}
@@ -180,22 +226,71 @@ export default function TaskCalendar({
                     </span>
                   )}
 
-                  {/* Botón marcar completada */}
-                  {!isCompleted && onCompleteTaskClick && assignment.userId === currentUserId && (
-                    <button
-                      onClick={() => onCompleteTaskClick(assignment)}
-                      className="bg-amber-primary hover:bg-amber-primary/95 text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
-                    >
-                      <span className="material-symbols-rounded text-sm">
-                        check_circle
-                      </span>
-                      Completar
-                    </button>
+                  {/* Botón marcar completada o Rechazar (Admin) */}
+                  {!isCompleted ? (
+                    onCompleteTaskClick && assignment.userId === currentUserId && (
+                      <button
+                        onClick={() => onCompleteTaskClick(assignment)}
+                        className="bg-amber-primary hover:bg-[#6c4300] text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
+                      >
+                        <span className="material-symbols-rounded text-sm">
+                          check_circle
+                        </span>
+                        Completar
+                      </button>
+                    )
+                  ) : (
+                    isAdmin && (
+                      confirmingRejectionId === assignment.id ? (
+                        <div className="flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-150">
+                          <button
+                            onClick={() => {
+                              setConfirmingRejectionId(null);
+                              handleUncomplete(assignment.id);
+                            }}
+                            className="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-xs active:scale-95"
+                          >
+                            <span className="material-symbols-rounded text-xs">check</span>
+                            ¿Seguro?
+                          </button>
+                          <button
+                            onClick={() => setConfirmingRejectionId(null)}
+                            className="bg-muted hover:bg-muted/80 text-muted-foreground font-bold px-2 py-1.5 rounded-xl text-[11px] flex items-center transition-all cursor-pointer active:scale-95"
+                          >
+                            <span className="material-symbols-rounded text-sm">close</span>
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmingRejectionId(assignment.id)}
+                          className="bg-red-50 hover:bg-red-100 text-red-600 font-bold px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1 transition-all cursor-pointer shadow-xs active:scale-95 animate-in fade-in duration-200"
+                        >
+                          <span className="material-symbols-rounded text-sm">
+                            cancel
+                          </span>
+                          Rechazar
+                        </button>
+                      )
+                    )
                   )}
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Evidence Image Zoom Modal */}
+      {selectedImage && (
+        <div
+          onClick={() => setSelectedImage(null)}
+          className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-lg flex items-center justify-center cursor-zoom-out select-none animate-in fade-in duration-200"
+        >
+          <img
+            src={selectedImage}
+            alt="Evidencia de tarea completada"
+            className="max-w-full max-h-full object-contain pointer-events-none"
+          />
         </div>
       )}
     </div>
