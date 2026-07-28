@@ -1,3 +1,12 @@
+// Lifecycle events to prevent the Service Worker from getting stuck in waiting state
+self.addEventListener("install", function (event) {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", function (event) {
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener("push", function (event) {
   if (event.data) {
     const data = event.data.json();
