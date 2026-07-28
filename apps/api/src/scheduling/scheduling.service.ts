@@ -3,6 +3,7 @@ import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { calculateFairSchedule } from './fair-scheduling.algorithm';
@@ -11,10 +12,14 @@ import type {
   OverrideAssignmentDto,
 } from '@kimito/shared-types';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class SchedulingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   private async getUserActiveMembership(email: string) {
     const user = await this.prisma.user.findUnique({
@@ -119,6 +124,23 @@ export class SchedulingService {
         }),
       ),
     );
+
+    // Notificar a cada usuario asignado
+    try {
+      const uniqueUserIds = [...new Set(createdAssignments.map((a) => a.userId))];
+      const payload = {
+        title: 'Nuevas tareas asignadas',
+        body: 'Se te han asignado nuevas tareas para esta semana. ¡A brillar! ✨',
+        url: '/dashboard',
+      };
+      await Promise.all(
+        uniqueUserIds.map((userId) =>
+          this.notificationsService.sendNotificationToUser(userId, payload),
+        ),
+      );
+    } catch (error) {
+      console.error('Error al enviar notificaciones de asignación:', error);
+    }
 
     return createdAssignments as unknown as TaskAssignmentResponse[];
   }
@@ -269,6 +291,21 @@ export class SchedulingService {
       },
     });
 
+    // Notificar al usuario reasignado
+    try {
+      const payload = {
+        title: 'Tarea reasignada 🔄',
+        body: `Se te ha asignado la tarea "${updated.task.title}" para este periodo.`,
+        url: '/dashboard',
+      };
+      await this.notificationsService.sendNotificationToUser(
+        dto.newUserId,
+        payload,
+      );
+    } catch (error) {
+      console.error('Error al enviar notificación de reasignación:', error);
+    }
+
     return updated as unknown as TaskAssignmentResponse;
   }
 
@@ -314,6 +351,35 @@ export class SchedulingService {
         },
       },
     });
+
+    // Enviar notificación a los demás miembros de la casa
+    try {
+      const otherMembers = await this.prisma.houseMembership.findMany({
+        where: {
+          houseId: membership.houseId,
+          active: true,
+          userId: { not: updated.user.id },
+        },
+        select: { userId: true },
+      });
+
+      const payload = {
+        title: '¡Tarea Completada!',
+        body: `${updated.user.name} completó la tarea "${updated.task.title}".${evidenceUrl ? ' 📸' : ''}`,
+        url: '/dashboard',
+      };
+
+      await Promise.all(
+        otherMembers.map((member) =>
+          this.notificationsService.sendNotificationToUser(
+            member.userId,
+            payload,
+          ),
+        ),
+      );
+    } catch (error) {
+      console.error('Error al enviar notificaciones de tarea completada:', error);
+    }
 
     return updated as unknown as TaskAssignmentResponse;
   }
@@ -391,6 +457,26 @@ export class SchedulingService {
             ),
           );
 
+          // Notificar a los usuarios asignados
+          try {
+            const uniqueUserIds = [...new Set(assignments.map((a) => a.userId))];
+            const payload = {
+              title: 'Nuevas tareas asignadas',
+              body: 'Se te han asignado nuevas tareas para esta semana. ¡A brillar! ✨',
+              url: '/dashboard',
+            };
+            await Promise.all(
+              uniqueUserIds.map((userId) =>
+                this.notificationsService.sendNotificationToUser(userId, payload),
+              ),
+            );
+          } catch (err) {
+            console.error(
+              `[Cron Job] Error al notificar asignaciones para la casa ${house.id}:`,
+              err,
+            );
+          }
+
           console.log(
             `[Cron Job] Casa ${house.id}: ${assignments.length} tareas asignadas.`,
           );
@@ -402,5 +488,78 @@ export class SchedulingService {
         );
       }
     }
+  }
+
+  /**
+   * Desmarca o rechaza una tarea completada a pendiente (Solo el Admin).
+   */
+  async uncompleteAssignment(
+    email: string,
+    assignmentId: string,
+  ): Promise<TaskAssignmentResponse> {
+    const membership = await this.getUserActiveMembership(email);
+
+    if (membership.role !== 'ADMIN') {
+      throw new ForbiddenException(
+        'Solo el administrador de la casa puede desmarcar tareas completadas',
+      );
+    }
+
+    const assignment = await this.prisma.taskAssignment.findUnique({
+      where: { id: assignmentId },
+      include: { task: true, user: true },
+    });
+
+    if (!assignment) {
+      throw new NotFoundException('Asignación de tarea no encontrada');
+    }
+
+    if (assignment.task.houseId !== membership.houseId) {
+      throw new BadRequestException('La tarea pertenece a otra casa');
+    }
+
+    if (assignment.status !== 'COMPLETED' && assignment.status !== 'LATE') {
+      throw new BadRequestException('La tarea no está completada');
+    }
+
+    const updated = await this.prisma.taskAssignment.update({
+      where: { id: assignmentId },
+      data: {
+        status: 'PENDING',
+        completedAt: null,
+        evidenceUrl: null,
+      },
+      include: {
+        task: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatarUrl: true,
+          },
+        },
+      },
+    });
+
+    // Enviar notificación Web Push al inquilino asignado
+    try {
+      const payload = {
+        title: 'Evidencia rechazada ❌',
+        body: `El administrador rechazó la evidencia para "${updated.task.title}". Por favor, complétala de nuevo.`,
+        url: '/dashboard',
+      };
+      await this.notificationsService.sendNotificationToUser(
+        assignment.userId,
+        payload,
+      );
+    } catch (error) {
+      console.error(
+        'Error al enviar notificación de evidencia rechazada:',
+        error,
+      );
+    }
+
+    return updated as unknown as TaskAssignmentResponse;
   }
 }

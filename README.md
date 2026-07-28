@@ -1,323 +1,185 @@
+[![Kimito Hero Banner](apps/web/public/kimitohero.webp)](https://kimito-peach.vercel.app)
+
+<h1 align="center">Kimito — Plataforma de Confianza para Co-Living</h1>
+
 <p align="center">
-  <img src="apps/web/public/kimitohero.webp" alt="Kimito Hero Banner" width="100%" style="border-radius: 16px;" />
+  <strong>Pasaporte de coexistencia y marketplace verificado para gestionar hogares compartidos de manera equitativa y transparente.</strong>
 </p>
 
-# Kimito — La Infraestructura de Confianza para Co-Living
+<p align="center">
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" /></a>
+  <a href="https://nestjs.com/"><img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" /></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
+  <a href="https://www.prisma.io/"><img src="https://img.shields.io/badge/Prisma_ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" /></a>
+  <a href="https://aws.amazon.com/"><img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS" /></a>
+</p>
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)](https://nestjs.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Prisma ORM](https://img.shields.io/badge/Prisma_ORM-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
-[![AWS](https://img.shields.io/badge/Amazon_Web_Services-232F3E?style=flat-square&logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
-
-> **Kimito** transforma la vida compartida sustituyendo los conflictos cotidianos por un registro de reputación algorítmico y basado en evidencias. Actúa como el primer **Pasaporte de Coexistencia** descentralizado para inquilinos y roommates, combinando una distribución equitativa de tareas domésticas con un marketplace verificado de alojamiento.
-
----
-
-
-## El Producto & Funcionalidades en Orden
-
-Compartir vivienda presenta retos organizacionales complejos. Un alto porcentaje de los conflictos entre roommates surge por la desigualdad en la limpieza y la falta de rendición de cuentas. Kimito resuelve esto mediante un registro de rendimiento del hogar transparente y estructurado.
-
-A continuación, se presenta el flujo completo de funcionalidades en orden secuencial del producto:
-
-### 1. Gestión de Hogares y Coexistencia (Casas)
-*   **Crear un Hogar Compartido:** Cualquier usuario puede fundar una nueva casa y registrar su descripción, reglas y dirección física.
-*   **Código de Invitación Directo y Enlace Social:** El creador (administrador) puede compartir el código manual y el link directo a través de redes sociales (WhatsApp, Telegram, Facebook) con soporte para la API de compartir nativa en móviles.
-*   **Unirse a un Hogar:** Los nuevos roommates se unen de forma instantánea ingresando el código de invitación o mediante el link compartido.
-
-### 2. Organización y Equidad en Tareas del Hogar (Scheduling)
-*   **Catálogo de Tareas con Peso:** Las tareas comunes tienen un "peso" específico basado en su dificultad y duración.
-*   **Algoritmo de Asignación Equitativa:** Las tareas se distribuyen automáticamente cada semana de forma equitativa utilizando un algoritmo codicioso de empaquetado (greedy bin-packing), garantizando que la carga de trabajo de todos los integrantes sea justa.
-*   **Registro de Evidencia con Fotos:** Al finalizar una tarea, el roommate sube una foto como evidencia, almacenándose localmente (en desarrollo) o en Amazon S3 (en producción) con fallback automático.
-
-### 3. El Pasaporte de Coexistencia (Reputación)
-*   **Score Dinámico de Reputación:** Un sistema califica a los inquilinos de 0.0 a 5.0 estrellas según su tasa de cumplimiento de tareas en tiempo real.
-*   **Currículum de Roommate Permanente:** Si un roommate sale de la casa, es expulsado o la casa es eliminada, sus datos de permanencia y su rol se guardan permanentemente en su historial de experiencias (`MembershipHistory`), sirviendo como su "carta de presentación" verificada al buscar un nuevo hogar.
-
-### 4. Administración de Casa y Zona de Peligro
-*   **Expulsión de Miembros (Admin):** Los administradores pueden expulsar de forma segura a cualquier roommate que no cumpla con las normas.
-*   **Disolución de la Casa (Admin):** El administrador puede eliminar la casa por completo, registrándose automáticamente la experiencia de salida de todos los miembros.
-*   **Salida Voluntaria (Miembro):** Los roommates pueden salir de la casa cuando lo deseen, resguardando su reputación obtenida.
-
-### 5. Integración de Mapas y Ubicaciones Precisas
-*   **Buscador de Direcciones Inteligente (Nominatim):** Al ingresar una dirección (al crear la casa o publicar un anuncio), se consultan en tiempo real sugerencias de direcciones precisas mediante la API de OpenStreetMap con un debounce óptimo.
-*   **Mapas Interactivos Embebidos (Google Maps Embed):** Muestra de forma estética y responsiva la ubicación del hogar y de las habitaciones en el Marketplace con paneles colapsables.
-
-### 6. Marketplace de Roommates y Postulaciones
-*   **Publicar Habitación Disponible:** Permite crear anuncios con detalles de renta, depósito, imágenes (hasta 4 fotos con previsualización en tiempo real y carga segura autorizada) y características de convivencia.
-*   **Exploración y Filtros Premium:** Los buscadores pueden filtrar habitaciones usando controles segmentados interactivos de género, precio, mascotas o fumadores.
-*   **Postulaciones Directas:** Al postularse, se ingresa el teléfono del candidato y un mensaje, guardando el registro y habilitando un botón para contactar directamente a su WhatsApp (`wa.me`).
-*   **Invitación Web Push:** El dueño del anuncio puede compartir el código de invitación directamente al candidato usando notificaciones Push nativas en el navegador (VAPID).
-
+<p align="center">
+  Next.js (App Router) + NestJS + Prisma ORM + AWS (S3, RDS, Beanstalk) + Web Push (VAPID)
+</p>
 
 ---
 
-## Arquitectura y Estructura del Monorepo
+## Introduccion
 
-Kimito se estructura en un monorepo altamente optimizado gestionado con Turborepo y pnpm.
+Kimito resuelve las fricciones organizacionales y los conflictos de convivencia en hogares compartidos. La plataforma reemplaza las discusiones cotidianas por un registro de rendimiento transparente basado en evidencias. Ofrece un sistema de reparto equitativo de tareas, un historial de reputación verificable que funciona como pasaporte de inquilino (MembershipHistory) y un marketplace para publicar y postular a habitaciones disponibles.
+
+---
+
+## Funcionalidades Core
+
+### 1. Gestion de Casas y Coexistencia
+*   **Creacion de Hogares:** Los usuarios administradores pueden registrar una casa, definiendo reglas, descripción y dirección física.
+*   **Invitacion Directa y Social:** Envío de invitaciones mediante un código manual o enlaces parametrizados a WhatsApp, Telegram y Facebook, integrando Web Share API.
+*   **Unidad Colectiva:** Los miembros se unen al instante para sincronizar las actividades cotidianas del hogar.
+
+### 2. Algoritmo de Reparto Equitativo (Scheduling)
+*   **Peso de Tareas:** Cada tarea tiene asignado un peso numérico que representa su nivel de dificultad y duración estimada.
+*   **Distribucion Optimizada:** Para balancear la carga de trabajo, Kimito implementa un algoritmo codicioso de empaquetado (greedy bin-packing) que balancea el peso acumulado asignado a cada roommate de la manera más cercana posible al promedio equitativo del hogar.
+*   **Ejecucion Automatizada y Manual:** Un cron job ejecuta el reparto de forma automática cada lunes por la madrugada, con endpoints habilitados para reasignaciones o disparadores manuales.
+*   **Evidencia Fotografica:** Al terminar una tarea, el usuario debe subir una foto de evidencia que se almacena directamente en Amazon S3.
+
+### 3. Pasaporte de Coexistencia (Reputacion)
+*   **Score en Tiempo Real:** Calificación dinámica de 0.0 a 5.0 estrellas calculada con base en el cumplimiento de tareas domésticas asignadas.
+*   **Curriculum de Convivencia:** Historial inmutable (`MembershipHistory`) que almacena el rol, período y comportamiento en casas anteriores. Sirve como carta de presentación verificada para postularse a nuevos hogares compartidos.
+
+### 4. Marketplace de Roommates
+*   **Anuncios de Habitaciones:** Publicaciones con detalles de precio mensual, depósito requerido, género preferido y fotos de la vivienda.
+*   **Filtros Avanzados:** Búsqueda parametrizada por ubicación, rango de precio, mascotas y fumadores.
+*   **Postulaciones y Enlace Directo:** Los candidatos pueden postularse y el anunciante puede contactar al aspirante de forma inmediata vía WhatsApp (`wa.me`) o invitarlo a unirse formalmente mediante notificaciones push.
+
+---
+
+## Arquitectura del Sistema
+
+El proyecto está diseñado bajo un esquema de Monorepo administrado con Turborepo y pnpm para optimizar la compilación y el intercambio de tipos de TypeScript.
 
 ```mermaid
 graph TD
-    subgraph Frontend [Cliente Web Next.js]
-        A[Dashboard Component] --> B[Reputation Page]
-        A --> C[Marketplace]
+    subgraph Frontend [Cliente Web - Next.js]
+        A[Dashboard Component] --> B[Reputation Profile]
+        A --> C[Roommate Marketplace]
     end
 
-    subgraph Backend [Core API NestJS]
-        D[Auth Module]
+    subgraph Backend [Core API - NestJS]
+        D[Auth / JWT Module]
         E[Houses Module]
-        F[Tasks & Scheduling Module]
+        F[Tasks & Scheduling Engine]
         G[Reputation Ledger]
         H[Notification Gateway]
     end
 
-    subgraph Packages [Librerías Compartidas]
+    subgraph Packages [Librerias Compartidas]
         I[shared-types]
     end
 
     Frontend -->|HTTP / Web Push| Backend
-    Frontend -.->|Depende de| I
-    Backend -.->|Depende de| I
+    Frontend -.->|Vapid Keys / DTOs| I
+    Backend -.->|DTOs e Interfaces| I
 ```
 
-### Distribución de Directorios
-```
-├── apps/
-│   ├── web/          # Frontend Next.js (Desplegado en Vercel)
-│   │                 # App Router, componentes de shadcn/ui, autenticación con Auth.js
-│   └── api/          # Backend API NestJS (Desplegado en AWS Elastic Beanstalk)
-│                     # Modular por funcionalidad: auth, houses, tasks, scheduling, reputation, listings
-├── packages/
-│   ├── shared-types/ # Tipos e interfaces de TypeScript compartidos
-│   └── infra/        # Infraestructura como Código (IaC)
-│       └── terraform/# Manifiestos de Terraform (RDS, S3, IAM, Elastic Beanstalk)
-└── pnpm-workspace.yaml
-```
+### Organizacion del Codigo
+*   `apps/web/`: Aplicación frontend construida en Next.js (App Router) y componentes estilizados con Tailwind CSS y shadcn/ui.
+*   `apps/api/`: Backend estructurado en NestJS organizado **por feature** (autocontenido: controller, service, dto y módulo en cada carpeta).
+*   `packages/shared-types/`: DTOs, enums e interfaces compartidas entre frontend y backend para mantener consistencia de tipado en tiempo de compilación.
+*   `packages/infra/`: Manifiestos de infraestructura como código (Terraform) y Dockerfiles.
+
+---
+
+## Plan de Despliegue e Infraestructura
+
+El aprovisionamiento de recursos se gestiona como código (IaC) mediante archivos de configuración de Terraform en `packages/infra/terraform/` utilizando recursos mínimos para optimizar costos y tiempos.
+
+### 1. Frontend
+*   **Plataforma:** Desplegado en Vercel.
+*   **Integracion:** Conectado directamente al repositorio para despliegues automáticos basados en ramas (CI/CD).
+
+### 2. Backend (API)
+*   **Plataforma:** AWS Elastic Beanstalk (Docker Platform).
+*   **Empaquetado:** El backend se encapsula en una imagen Docker usando un proceso de construcción multi-etapa (multi-stage build) para minimizar el tamaño final de la imagen.
+
+### 3. Base de Datos
+*   **Plataforma:** Amazon RDS (PostgreSQL).
+*   **Seguridad:** Restringida para evitar el acceso público irrestricto. El Security Group de RDS está configurado para aceptar tráfico entrante exclusivamente desde el Security Group asignado a la instancia de AWS Elastic Beanstalk.
+
+### 4. Almacenamiento de Evidencias
+*   **Plataforma:** Amazon S3.
+*   **Uso:** Almacenamiento de avatares, fotos de marketplace y las evidencias fotográficas obligatorias enviadas por los usuarios al marcar tareas como completadas.
+
+### 5. Notificaciones de Eventos
+*   **Protocolo:** Web Push nativo (VAPID).
+*   **Uso:** Envío directo al navegador de notificaciones en tiempo real al asignar tareas, completar labores, unirse nuevos miembros o postularse roommates, sin dependencias de servicios externos (Firebase/OneSignal).
 
 ---
 
 ## Primeros Pasos
 
-Siga las siguientes instrucciones para configurar y ejecutar el entorno de desarrollo local.
+### Requisitos locales
+*   Node.js v20 o superior
+*   pnpm v10 o superior
+*   Docker y Docker Compose
 
-### Requisitos Previos
-*   **Node.js** v20.x o superior
-*   **pnpm** v10.x o superior (`npm install -g pnpm`)
-*   **Docker & Docker Compose** (para la base de datos PostgreSQL local)
+### Instalacion y Ejecucion
 
----
+1. **Instalar dependencias:**
+   ```bash
+   pnpm install
+   ```
 
-### Proceso de Instalación
+2. **Configurar entorno:**
+   ```bash
+   cp apps/api/.env.example apps/api/.env
+   cp apps/web/.env.example apps/web/.env
+   ```
 
-#### 1. Clonar el repositorio e instalar dependencias
-Ejecute el siguiente comando en la raíz del proyecto para descargar las dependencias y vincular los paquetes locales:
-```bash
-pnpm install
-```
+3. **Levantar base de datos local:**
+   ```bash
+   docker compose up -d
+   ```
 
-#### 2. Configurar variables de entorno
-Copie las plantillas de configuración de entorno en ambas aplicaciones:
-```bash
-cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
-```
+4. **Sincronizar base de datos:**
+   ```bash
+   pnpm --filter api exec prisma db push
+   ```
 
-Asegúrese de configurar adecuadamente las variables correspondientes en los archivos `apps/api/.env` and `apps/web/.env` (claves de JWT, credenciales de base de datos y llaves VAPID).
-
-#### 3. Iniciar la base de datos local
-Levante el contenedor de PostgreSQL en segundo plano:
-```bash
-docker compose up -d
-```
-
-#### 4. Sincronizar el esquema de la base de datos
-Aplique los esquemas de Prisma a la base de datos PostgreSQL local:
-```bash
-pnpm --filter api exec prisma db push
-```
-
-#### 5. Ejecutar los servicios en modo de desarrollo
-Inicie el entorno de desarrollo concurrente con Turborepo:
-```bash
-pnpm dev
-```
-
-Esto inicia:
-- **Backend (NestJS):** `http://localhost:3000`
-- **Frontend (Next.js):** `http://localhost:3001`
+5. **Iniciar desarrollo:**
+   ```bash
+   pnpm dev
+   ```
 
 ---
 
-## Variables de Entorno
+## Integrantes del Equipo
 
-### Backend (`apps/api/.env`)
-
-| Variable | Descripción |
-|----------|-------------|
-| `DATABASE_URL` | Connection string PostgreSQL |
-| `AUTH_SECRET` | Secret compartido con frontend para JWT (mínimo 32 chars) |
-| `GOOGLE_CLIENT_ID` | OAuth Google (opcional) |
-| `GOOGLE_CLIENT_SECRET` | OAuth Google (opcional) |
-| `VAPID_PUBLIC_KEY` | Clave pública VAPID para push |
-| `VAPID_PRIVATE_KEY` | Clave privada VAPID para push |
-| `AWS_REGION` | Región S3 |
-| `AWS_S3_BUCKET` | Nombre del bucket S3 |
-
-### Frontend (`apps/web/.env`)
-
-| Variable | Descripción |
-|----------|-------------|
-| `NEXT_PUBLIC_API_URL` | URL del backend (default: `http://localhost:3000`) |
-| `AUTH_SECRET` | Debe ser idéntico al del backend |
-| `GOOGLE_CLIENT_ID` | OAuth Google (opcional) |
-| `GOOGLE_CLIENT_SECRET` | OAuth Google (opcional) |
+*   Emilio Escobedo (PatoCrazy2)
+*   Herson Urdiales
 
 ---
 
-## Docker
+## Capturas de Pantalla
 
-### Desarrollo (PostgreSQL local)
+### Dashboard y Gestion de Tareas
+<p align="center">
+  <img src="docs/screenshots/dashboard-tareas.PNG" width="30%" style="border-radius: 12px; margin: 5px;" alt="Dashboard" />
+  <img src="docs/screenshots/gestor-tareas.PNG" width="30%" style="border-radius: 12px; margin: 5px;" alt="Gestor de Tareas" />
+  <img src="docs/screenshots/tareas-catalogo.PNG" width="30%" style="border-radius: 12px; margin: 5px;" alt="Catalogo de Tareas" />
+</p>
 
-```bash
-docker compose up -d        # Levantar PostgreSQL
-docker compose down         # Detener
-docker compose down -v      # Detener y borrar datos
-```
+### Hogar Compartido y Ubicaciones
+<p align="center">
+  <img src="docs/screenshots/mi-casa.PNG" width="30%" style="border-radius: 12px; margin: 5px;" alt="Miembros de Casa" />
+  <img src="docs/screenshots/casa-detalle.PNG" width="30%" style="border-radius: 12px; margin: 5px;" alt="Detalles de Casa" />
+  <img src="docs/screenshots/crear-hogar.PNG" width="30%" style="border-radius: 12px; margin: 5px;" alt="Crear Hogar" />
+</p>
 
-### Producción (API en Docker)
+### Marketplace y Reputacion
+<p align="center">
+  <img src="docs/screenshots/marketplace-listing.PNG" width="45%" style="border-radius: 12px; margin: 5px;" alt="Publicacion de Habitacion" />
+  <img src="docs/screenshots/marketplace-edit.PNG" width="45%" style="border-radius: 12px; margin: 5px;" alt="Edicion de Anuncio" />
+</p>
 
-```bash
-docker build -t kimito-api -f apps/api/Dockerfile .
-docker run -p 3000:3000 --env-file apps/api/.env kimito-api
-```
-
-El Dockerfile usa multi-stage build: compila en una etapa y copia solo los artefactos de producción a la imagen final.
-
----
-
-## Prisma
-
-```bash
-# Generar cliente Prisma
-pnpm --filter api exec prisma generate
-
-# Sincronizar schema → DB (desarrollo)
-pnpm --filter api exec prisma db push
-
-# Crear migración nueva
-pnpm --filter api exec prisma migrate dev --name nombre_migracion
-
-# Aplicar migraciones (producción)
-pnpm --filter api exec prisma migrate deploy
-
-# Abrir Prisma Studio (GUI)
-pnpm --filter api exec prisma studio
-```
-
----
-
-## Migraciones
-
-Las migraciones se encuentran en `apps/api/prisma/migrations/`:
-
-| Migración | Descripción |
-|-----------|-------------|
-| `20260723043410_init` | Schema inicial (User, House, Task, etc.) |
-| `20260725_add_marketplace_listing` | Modelo Listing expandido para Marketplace |
-
----
-
-## Scripts Disponibles
-
-| Script | Descripción |
-|--------|-------------|
-| `pnpm dev` | Desarrollo (todos los packages) |
-| `pnpm build` | Build de producción |
-| `pnpm lint` | ESLint en todo el monorepo |
-| `pnpm format` | Prettier en todo el monorepo |
-| `pnpm --filter api test` | Tests unitarios del backend |
-| `pnpm --filter api test:e2e` | Tests E2E del backend |
-
----
-
-## Flujo del Proyecto
-
-```
-Registro/Login
-    ↓
-Crear Casa o Unirse (código de invitación)
-    ↓
-Configurar Tareas del Hogar (catálogo + custom)
-    ↓
-Generar Reparto Semanal (automático lunes o manual)
-    ↓
-Completar Tareas (con foto de evidencia)
-    ↓
-Actualización de Reputación (score dinámico)
-    ↓
-Encuentra Roomie (buscar habitaciones / publicar la tuya)
-```
-
----
-
-## Marketplace (Sprint 4)
-
-El marketplace permite a los miembros de la comunidad publicar habitaciones disponibles y encontrar roomies compatibles. La reputación de cada usuario funciona como carta de presentación para generar confianza.
-
-### Endpoints
-
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| `POST` | `/listings` | Crear publicación de habitación (auth requerida) |
-| `GET` | `/listings` | Listar publicaciones con filtros y paginación |
-| `GET` | `/listings/:id` | Obtener una publicación |
-| `PATCH` | `/listings/:id` | Editar publicación (solo dueño) |
-| `DELETE` | `/listings/:id` | Eliminar publicación (solo dueño) |
-
-### Filtros disponibles (query params)
-
-- `location` — Ubicación (búsqueda parcial)
-- `minRent` / `maxRent` — Rango de renta mensual
-- `availableFrom` — Disponible a partir de (fecha ISO)
-- `petsAllowed` — Acepta mascotas (true/false)
-- `smokingAllowed` — Acepta fumadores (true/false)
-- `preferredGender` — Género preferido (MALE, FEMALE, ANY)
-- `search` — Búsqueda por título, descripción o ubicación
-- `page` / `limit` — Paginación
-
-### Integración con Reputación
-
-Cada publicación incluye automáticamente el score del publicador para generar confianza entre posibles roomies:
-
-```json
-{
-  "owner": {
-    "id": "uuid",
-    "name": "Ana Martínez",
-    "avatarUrl": null,
-    "reputationScore": 4.8
-  }
-}
-```
-
----
-
-## Sistema de Reputación
-
-Score dinámico de 0.0 a 5.0 estrellas calculado en base al historial de cumplimiento:
-
-- **5.0** = Todas las tareas completadas a tiempo
-- **0.0** = Ninguna tarea completada
-
-Fórmula: `5.0 × (completadas a tiempo / total evaluables)`
-
-Las tareas expiradas cuentan como no completadas. El score se actualiza en tiempo real y se muestra en el perfil del usuario y en sus publicaciones del marketplace.
-
----
-
-## Integrantes
-
-- Emilio Escobedo (PatoCrazy2)
-- Herson Urdiales
+<p align="center">
+  <img src="docs/screenshots/perfil-reputacion.PNG" width="45%" style="border-radius: 12px; margin: 5px;" alt="Reputacion del Inquilino" />
+  <img src="docs/screenshots/onboarding.PNG" width="45%" style="border-radius: 12px; margin: 5px;" alt="Onboarding" />
+</p>

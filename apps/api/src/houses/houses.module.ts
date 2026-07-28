@@ -3,9 +3,10 @@ import { HousesService } from './houses.service';
 import { HousesController } from './houses.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { TasksModule } from '../tasks/tasks.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [PrismaModule, TasksModule],
+  imports: [PrismaModule, TasksModule, NotificationsModule],
   controllers: [HousesController],
   providers: [HousesService],
   exports: [HousesService],

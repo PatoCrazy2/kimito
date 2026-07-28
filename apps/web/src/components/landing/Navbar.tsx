@@ -24,10 +24,20 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-4 z-50 w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
+      className={`sticky top-4 z-50 w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 animate-fade-navbar ${
         scrolled ? "translate-y-[-4px]" : ""
       }`}
     >
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes fade-in-navbar {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-navbar {
+          opacity: 0;
+          animation: fade-in-navbar 1.0s cubic-bezier(0.16, 1, 0.3, 1) 2.7s forwards;
+        }
+      `}} />
       {/* Outer rounded container making the navbar float */}
       <div className={`relative overflow-hidden rounded-[24px] border border-[#E8E1D3]/70 shadow-xs transition-all duration-300 py-3.5 px-6 sm:px-8`}>
         

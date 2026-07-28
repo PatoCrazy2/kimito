@@ -55,6 +55,10 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
       if (Notification.permission === "granted") {
         setIsSubscribed(true);
       }
+      // Pre-registrar el service worker para que esté listo
+      navigator.serviceWorker.register("/sw.js").catch((err) => {
+        console.warn("SW register on load:", err);
+      });
     }
 
     return () => {
@@ -68,7 +72,10 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
       if (typeof window !== "undefined" && "Notification" in window) {
         const permission = await Notification.requestPermission();
         if (permission === "granted") {
-          const registration = await navigator.serviceWorker.register("/sw.js");
+          // Asegurar que el SW esté registrado y activo
+          await navigator.serviceWorker.register("/sw.js");
+          const registration = await navigator.serviceWorker.ready;
+
           const { publicKey } = await getVapidPublicKeyAction();
           if (publicKey) {
             const subscription = await registration.pushManager.subscribe({
@@ -94,6 +101,7 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
       }
     } catch (error) {
       console.error("Error al activar notificaciones:", error);
+      alert("Error al activar notificaciones. Revisa la consola para más detalles.");
     } finally {
       setIsSubscribing(false);
     }
@@ -110,10 +118,16 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
-      console.log("PWA install choice outcome:", outcome);
-      setDeferredPrompt(null);
+      if (outcome === "accepted") {
+        setIsPwaInstalled(true);
+      }
     } else {
-      alert("La app ya está instalada o tu navegador no soporta instalación automática.");
+      // En móviles iOS o cuando no hay prompt nativo disponible
+      alert(
+        "Para instalar Kimito:\n\n" +
+        "iPhone/iPad: Toca el botón Compartir y luego 'Agregar a pantalla de inicio'\n\n" +
+        "Android/Chrome: Toca el menú (⋮) y luego 'Instalar aplicación' o 'Agregar a pantalla de inicio'"
+      );
     }
   };
 
@@ -186,10 +200,9 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
           </div>
           <button
             onClick={handleInstallPwa}
-            disabled={!isPwaInstalled && !deferredPrompt}
-            className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${isPwaInstalled
-                ? "bg-muted text-muted-foreground hover:bg-muted/80"
-                : "bg-amber-primary hover:bg-amber-primary/95 text-white"
+            className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap ${isPwaInstalled
+              ? "bg-muted text-muted-foreground hover:bg-muted/80"
+              : "bg-amber-primary hover:bg-amber-primary/95 text-white"
               }`}
           >
             {isPwaInstalled ? "Desinstalar" : "Descargar"}
@@ -217,8 +230,8 @@ export default function SettingsClient({ userName }: SettingsClientProps) {
             onClick={isSubscribed ? handleUnsubscribe : handleSubscribe}
             disabled={isSubscribing}
             className={`font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-xs cursor-pointer active:scale-95 disabled:opacity-40 whitespace-nowrap ${isSubscribed
-                ? "bg-muted text-muted-foreground hover:bg-muted/80"
-                : "bg-amber-primary hover:bg-amber-primary/95 text-white"
+              ? "bg-muted text-muted-foreground hover:bg-muted/80"
+              : "bg-amber-primary hover:bg-amber-primary/95 text-white"
               }`}
           >
             {isSubscribing ? "Procesando..." : isSubscribed ? "Desactivar" : "Activar"}

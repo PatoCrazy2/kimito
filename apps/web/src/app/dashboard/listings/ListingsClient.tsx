@@ -329,7 +329,7 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
         <div>
           <h1 className="font-sans font-extrabold text-2xl text-foreground tracking-tight flex items-center gap-2">
             <span className="material-symbols-rounded text-amber-primary text-2xl">apartment</span>
-            Marketplace de Roommates
+            Buscar Roommate
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
             Encuentra tu próximo hogar o publica una habitación disponible para tus futuros roomies.
@@ -404,8 +404,13 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold text-muted-foreground">Ubicación</label>
                   <div className="relative">
-                    <span className="material-symbols-rounded absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">location_on</span>
-                    <Input placeholder="Ej: Cholula" value={location} onChange={(e) => setLocation(e.target.value)} className="h-8 rounded-xl text-xs pl-6" />
+                    <span className="material-symbols-rounded absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground text-xs z-10">location_on</span>
+                    <AddressAutocomplete
+                      value={location}
+                      onChange={setLocation}
+                      placeholder="Ej: Cholula"
+                      className="h-8 rounded-xl text-xs pl-6"
+                    />
                   </div>
                 </div>
 
@@ -607,10 +612,10 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                     </div>
 
                     {/* House aggregate details & Action */}
-                    <div className="mt-4 pt-4 border-t border-border/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div className="space-y-1">
+                    <div className="mt-4 pt-4 border-t border-border/10 flex flex-col gap-3">
+                      <div className="space-y-1 text-left">
                         {listing.houseId ? (
-                          <div className="text-[11px] font-semibold text-foreground flex items-center gap-1">
+                          <div className="text-[11px] font-semibold text-foreground flex flex-wrap items-center gap-1">
                             <span className="material-symbols-rounded text-amber-500 text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                             <span>Habitantes: {listing.houseMemberCount ?? 0}</span>
                             <span className="text-muted-foreground/30">|</span>
@@ -622,7 +627,7 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                           </div>
                         )}
                         {/* Owner details */}
-                        <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+                        <div className="text-[10px] text-muted-foreground flex flex-wrap items-center gap-1">
                           <span>Anunciante: <strong>{listing.owner.name}</strong></span>
                           {listing.owner.reputationScore !== null && (
                             <span className="text-amber-500">({listing.owner.reputationScore.toFixed(1)} ★)</span>
@@ -630,20 +635,22 @@ export default function ListingsClient({ initialData, currentUserId }: ListingsC
                         </div>
                       </div>
 
-                      {/* Postulación Button */}
-                      {isMyListing ? (
-                        <span className="text-[10px] font-bold text-amber-primary bg-amber-primary/10 px-2.5 py-1.5 rounded-xl text-center self-end">
-                          Tu publicación
-                        </span>
-                      ) : (
-                        <Button
-                          onClick={() => handleOpenApply(listing)}
-                          className="bg-amber-primary hover:bg-[#6c4300] text-white font-semibold rounded-xl text-xs h-8 shadow-sm self-end"
-                        >
-                          <span className="material-symbols-rounded text-xs mr-1">mail</span>
-                          Postularme
-                        </Button>
-                      )}
+                      {/* Action buttons on their own line to prevent clashing */}
+                      <div className="flex justify-end w-full mt-1">
+                        {isMyListing ? (
+                          <span className="text-[10px] font-bold text-amber-primary bg-amber-primary/10 px-2.5 py-1.5 rounded-xl text-center">
+                            Tu publicación
+                          </span>
+                        ) : (
+                          <Button
+                            onClick={() => handleOpenApply(listing)}
+                            className="w-full sm:w-auto bg-amber-primary hover:bg-[#6c4300] text-white font-semibold rounded-xl text-xs h-8 shadow-sm"
+                          >
+                            <span className="material-symbols-rounded text-xs mr-1">mail</span>
+                            Postularme
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );

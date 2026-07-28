@@ -9,13 +9,13 @@ import { Loader2 } from "lucide-react";
 import { LoginSuccessTransition } from "@/components/LoginSuccessTransition";
 import { useRouter } from "next/navigation";
 
-export function LoginForm({ oauthSuccess = false }: { oauthSuccess?: boolean }) {
+export function LoginForm({ oauthSuccess = false, callbackUrl }: { oauthSuccess?: boolean; callbackUrl?: string }) {
   const [state, formAction, isPending] = useActionState(loginWithCredentials, null);
   const isTransitioning = state?.success || oauthSuccess;
   const router = useRouter();
 
   const handleTransitionComplete = () => {
-    router.replace("/dashboard");
+    router.replace(callbackUrl || "/dashboard");
   };
 
   return (
@@ -93,7 +93,7 @@ export function LoginForm({ oauthSuccess = false }: { oauthSuccess?: boolean }) 
         </div>
       </div>
 
-      <form action={loginWithGoogle}>
+      <form action={loginWithGoogle.bind(null, callbackUrl)}>
         <Button
           type="submit"
           variant="outline"
@@ -124,7 +124,10 @@ export function LoginForm({ oauthSuccess = false }: { oauthSuccess?: boolean }) 
 
       <div className="mt-8 text-center text-[13px] font-medium text-muted-foreground">
         ¿No tienes una cuenta?{" "}
-        <Link href="/register" className="text-amber-primary font-semibold hover:underline transition-colors">
+        <Link 
+          href={callbackUrl ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}` : "/register"} 
+          className="text-amber-primary font-semibold hover:underline transition-colors"
+        >
           Crear cuenta
         </Link>
       </div>

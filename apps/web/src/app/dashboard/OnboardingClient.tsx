@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createHouseAction, joinHouseAction } from "@/app/actions/house-actions";
+import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
 
 interface OnboardingClientProps {
   userName: string;
@@ -160,13 +161,10 @@ export default function OnboardingClient({ userName }: OnboardingClientProps) {
                 <label htmlFor="address" className="block text-xs font-bold text-foreground mb-1.5 uppercase tracking-wider">
                   Dirección
                 </label>
-                <input
-                  id="address"
-                  type="text"
-                  placeholder="Ej: Calle 5 de Mayo #45"
+                <AddressAutocomplete
                   value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  disabled={isLoading}
+                  onChange={(val) => setFormData({ ...formData, address: val })}
+                  placeholder="Ej: Calle 5 de Mayo #45"
                   className="w-full bg-[#FAF9F6] border border-border/40 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-primary/20 font-medium"
                 />
               </div>

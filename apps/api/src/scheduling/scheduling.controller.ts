@@ -62,4 +62,16 @@ export class SchedulingController {
       evidenceUrl,
     );
   }
+
+  @UseGuards(AuthGuard)
+  @Patch('assignments/:id/uncomplete')
+  async uncompleteAssignment(
+    @Request() req: any,
+    @Param('id') id: string,
+  ): Promise<TaskAssignmentResponse> {
+    return this.schedulingService.uncompleteAssignment(
+      req.user.email,
+      id,
+    );
+  }
 }

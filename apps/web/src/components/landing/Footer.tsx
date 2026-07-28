@@ -5,9 +5,18 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer id="reputation" className="bg-[#1D1B16] text-[#CDC5B4] border-t border-[#4D4639] pt-16 pb-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#4D4639]/70">
+    <footer id="reputation" className="relative overflow-hidden border-t border-[#E8E1D3] pt-16 pb-12 bg-[#FAF9F6]">
+      {/* Static Background Image (No Animation) */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <img
+          src="/bghero.webp"
+          alt="Footer Background"
+          className="w-full h-full object-cover opacity-[0.95]"
+        />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-[#E8E1D3]/70">
           {/* Column 1: Brand & Bio - 6 cols */}
           <div className="md:col-span-6 space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
@@ -19,14 +28,14 @@ export function Footer() {
                 className="w-9 h-9 object-contain"
               />
               <div className="flex items-baseline">
-                <span className="text-2xl font-black tracking-tight text-white">
+                <span className="text-2xl font-black tracking-tight text-[#1D1B16]">
                   kimito
                 </span>
-                <span className="text-2xl font-black text-[#F59E0B]">.</span>
+                <span className="text-2xl font-black text-[#1D1B16]">.</span>
               </div>
             </Link>
 
-            <p className="text-sm leading-relaxed text-[#CDC5B4]/80 max-w-md">
+            <p className="text-sm leading-relaxed text-[#6b6659]/95 max-w-md font-medium">
               La plataforma definitiva para organizar y gestionar la limpieza de áreas comunes en casas compartidas mediante reparto justo, evidencia fotográfica y pasaporte de reputación.
             </p>
 
@@ -36,7 +45,7 @@ export function Footer() {
                 href="https://github.com/PatoCrazy2/kimito"
                 target="_blank"
                 rel="noreferrer"
-                className="w-9 h-9 rounded-full bg-[#2A2823] border border-[#4D4639] flex items-center justify-center text-[#CDC5B4] hover:text-[#F59E0B] hover:border-[#F59E0B] transition-colors"
+                className="w-9 h-9 rounded-full bg-[#EFE9DB]/70 border border-[#E8E1D3] flex items-center justify-center text-[#6b6659] hover:text-[#1D1B16] hover:border-[#1D1B16] transition-colors backdrop-blur-xs"
                 aria-label="GitHub"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -48,27 +57,27 @@ export function Footer() {
 
           {/* Column 2: Producto - 3 cols */}
           <div className="md:col-span-3 space-y-3">
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#1D1B16]">
               Producto
             </h3>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-sm font-medium">
               <li>
-                <a href="#features" className="hover:text-[#F59E0B] transition-colors">
+                <a href="#features" className="hover:text-[#1D1B16] transition-colors">
                   Características
                 </a>
               </li>
               <li>
-                <a href="#how-it-works" className="hover:text-[#F59E0B] transition-colors">
+                <a href="#how-it-works" className="hover:text-[#1D1B16] transition-colors">
                   Algoritmo Equitativo
                 </a>
               </li>
               <li>
-                <a href="#marketplace" className="hover:text-[#F59E0B] transition-colors">
+                <a href="#marketplace" className="hover:text-[#1D1B16] transition-colors">
                   Marketplace Roommates
                 </a>
               </li>
               <li>
-                <a href="#reputation" className="hover:text-[#F59E0B] transition-colors">
+                <a href="#reputation" className="hover:text-[#1D1B16] transition-colors">
                   Pasaporte de Reputación
                 </a>
               </li>
@@ -77,17 +86,17 @@ export function Footer() {
 
           {/* Column 3: Acceso - 3 cols */}
           <div className="md:col-span-3 space-y-3">
-            <h3 className="text-sm font-extrabold uppercase tracking-wider text-white">
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#1D1B16]">
               Acceso
             </h3>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-sm font-medium">
               <li>
-                <Link href="/login" className="text-[#F59E0B] font-bold hover:underline">
+                <Link href="/login" className="text-[#1D1B16] font-bold hover:underline">
                   Iniciar Sesión
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="hover:text-[#F59E0B] transition-colors">
+                <Link href="/login" className="hover:text-[#1D1B16] transition-colors">
                   Registrarse
                 </Link>
               </li>
@@ -96,7 +105,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#CDC5B4]/60 gap-4">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#6b6659]/80 gap-4 font-medium">
           <p>© 2026 Kimito. Todos los derechos reservados.</p>
         </div>
       </div>

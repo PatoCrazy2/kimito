@@ -3,12 +3,18 @@ import { auth } from "@/auth";
 import { RegisterForm } from "./RegisterForm";
 import { KimitoLogo } from "@/components/KimitoLogo";
 
-export default async function RegisterPage() {
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
   const session = await auth();
+  const sp = await searchParams;
+  const callbackUrl = sp.callbackUrl;
 
   // Redirección si ya está autenticado
   if (session) {
-    redirect("/dashboard");
+    redirect(callbackUrl || "/dashboard");
   }
 
   return (
@@ -26,11 +32,11 @@ export default async function RegisterPage() {
 
         {/* Descripción Corta */}
         <p className="text-[13px] font-medium text-muted-foreground leading-relaxed mb-8 max-w-xs mx-auto">
-          Únete a Kimito y comienza a organizar las tareas de tu casa de forma equitativa.
+          Únete a Kimito y considera organizar las tareas de tu casa de forma equitativa.
         </p>
 
         {/* Formulario de registro (Client Component) */}
-        <RegisterForm />
+        <RegisterForm callbackUrl={callbackUrl} />
       </div>
     </main>
   );
