@@ -3,6 +3,7 @@ import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { calculateFairSchedule } from './fair-scheduling.algorithm';
@@ -487,5 +488,78 @@ export class SchedulingService {
         );
       }
     }
+  }
+
+  /**
+   * Desmarca o rechaza una tarea completada a pendiente (Solo el Admin).
+   */
+  async uncompleteAssignment(
+    email: string,
+    assignmentId: string,
+  ): Promise<TaskAssignmentResponse> {
+    const membership = await this.getUserActiveMembership(email);
+
+    if (membership.role !== 'ADMIN') {
+      throw new ForbiddenException(
+        'Solo el administrador de la casa puede desmarcar tareas completadas',
+      );
+    }
+
+    const assignment = await this.prisma.taskAssignment.findUnique({
+      where: { id: assignmentId },
+      include: { task: true, user: true },
+    });
+
+    if (!assignment) {
+      throw new NotFoundException('Asignación de tarea no encontrada');
+    }
+
+    if (assignment.task.houseId !== membership.houseId) {
+      throw new BadRequestException('La tarea pertenece a otra casa');
+    }
+
+    if (assignment.status !== 'COMPLETED' && assignment.status !== 'LATE') {
+      throw new BadRequestException('La tarea no está completada');
+    }
+
+    const updated = await this.prisma.taskAssignment.update({
+      where: { id: assignmentId },
+      data: {
+        status: 'PENDING',
+        completedAt: null,
+        evidenceUrl: null,
+      },
+      include: {
+        task: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatarUrl: true,
+          },
+        },
+      },
+    });
+
+    // Enviar notificación Web Push al inquilino asignado
+    try {
+      const payload = {
+        title: 'Evidencia rechazada ❌',
+        body: `El administrador rechazó la evidencia para "${updated.task.title}". Por favor, complétala de nuevo.`,
+        url: '/dashboard',
+      };
+      await this.notificationsService.sendNotificationToUser(
+        assignment.userId,
+        payload,
+      );
+    } catch (error) {
+      console.error(
+        'Error al enviar notificación de evidencia rechazada:',
+        error,
+      );
+    }
+
+    return updated as unknown as TaskAssignmentResponse;
   }
 }
