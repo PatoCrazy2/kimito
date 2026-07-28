@@ -66,3 +66,16 @@ export async function completeAssignmentAction(
   revalidatePath("/dashboard");
   return res;
 }
+
+export async function uncompleteAssignmentAction(
+  id: string,
+): Promise<TaskAssignmentResponse> {
+  const res = await fetchFromApi<TaskAssignmentResponse>(
+    `/scheduling/assignments/${id}/uncomplete`,
+    {
+      method: "PATCH",
+    },
+  );
+  revalidatePath("/dashboard");
+  return res;
+}
